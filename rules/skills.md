@@ -35,65 +35,66 @@ When the user requests a **new feature** (not a bug fix or minor tweak), you MUS
 
 > This phased workflow applies ONLY to new feature development. For bug fixes, minor tweaks, or refactors, proceed directly with the appropriate skill without this orchestration.
 
-## Available Skills:
+## Available Skills
 
-- **tdd**: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
-  - **Path**: `.agents/skills/engineering/tdd/SKILL.md`
+This index tracks 29 skills under `.agents/skills/`. Use the short trigger/use-case text to choose a skill, then read that skill's `SKILL.md` before execution.
 
-- **improve-codebase-architecture**: Find deepening opportunities in a codebase, informed by the domain language in `.agents/CONTEXT.md` and the decisions in `.agents/docs/adr/`. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable.
-  - **Path**: `.agents/skills/engineering/improve-codebase-architecture/SKILL.md`
+### Engineering
 
-- **zoom-out**: Tell the agent to zoom out and give broader context or a higher-level perspective. Use when you're unfamiliar with a section of code or need to understand how it fits into the bigger picture.
-  - **Path**: `.agents/skills/engineering/zoom-out/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `diagnose` | Bugs, errors, failing flows, regressions, performance issues. | `.agents/skills/engineering/diagnose/SKILL.md` |
+| `grill-with-docs` | Stress-test a plan against `.agents/CONTEXT.md`; update domain docs/ADRs. | `.agents/skills/engineering/grill-with-docs/SKILL.md` |
+| `improve-codebase-architecture` | Find refactors, coupling, testability, architecture improvements. | `.agents/skills/engineering/improve-codebase-architecture/SKILL.md` |
+| `prototype` | Throwaway prototype for state, business logic, UI, or design options. | `.agents/skills/engineering/prototype/SKILL.md` |
+| `setup-matt-pocock-skills` | Set up issue tracker, triage labels, and agent docs for engineering skills. | `.agents/skills/engineering/setup-matt-pocock-skills/SKILL.md` |
+| `tdd` | TDD, red-green-refactor, tests-first feature or bug work. | `.agents/skills/engineering/tdd/SKILL.md` |
+| `to-issues` | Convert a plan, PRD, or spec into executable issues. | `.agents/skills/engineering/to-issues/SKILL.md` |
+| `to-prd` | Turn conversation context into a PRD. | `.agents/skills/engineering/to-prd/SKILL.md` |
+| `triage` | Create, review, label, or route issues through triage. | `.agents/skills/engineering/triage/SKILL.md` |
+| `zoom-out` | Explain broader architecture/context for unfamiliar code. | `.agents/skills/engineering/zoom-out/SKILL.md` |
 
-- **to-issues**: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
-  - **Path**: `.agents/skills/engineering/to-issues/SKILL.md`
+### Productivity
 
-- **setup-matt-pocock-skills**: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
-  - **Path**: `.agents/skills/engineering/setup-matt-pocock-skills/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `caveman` | Ultra-brief mode: caveman, less tokens, be brief, `/caveman`. | `.agents/skills/productivity/caveman/SKILL.md` |
+| `grill-me` | Stress-test a plan/design through questioning. | `.agents/skills/productivity/grill-me/SKILL.md` |
+| `handoff` | Compact the conversation into a handoff document. | `.agents/skills/productivity/handoff/SKILL.md` |
+| `teach` | Teach a skill or concept in this workspace. | `.agents/skills/productivity/teach/SKILL.md` |
+| `write-a-skill` | Create or update an agent skill. | `.agents/skills/productivity/write-a-skill/SKILL.md` |
 
-- **to-prd**: Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context.
-  - **Path**: `.agents/skills/engineering/to-prd/SKILL.md`
+### Misc
 
-- **grill-with-docs**: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (`.agents/CONTEXT.md`, ADRs in `.agents/docs/adr/`) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.
-  - **Path**: `.agents/skills/engineering/grill-with-docs/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `git-guardrails-claude-code` | Block dangerous git commands in Claude Code. | `.agents/skills/misc/git-guardrails-claude-code/SKILL.md` |
+| `migrate-to-shoehorn` | Replace TypeScript test `as` assertions with `@total-typescript/shoehorn`. | `.agents/skills/misc/migrate-to-shoehorn/SKILL.md` |
+| `scaffold-exercises` | Scaffold exercise sections, problems, solutions, explainers. | `.agents/skills/misc/scaffold-exercises/SKILL.md` |
+| `setup-pre-commit` | Configure Husky, lint-staged, Prettier, type checks, tests. | `.agents/skills/misc/setup-pre-commit/SKILL.md` |
 
-- **diagnose**: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.
-  - **Path**: `.agents/skills/engineering/diagnose/SKILL.md`
+### Personal
 
-- **triage**: Triage issues through a state machine driven by triage roles. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.
-  - **Path**: `.agents/skills/engineering/triage/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `edit-article` | Edit, revise, restructure, or tighten article drafts. | `.agents/skills/personal/edit-article/SKILL.md` |
+| `obsidian-vault` | Search, create, or organize Obsidian notes. | `.agents/skills/personal/obsidian-vault/SKILL.md` |
 
-- **grill-me**: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
-  - **Path**: `.agents/skills/productivity/grill-me/SKILL.md`
+### In Progress
 
-- **write-a-skill**: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
-  - **Path**: `.agents/skills/productivity/write-a-skill/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `review` | Review branch/PR/WIP changes since a fixed point. | `.agents/skills/in-progress/review/SKILL.md` |
+| `writing-beats` | Shape raw material into article beats. | `.agents/skills/in-progress/writing-beats/SKILL.md` |
+| `writing-fragments` | Gather raw writing fragments for a future article. | `.agents/skills/in-progress/writing-fragments/SKILL.md` |
+| `writing-shape` | Turn markdown raw material into a publishable article. | `.agents/skills/in-progress/writing-shape/SKILL.md` |
 
-- **caveman**: >
-  - **Path**: `.agents/skills/productivity/caveman/SKILL.md`
+### Deprecated
 
-- **git-guardrails-claude-code**: Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Use when user wants to prevent destructive git operations, add git safety hooks, or block git push/reset in Claude Code.
-  - **Path**: `.agents/skills/misc/git-guardrails-claude-code/SKILL.md`
-
-- **scaffold-exercises**: Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.
-  - **Path**: `.agents/skills/misc/scaffold-exercises/SKILL.md`
-
-- **migrate-to-shoehorn**: Migrate test files from `as` type assertions to @total-typescript/shoehorn. Use when user mentions shoehorn, wants to replace `as` in tests, or needs partial test data.
-  - **Path**: `.agents/skills/misc/migrate-to-shoehorn/SKILL.md`
-
-- **setup-pre-commit**: Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests in the current repo. Use when user wants to add pre-commit hooks, set up Husky, configure lint-staged, or add commit-time formatting/typechecking/testing.
-  - **Path**: `.agents/skills/misc/setup-pre-commit/SKILL.md`
-
-- **prototype**: Build a throwaway prototype to flesh out a design before committing to it. Routes between two branches — a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route. Use when the user wants to prototype, sanity-check a data model or state machine, mock up a UI, explore design options, or says "prototype this", "let me play with it", "try a few designs".
-  - **Path**: `.agents/skills/engineering/prototype/SKILL.md`
-
-- **handoff**: Compact the current conversation into a handoff document for another agent to pick up.
-  - **Path**: `.agents/skills/productivity/handoff/SKILL.md`
-
-- **edit-article**: Edit and improve articles by restructuring sections, improving clarity, and tightening prose. Use when user wants to edit, revise, or improve an article draft.
-  - **Path**: `.agents/skills/personal/edit-article/SKILL.md`
-
-- **obsidian-vault**: Search, create, and manage notes in the Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.
-  - **Path**: `.agents/skills/personal/obsidian-vault/SKILL.md`
+| Skill | Trigger / Use | Path |
+|---|---|---|
+| `design-an-interface` | Explore multiple API/interface designs. | `.agents/skills/deprecated/design-an-interface/SKILL.md` |
+| `qa` | Conversational QA session that files issues. | `.agents/skills/deprecated/qa/SKILL.md` |
+| `request-refactor-plan` | Interview-driven refactor plan split into small commits/issues. | `.agents/skills/deprecated/request-refactor-plan/SKILL.md` |
+| `ubiquitous-language` | Extract DDD-style glossary/domain language. | `.agents/skills/deprecated/ubiquitous-language/SKILL.md` |
 
