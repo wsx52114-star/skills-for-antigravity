@@ -1,4 +1,4 @@
-name: Sync Upstream
+name: Sync Upstream Skills
 
 on:
   schedule:
@@ -6,13 +6,32 @@ on:
   workflow_dispatch: # 允許手動觸發
 
 jobs:
-  sync-fork:
+  sync-skills:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Sync Fork
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync skills folder
         run: |
-          gh repo sync ${{ github.repository }} -b main
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git remote add upstream https://github.com/mattpocock/skills.git
+          git fetch upstream main
+          
+          # 清除目前的 skills 資料夾，並從 upstream/main 重新 checkout
+          git rm -rf skills --ignore-unmatch
+          git checkout upstream/main -- skills
+          
+          # 檢查是否有變更並提交
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "chore: 同步原作者的 skills 資料夾更新"
+            git push origin main
+          else
+            echo "Skills 資料夾已是最新，無需更新。"
+          fi
