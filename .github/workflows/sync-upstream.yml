@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout target repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -30,7 +30,7 @@ jobs:
           
           # 檢查是否有變更並提交
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "chore: 同步原作者的 skills 資料夾更新"
+            git commit -m "chore: 同步原作者的 skills 資料夾更新 ($(date +'%Y-%m-%d'))"
             git push origin main
           else
             echo "Skills 資料夾已是最新，無需更新。"
