@@ -31,39 +31,42 @@ When the user requests a **new feature** (not a bug fix or minor tweak), you MUS
 7. Follow strict red-green-refactor: write failing test → implement → pass → refactor.
 
 ### Phase 4 — Diagnosis (on-demand)
-8. If any unexpected error or regression arises at any point in Phase 3, **immediately** invoke the `diagnose` skill (read `.agents/skills/engineering/diagnose/SKILL.md` first) before making any guesses or blind fixes.
+8. If any unexpected error or regression arises at any point in Phase 3, **immediately** invoke the `diagnosing-bugs` skill (read `.agents/skills/engineering/diagnosing-bugs/SKILL.md` first) before making any guesses or blind fixes.
 
 > This phased workflow applies ONLY to new feature development. For bug fixes, minor tweaks, or refactors, proceed directly with the appropriate skill without this orchestration.
 
 ## Available Skills
 
-This index tracks 30 skills under `.agents/skills/`. Use the short trigger/use-case text to choose a skill, then read that skill's `SKILL.md` before execution.
+This index tracks 30 active skills under `.agents/skills/`. Use the short trigger/use-case text to choose a skill, then read that skill's `SKILL.md` before execution.
 
 ### Engineering
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
-| `diagnose` | Bugs, errors, failing flows, regressions, performance issues. | `.agents/skills/engineering/diagnose/SKILL.md` |
+| `diagnosing-bugs` | Bugs, errors, failing flows, regressions, performance issues. | `.agents/skills/engineering/diagnosing-bugs/SKILL.md` |
 | `code-review` | Review changes since a fixed point (commit, branch, tag) along Standards and Spec axes. | `.agents/skills/engineering/code-review/SKILL.md` |
+| `codebase-design` | Design deep modules (small interface, deep implementation) and seams. | `.agents/skills/engineering/codebase-design/SKILL.md` |
+| `domain-modeling` | Build and sharpen a project's domain model (glossary, ubiquitous language, ADRs). | `.agents/skills/engineering/domain-modeling/SKILL.md` |
 | `grill-with-docs` | Stress-test a plan against `.agents/CONTEXT.md`; update domain docs/ADRs. | `.agents/skills/engineering/grill-with-docs/SKILL.md` |
+| `implement` | Implement a piece of work based on a PRD or set of issues. | `.agents/skills/engineering/implement/SKILL.md` |
 | `improve-codebase-architecture` | Find refactors, coupling, testability, architecture improvements. | `.agents/skills/engineering/improve-codebase-architecture/SKILL.md` |
 | `prototype` | Throwaway prototype for state, business logic, UI, or design options. | `.agents/skills/engineering/prototype/SKILL.md` |
+| `resolving-merge-conflicts` | Resolve an in-progress git merge/rebase conflict. | `.agents/skills/engineering/resolving-merge-conflicts/SKILL.md` |
 | `setup-matt-pocock-skills` | Set up issue tracker, triage labels, and agent docs for engineering skills. | `.agents/skills/engineering/setup-matt-pocock-skills/SKILL.md` |
 | `tdd` | TDD, red-green-refactor, tests-first feature or bug work. | `.agents/skills/engineering/tdd/SKILL.md` |
 | `to-issues` | Convert a plan, PRD, or spec into executable issues. | `.agents/skills/engineering/to-issues/SKILL.md` |
 | `to-prd` | Turn conversation context into a PRD. | `.agents/skills/engineering/to-prd/SKILL.md` |
 | `triage` | Create, review, label, or route issues through triage. | `.agents/skills/engineering/triage/SKILL.md` |
-| `zoom-out` | Explain broader architecture/context for unfamiliar code. | `.agents/skills/engineering/zoom-out/SKILL.md` |
 
 ### Productivity
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
-| `caveman` | Ultra-brief mode: caveman, less tokens, be brief, `/caveman`. | `.agents/skills/productivity/caveman/SKILL.md` |
 | `grill-me` | Stress-test a plan/design through questioning. | `.agents/skills/productivity/grill-me/SKILL.md` |
+| `grilling` | Interview the user relentlessly about a plan or design. | `.agents/skills/productivity/grilling/SKILL.md` |
 | `handoff` | Compact the conversation into a handoff document. | `.agents/skills/productivity/handoff/SKILL.md` |
 | `teach` | Teach a skill or concept in this workspace. | `.agents/skills/productivity/teach/SKILL.md` |
-| `write-a-skill` | Create or update an agent skill. | `.agents/skills/productivity/write-a-skill/SKILL.md` |
+| `writing-great-skills` | Reference for writing and editing skills well. | `.agents/skills/productivity/writing-great-skills/SKILL.md` |
 
 ### Misc
 
@@ -85,7 +88,8 @@ This index tracks 30 skills under `.agents/skills/`. Use the short trigger/use-c
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
-| `wayfinder` | Chart a route through a foggy problem. | `.agents/skills/in-progress/wayfinder/SKILL.md` |
+| `decision-mapping` | Map out and sequence a series of technical design decisions (excluding manual tasks). | `.agents/skills/in-progress/decision-mapping/SKILL.md` |
+| `wayfinder` | Chart a route through a foggy problem (using research, prototypes, grilling, and tasks). | `.agents/skills/in-progress/wayfinder/SKILL.md` |
 | `writing-beats` | Shape raw material into article beats. | `.agents/skills/in-progress/writing-beats/SKILL.md` |
 | `writing-fragments` | Gather raw writing fragments for a future article. | `.agents/skills/in-progress/writing-fragments/SKILL.md` |
 | `writing-shape` | Turn markdown raw material into a publishable article. | `.agents/skills/in-progress/writing-shape/SKILL.md` |

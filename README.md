@@ -1,12 +1,12 @@
 # Antigravity Agent Skills 中文使用指南
 
-這份指南說明如何使用目前整合在 `.agents/skills/` 內的 30 項 agent skills。這套系統讓 coding agent 在開始工作前能先讀取對應 workflow、專案領域語言與架構決策，而不是只依靠一般性的 coding 行為。
+這份指南說明如何使用目前整合在 `.agents/skills/` 內的 30 項 active agent skills。這套系統讓 coding agent 在開始工作前能先讀取對應 workflow、專案領域語言與架構決策，而不是只依靠一般性的 coding 行為。
 
 ---
 
 ## `.agents/` 目錄導覽
 
-`.agents/` 目錄存放 coding agent 的規則、技能索引、領域語言與輔助腳本。它不是 runtime 程式碼目錄；主要用途是讓 agent 在修改專案前先取得正確工作流程與文件脈絡。
+`.agents/` 目錄存放 coding agent 的規則、技能索引、領域語言與輔助腳本。它不是 runtime 程式碼目錄；主要用途 is 讓 agent 在修改專案前先取得正確工作流程與文件脈絡。
 
 開始任何非 trivial 修改前，請優先閱讀：
 
@@ -23,8 +23,8 @@
 | `.agents/rules/skills.md` | 技能索引、觸發規則、Golden Workflow。 |
 | `.agents/docs/adr/` | Architecture Decision Records。 |
 | `.agents/scripts/` | Agent 輔助腳本，例如技能連結、列出技能、HITL loop template、git guardrails。 |
-| `.agents/skills/engineering/` | 工程技能，例如 TDD、diagnose、zoom-out、to-issues。 |
-| `.agents/skills/productivity/` | 生產力技能，例如 caveman、handoff。 |
+| `.agents/skills/engineering/` | 工程技能，例如 TDD、diagnosing-bugs、to-issues。 |
+| `.agents/skills/productivity/` | 生產力技能，例如 grilling、handoff。 |
 | `.agents/skills/misc/` | 雜項技能，例如 setup-pre-commit、git guardrails。 |
 | `.agents/skills/personal/` | 個人工作流技能，例如 Obsidian vault、文章編輯。 |
 | `.agents/skills/in-progress/` | 尚在整理或試驗中的技能。 |
@@ -47,7 +47,7 @@
 **範例用法：**
 - 「這個 API 噴錯了，幫我 **diagnose** 一下。」
 - 「我們來用 **tdd** 開發登入功能。」
-- 「進入 **caveman** 模式，我們來快速改幾個設定。」
+- 「我們來做 **domain modeling**，把領域術語釐清。」
 - 「我要實作一個新模組，麻煩先 **grill me**（拷問我）確定細節。」
 
 ---
@@ -60,27 +60,30 @@
 
 | Skill | 用途 |
 |------|------|
-| `diagnose` | 嚴謹除錯與效能回歸診斷。 |
+| `diagnosing-bugs` | 嚴謹除錯與效能回歸診斷。 |
 | `code-review` | 依 Standards 與 Spec 兩軸審查變更。 |
+| `codebase-design` | 設計深模組（小介面、深實作）與接縫。 |
+| `domain-modeling` | 建立與深化專案的領域模型（術語、統一語言與 ADR）。 |
 | `grill-with-docs` | 依據 `.agents/CONTEXT.md` 拷問設計並同步文件與 ADR。 |
+| `implement` | 依據 PRD 或 issue 實作功能。 |
 | `improve-codebase-architecture` | 掃描架構問題並提出可執行重構方向。 |
 | `prototype` | 建立 throwaway prototype，用來驗證狀態、商業邏輯或 UI 方向。 |
+| `resolving-merge-conflicts` | 解決進行中的 Git merge/rebase 衝突。 |
 | `setup-matt-pocock-skills` | 初始化 agent skills 所需的 issue tracker、triage label 與文件慣例。 |
 | `tdd` | 依 red-green-refactor 開發功能或修 bug。 |
 | `to-issues` | 將計畫、PRD 或 spec 切成可獨立執行的 issues。 |
 | `to-prd` | 將對話脈絡整理成 PRD 並發布到 issue tracker。 |
 | `triage` | 使用 triage state machine 管理 issues。 |
-| `zoom-out` | 從更高層次說明程式碼或模組的系統定位。 |
 
 ### Productivity
 
 | Skill | 用途 |
 |------|------|
-| `caveman` | 極簡高密度溝通模式。 |
 | `grill-me` | 純對話式設計拷問，不強制同步文件。 |
+| `grilling` | 針對計畫或設計，對使用者進行連環拷問。 |
 | `handoff` | 將目前對話整理成 handoff 文件。 |
 | `teach` | 在 workspace 脈絡中教一項技能或概念。 |
-| `write-a-skill` | 建立新的 agent skill。 |
+| `writing-great-skills` | 撰寫與編輯良好 Agent 技能的參考指引。 |
 
 ### Misc
 
@@ -102,7 +105,8 @@
 
 | Skill | 用途 |
 |------|------|
-| `wayfinder` | 規劃模糊問題的探索路徑，將點子切分為工單逐步解決。 |
+| `decision-mapping` | 將模糊的想法轉化為循序漸進的調查工單地圖（不包含一般任務）。 |
+| `wayfinder` | 規劃模糊問題的探索路徑，將點子切分為工單逐步解決（包含任務與行動項）。 |
 | `writing-beats` | 以 beats 方式逐段組裝文章。 |
 | `writing-fragments` | 透過拷問蒐集文章 raw fragments。 |
 | `writing-shape` | 將 markdown raw material 逐步整理成可發布文章。 |
@@ -116,12 +120,14 @@
 | `request-refactor-plan` | 透過訪談建立 refactor plan 並轉為 issue。 |
 | `ubiquitous-language` | 從對話萃取 DDD-style ubiquitous language glossary。 |
 
+---
+
 ## 常用技能說明
 
 這是日常開發中最常使用的核心功能，主打提升程式碼品質與架構穩定性。
 
-### 1. Diagnose (嚴謹除錯流程)
-> **觸發詞**：`diagnose`, `debug`, `遇到 Bug`, `效能退化`
+### 1. Diagnosing Bugs (嚴謹除錯流程)
+> **觸發詞**：`diagnosing-bugs`, `diagnose`, `debug`, `遇到 Bug`, `效能退化`
 - **情境**：遇到難解的 Bug 或效能變差時。
 - **運作方式**：我不會瞎猜盲改，而是嚴格執行：建立重現環境 (Reproduce) → 縮小範圍 (Minimise) → 提出假設 (Hypothesise) → 加上觀測日誌 (Instrument) → 修復並加入回歸測試 (Fix + Test)。
 
@@ -140,26 +146,21 @@
 - **情境**：感覺專案變成「義大利麵條程式碼」時。
 - **運作方式**：我會掃描您的程式碼，並對照 `CONTEXT.md` 的領域語言，揪出高耦合、難以測試的區塊並給出具體的重構計畫。
 
-### 5. Zoom-out (全局視野)
-> **觸發詞**：`zoom-out`, `這段程式碼的作用是什麼`, `大局觀`
-- **情境**：接手不熟悉的模組，或是迷失在細節中時。
-- **運作方式**：我會跳出目前的單一檔案，從系統架構的宏觀角度來解釋這段程式碼的定位。
-
 ---
 
 ## 專案規劃與管理 (Planning)
 
-### 6. To-PRD (產出需求規格書)
+### 5. To-PRD (產出需求規格書)
 > **觸發詞**：`to-prd`, `產生規格書`, `寫成 PRD`
 - **情境**：討論完一個新功能的點子後。
 - **運作方式**：我會將我們剛才所有的對話與共識，濃縮成一份結構嚴謹的產品需求規格書（PRD）。
 
-### 7. To-Issues (切分任務 Ticket)
+### 6. To-Issues (切分任務 Ticket)
 > **觸發詞**：`to-issues`, `切分任務`, `產生 issue`
 - **情境**：有了 PRD 或大型計畫後，準備動手實作前。
 - **運作方式**：我會把大型任務垂直切分成獨立、可執行的 Issue 列表，方便後續逐一擊破。
 
-### 8. Triage (議題分流)
+### 7. Triage (議題分流)
 > **觸發詞**：`triage`, `處理 issue`, `分流`
 - **情境**：面對一堆未處理的 Bug 回報或功能請求時。
 - **運作方式**：我會透過狀態機機制，幫您審核這些 Issue，加上標籤，並將其整理為可執行的狀態。
@@ -168,21 +169,16 @@
 
 ## 生產力與特殊工具 (Productivity & Misc)
 
-### 9. Caveman (極簡溝通模式)
-> **觸發詞**：`caveman`, `話少一點`, `極簡模式`
-- **情境**：想節省 Token 花費，或是只想要最純粹的技術答覆時。
-- **運作方式**：我會捨棄所有問候語、冠詞與客套話，只給出 100% 準確的硬核技術資訊。
-
-### 10. Grill-me (單純拷問)
+### 8. Grill-me (單純拷問)
 > **觸發詞**：`grill-me`, `拷問我`
 - **情境**：與 `grill-with-docs` 類似，但不涉及程式碼文件修改，純粹用來驗證您的點子是否有盲點。
 
-### 11. Git Guardrails (Git 防呆機制)
+### 9. Git Guardrails (Git 防呆機制)
 > **觸發詞**：`防呆`, `git guardrails`, `設定保護`
 - **情境**：擔心 AI 或自己手滑執行破壞性的 Git 指令。
 - **運作方式**：設定腳本攔截 `push`, `reset --hard`, `branch -D` 等危險操作。
 
-### 12. Setup Pre-commit (自動化程式碼檢查)
+### 10. Setup Pre-commit (自動化程式碼檢查)
 > **觸發詞**：`setup pre-commit`, `設定 husky`
 - **情境**：新專案想導入 Commit 前的格式化與型別檢查。
 - **運作方式**：一鍵幫您配置 Husky、lint-staged、Prettier 與測試掛鉤。
@@ -216,4 +212,4 @@
 > 1. 先用 **`grill-with-docs`** 確認架構與領域語言。
 > 2. 用 **`to-issues`** 把任務切小。
 > 3. 對每個小任務使用 **`tdd`** 進行嚴謹開發。
-> 4. 若途中遇到奇怪的錯誤，隨時呼叫 **`diagnose`** 處理。
+> 4. 若途中遇到奇怪的錯誤，隨時呼叫 **`diagnosing-bugs`** 處理。
