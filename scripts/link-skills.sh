@@ -7,13 +7,13 @@ set -euo pipefail
 #
 # Links all skills in the repository into the local skill directories used by
 # each agent harness:
-#   - ~/.claude/skills  — Claude Code
-#   - ~/.agents/skills  — pi and other Agent-Skills-standard harnesses
+#   - ~/.gemini/config/skills  — Antigravity Customizations
+#   - ~/.agents/skills         — Project local Agent Skills
 # Each entry is a symlink into this repo, so a `git pull` is all that's needed
 # to keep installed skills up to date.
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-DESTS=("$HOME/.claude/skills" "$HOME/.agents/skills")
+DESTS=("$HOME/.gemini/config/skills" "$HOME/.agents/skills")
 
 # Collect the repo's skills once, link into every destination.
 names=()

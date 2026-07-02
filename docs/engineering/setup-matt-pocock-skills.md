@@ -30,11 +30,11 @@ It walks you through three choices, one at a time, each with a plain-language ex
 - **Triage labels** — the strings behind the five canonical roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), mapped to labels you've actually configured so `triage` applies real ones instead of creating duplicates.
 - **Domain docs** — whether the repo has one `CONTEXT.md` or a multi-context map, so skills that read domain language look in the right place.
 
-The output is three files — `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md` — plus an `## Agent skills` block pointing to them in whichever of `CLAUDE.md` / `AGENTS.md` the repo already uses. Those files are the shared substrate the rest of the toolkit stands on.
+The output is three files — `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md` — plus an `## Agent skills` block pointing to them in the repo's `.agents/AGENTS.md`. Those files are the shared substrate the rest of the toolkit stands on.
 
 ## It's working if
 
-- Three files land under `docs/agents/`, and an `## Agent skills` section appears in your `CLAUDE.md` or `AGENTS.md`.
+- Three files land under `docs/agents/`, and an `## Agent skills` section appears in your `.agents/AGENTS.md`.
 - The tracker it proposes matches your real `git remote`, and the labels match strings that already exist in your repo.
 - Afterwards, `triage` and `to-issues` act on the right place with the right labels instead of asking or guessing.
 

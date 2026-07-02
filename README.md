@@ -89,7 +89,7 @@
 
 | Skill | 用途 |
 |------|------|
-| `git-guardrails-claude-code` | 設定 Claude Code hooks，攔截危險 git 指令。 |
+| `git-guardrails-claude-code` | 設定 Antigravity 規則限制，攔截危險 git 指令。 |
 | `migrate-to-shoehorn` | 將 TypeScript 測試中的 `as` assertions 遷移到 `@total-typescript/shoehorn`。 |
 | `scaffold-exercises` | 建立課程 exercise 目錄、題目、解答與 explainers。 |
 | `setup-pre-commit` | 設定 Husky、lint-staged、Prettier、type check 與測試 hook。 |

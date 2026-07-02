@@ -72,7 +72,7 @@ This index tracks 30 active skills under `.agents/skills/`. Use the short trigge
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
-| `git-guardrails-claude-code` | Block dangerous git commands in Claude Code. | `.agents/skills/misc/git-guardrails-claude-code/SKILL.md` |
+| `git-guardrails-claude-code` | Block dangerous git commands via Antigravity rules. | `.agents/skills/misc/git-guardrails-claude-code/SKILL.md` |
 | `migrate-to-shoehorn` | Replace TypeScript test `as` assertions with `@total-typescript/shoehorn`. | `.agents/skills/misc/migrate-to-shoehorn/SKILL.md` |
 | `scaffold-exercises` | Scaffold exercise sections, problems, solutions, explainers. | `.agents/skills/misc/scaffold-exercises/SKILL.md` |
 | `setup-pre-commit` | Configure Husky, lint-staged, Prettier, type checks, tests. | `.agents/skills/misc/setup-pre-commit/SKILL.md` |
@@ -137,5 +137,16 @@ When loading generic skills from `.agents/skills/`, you MUST dynamically adapt t
   - **Embedded**: Focus on physical constraints (Pinout, low-power modes, RAM/Flash limits) and real-time execution bounds (interrupt latency, execution periods).
 
 
+## Agent Harness & Platform Adaptation Layer
 
+When loading and executing skills from the `.agents/skills/` directory, you MUST dynamically adapt and translate any Claude Code specific configurations or references to Antigravity's environment. Follow these translation rules strictly:
 
+1. **Rule File Mapping (`CLAUDE.md` ➔ `AGENTS.md`)**:
+   - If a skill (e.g., `setup-matt-pocock-skills`) instructs you to explore, create, or update `CLAUDE.md`, you MUST redirect the operations to **`.agents/AGENTS.md`** instead. Do NOT create or edit `CLAUDE.md` in the repository root.
+
+2. **Git Guardrail Translation**:
+   - When encountering `git-guardrails-claude-code`, do NOT attempt to write hooks to `.claude/settings.json` or create `PreToolUse` bash configurations.
+   - Instead, translate the action to writing Git restriction guidelines directly into **`.agents/AGENTS.md`** under a `## Git Safety Rules` section, ensuring the agent model limits itself.
+
+3. **Slash Command Execution**:
+   - If documentation or comments refer to slash commands (e.g., `/setup-matt-pocock-skills`, `/triage`), they are mapped to natural language keywords (e.g., "setup-matt-pocock-skills", "triage") in Antigravity.

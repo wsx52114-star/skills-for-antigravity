@@ -16,22 +16,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Sync skills folder
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Configure Git and Run Sync Script
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          git remote add upstream https://github.com/mattpocock/skills.git
-          git fetch upstream main
-          
-          # 清除目前的 skills 資料夾，並從 upstream/main 重新 checkout
-          git rm -rf skills --ignore-unmatch
-          git checkout upstream/main -- skills
-          
-          # 檢查是否有變更並提交
-          if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "chore: 同步原作者的 skills 資料夾更新 ($(date +'%Y-%m-%d'))"
-            git push origin main
-          else
-            echo "Skills 資料夾已是最新，無需更新。"
-          fi
+          # 執行我們的自動化同步與轉譯腳本
+          python scripts/sync_upstream.py
+
+      - name: Push Changes
+        run: |
+          # 檢查是否有任何變更（不論是 commit 還是 unstaged）
+          # 因為 sync_upstream.py 會進行 git merge，如果有更新，HEAD 會往前移動
+          # 我們可以使用 git status 或者 git diff 來檢查是否需要 push
+          # 更穩健的做法是直接嘗試 push
+          git push origin main || echo "No changes to push or push failed"
+
