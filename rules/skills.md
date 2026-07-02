@@ -37,13 +37,14 @@ When the user requests a **new feature** (not a bug fix or minor tweak), you MUS
 
 ## Available Skills
 
-This index tracks 29 skills under `.agents/skills/`. Use the short trigger/use-case text to choose a skill, then read that skill's `SKILL.md` before execution.
+This index tracks 30 skills under `.agents/skills/`. Use the short trigger/use-case text to choose a skill, then read that skill's `SKILL.md` before execution.
 
 ### Engineering
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
 | `diagnose` | Bugs, errors, failing flows, regressions, performance issues. | `.agents/skills/engineering/diagnose/SKILL.md` |
+| `code-review` | Review changes since a fixed point (commit, branch, tag) along Standards and Spec axes. | `.agents/skills/engineering/code-review/SKILL.md` |
 | `grill-with-docs` | Stress-test a plan against `.agents/CONTEXT.md`; update domain docs/ADRs. | `.agents/skills/engineering/grill-with-docs/SKILL.md` |
 | `improve-codebase-architecture` | Find refactors, coupling, testability, architecture improvements. | `.agents/skills/engineering/improve-codebase-architecture/SKILL.md` |
 | `prototype` | Throwaway prototype for state, business logic, UI, or design options. | `.agents/skills/engineering/prototype/SKILL.md` |
@@ -84,7 +85,7 @@ This index tracks 29 skills under `.agents/skills/`. Use the short trigger/use-c
 
 | Skill | Trigger / Use | Path |
 |---|---|---|
-| `review` | Review branch/PR/WIP changes since a fixed point. | `.agents/skills/in-progress/review/SKILL.md` |
+| `wayfinder` | Chart a route through a foggy problem. | `.agents/skills/in-progress/wayfinder/SKILL.md` |
 | `writing-beats` | Shape raw material into article beats. | `.agents/skills/in-progress/writing-beats/SKILL.md` |
 | `writing-fragments` | Gather raw writing fragments for a future article. | `.agents/skills/in-progress/writing-fragments/SKILL.md` |
 | `writing-shape` | Turn markdown raw material into a publishable article. | `.agents/skills/in-progress/writing-shape/SKILL.md` |

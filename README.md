@@ -1,6 +1,6 @@
 # Antigravity Agent Skills 中文使用指南
 
-這份指南說明如何使用目前整合在 `.agents/skills/` 內的 29 項 agent skills。這套系統讓 coding agent 在開始工作前能先讀取對應 workflow、專案領域語言與架構決策，而不是只依靠一般性的 coding 行為。
+這份指南說明如何使用目前整合在 `.agents/skills/` 內的 30 項 agent skills。這套系統讓 coding agent 在開始工作前能先讀取對應 workflow、專案領域語言與架構決策，而不是只依靠一般性的 coding 行為。
 
 ---
 
@@ -61,6 +61,7 @@
 | Skill | 用途 |
 |------|------|
 | `diagnose` | 嚴謹除錯與效能回歸診斷。 |
+| `code-review` | 依 Standards 與 Spec 兩軸審查變更。 |
 | `grill-with-docs` | 依據 `.agents/CONTEXT.md` 拷問設計並同步文件與 ADR。 |
 | `improve-codebase-architecture` | 掃描架構問題並提出可執行重構方向。 |
 | `prototype` | 建立 throwaway prototype，用來驗證狀態、商業邏輯或 UI 方向。 |
@@ -101,7 +102,7 @@
 
 | Skill | 用途 |
 |------|------|
-| `review` | 依 Standards 與 Spec 審查 branch、PR 或 WIP changes。 |
+| `wayfinder` | 規劃模糊問題的探索路徑，將點子切分為工單逐步解決。 |
 | `writing-beats` | 以 beats 方式逐段組裝文章。 |
 | `writing-fragments` | 透過拷問蒐集文章 raw fragments。 |
 | `writing-shape` | 將 markdown raw material 逐步整理成可發布文章。 |
