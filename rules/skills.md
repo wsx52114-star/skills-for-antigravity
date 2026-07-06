@@ -95,47 +95,14 @@ This index tracks 30 active skills under `.agents/skills/`. Use the short trigge
 | `writing-fragments` | Gather raw writing fragments for a future article. | `.agents/skills/in-progress/writing-fragments/SKILL.md` |
 | `writing-shape` | Turn markdown raw material into a publishable article. | `.agents/skills/in-progress/writing-shape/SKILL.md` |
 
-### Deprecated
-
-| Skill | Trigger / Use | Path |
-|---|---|---|
-| `design-an-interface` | Explore multiple API/interface designs. | `.agents/skills/deprecated/design-an-interface/SKILL.md` |
-| `qa` | Conversational QA session that files issues. | `.agents/skills/deprecated/qa/SKILL.md` |
-| `request-refactor-plan` | Interview-driven refactor plan split into small commits/issues. | `.agents/skills/deprecated/request-refactor-plan/SKILL.md` |
-| `ubiquitous-language` | Extract DDD-style glossary/domain language. | `.agents/skills/deprecated/ubiquitous-language/SKILL.md` |
-
 ## Domain & Tech Stack Adaptation Layer
 
-When loading generic skills from `.agents/skills/`, you MUST dynamically adapt the guidelines based on the current workspace's technology stack (detected via files, language, and project type). Match the active stack to one of these categories:
-
-### 1. Frontend Web (TypeScript/JavaScript, HTML/CSS)
-* **TDD & Testing (`tdd`)**: Use Vitest, Jest, Playwright, or Cypress. Mock API endpoints (e.g., using MSW) and assert on user-observable UI behaviors rather than DOM/component implementation details.
-* **Diagnose & Debugging (`diagnose`)**: Utilize Browser Developer Tools (Console, Network, Source Map debugging, React/Vue DevTools) and Lighthouse metrics for UI or performance regressions.
-* **Architecture (`codebase-design`, `improve-codebase-architecture`)**: Focus on component depth, separating state management from UI presentation, and implementing clean interfaces for API adapters.
-* **Tooling & Automation (`setup-pre-commit`)**: Configure Husky, Prettier, ESLint, npm/pnpm/yarn, and bundlers (Vite, Webpack).
-
-### 2. Backend Services (Node.js, Go, Python, Java, C#)
-* **TDD & Testing (`tdd`)**: Focus on API integration and controller tests. Use fakes or in-memory databases (e.g., SQLite in-memory) instead of mocking deep service collaborators.
-* **Diagnose & Debugging (`diagnose`)**: Analyze structured application logs, database execution plans, memory usage, CPU profiles, or attach standard backend debuggers.
-* **Architecture (`codebase-design`, `improve-codebase-architecture`)**: Separate business logic from delivery mechanisms (HTTP/gRPC controllers). Encapsulate database transactions and ensure scalable, non-blocking execution.
-* **Tooling & Automation (`setup-pre-commit`)**: Set up dependency scanning, container checks (Dockerfile), and linters (eslint, pylint, golangci-lint).
-
-### 3. Firmware & Embedded Systems (C/C++, Rust, Python)
-* **TDD & Testing (`tdd`)**: Use Unity, Ceedling, Google Test, or Rust `#[cfg(test)]`. Prioritize **Host-side compilation and testing** for hardware-independent logic, mocking HAL/register layers (e.g., `embedded-hal-mock`).
-* **Diagnose & Debugging (`diagnose`)**: Use SWD/JTAG debuggers (GDB, OpenOCD) for single-stepping. Diagnose HardFaults, Stack Overflows, and Memory Leaks. Analyze bus signals via Logic Analyzer or Oscilloscope; use RTT/UART for logging.
-* **Architecture (`codebase-design`, `improve-codebase-architecture`)**: Hide registers, timing delays, and interrupt polling behind clean abstraction boundaries. Avoid dynamic allocation (`malloc`/`free`) and keep ISRs extremely shallow.
-* **Tooling & Automation (`setup-pre-commit`)**: Set up `clang-format`, `clang-tidy`, `cppcheck`, or `clippy`. Integrate cross-compilers (`arm-none-eabi-gcc`) with CMake/Make/PlatformIO.
-
-### 4. General Automation & Python Scripting
-* **TDD & Testing (`tdd`)**: Use `pytest` or `unittest`. Mock filesystem operations, shell commands, or external network requests.
-* **Diagnose & Debugging (`diagnose`)**: Analyze stack traces, inspect exit codes, check stdout/stderr outputs, and step through scripts using `pdb` or IDE debuggers.
-* **Architecture (`codebase-design`, `improve-codebase-architecture`)**: Build modular utility libraries with a single, deep entry point. Separate configurations (arguments/env) from logic.
-* **Tooling & Automation (`setup-pre-commit`)**: Use `pylint`, `black`, `flake8`, or `mypy`. Ensure scripts run cleanly in virtual environments.
-
-### 5. Specs & Issues (`to-prd`, `to-issues`)
-* Adapt specifications and task breakdowns to the active domain's constraints:
-  - **Web/Backend**: Focus on user stories, API contracts, security (AuthN/AuthZ), scaling, and data schemas.
-  - **Embedded**: Focus on physical constraints (Pinout, low-power modes, RAM/Flash limits) and real-time execution bounds (interrupt latency, execution periods).
+Adapt generic skills (TDD, Diagnose, Architecture, Tooling) based on the workspace tech stack:
+- **Frontend Web**: Vitest/Jest/Playwright/Cypress; mock API (MSW); browser DevTools (Console/Network/React DevTools); decouple state from UI.
+- **Backend Services**: Test endpoints using memory DBs/fakes (no over-mocking); analyze logs/profiles/debuggers; separate business logic.
+- **Firmware & Embedded**: Host-side testing (mock HAL/registers); SWD/JTAG (GDB/OpenOCD), logic analyzer, RTT; hide registers; no malloc in ISRs.
+- **Python & Automation**: pytest/unittest; mock filesystem/requests; modular libraries; use linters (pylint, black, mypy) in venv.
+- **Specs & Issues**: Web gates auth/data schemas; Embedded gates physical pinout, memory constraints, real-time latency.
 
 
 ## Agent Harness & Platform Adaptation Layer
@@ -151,3 +118,9 @@ When loading and executing skills from the `.agents/skills/` directory, you MUST
 
 3. **Slash Command Execution**:
    - If documentation or comments refer to slash commands (e.g., `/setup-matt-pocock-skills`, `/triage`), they are mapped to natural language keywords (e.g., "setup-matt-pocock-skills", "triage") in Antigravity.
+
+## Project Override (This Skill Repo Only)
+
+* **Context**: This codebase is the Agent Skills adaptation library itself.
+* **Overrides**: Skip global rules regarding Python/Hardware interfaces (Pi5, Triac, PSU, etc.) and hardware debugging guidelines. Adapt behaviors directly to documentation, scripts (Python/JS/Shell), and skill structure edits.
+
