@@ -69,6 +69,7 @@
 | `improve-codebase-architecture` | 掃描架構問題並提出可執行重構方向。 |
 | `prototype` | 建立 throwaway prototype，用來驗證狀態、商業邏輯或 UI 方向。 |
 | `resolving-merge-conflicts` | 解決進行中的 Git merge/rebase 衝突。 |
+| `security-audit` | 針對專案（網頁、API、服務等）進行安全性稽核、弱點掃描與漏洞挖掘。 |
 | `setup-matt-pocock-skills` | 初始化 agent skills 所需的 issue tracker、triage label 與文件慣例。 |
 | `tdd` | 依 red-green-refactor 開發功能或修 bug。 |
 | `to-issues` | 將計畫、PRD 或 spec 切成可獨立執行的 issues。 |
@@ -146,21 +147,26 @@
 - **情境**：感覺專案變成「義大利麵條程式碼」時。
 - **運作方式**：我會掃描您的程式碼，並對照 `CONTEXT.md` 的領域語言，揪出高耦合、難以測試的區塊並給出具體的重構計畫。
 
+### 5. Security Audit (安全性稽核)
+> **觸發詞**：`security-audit`, `security review`, `安全性審查`, `找漏洞`, `滲透測試`
+- **情境**：想要對整個程式碼庫進行安全稽核，尋找潛在的安全漏洞時。
+- **運作方式**：引導多個專屬子代理程式（Subagents）進行偵察（Recon）、挖掘（Hunt）、驗證（Validate），並將具備具體攻擊情境的安全弱點整理成 `REPORT.md`、`FINDINGS-DETAIL.md` 與結構化的 `findings.json` 報告，存放於輸出目錄中。
+
 ---
 
 ## 專案規劃與管理 (Planning)
 
-### 5. To-PRD (產出需求規格書)
+### 6. To-PRD (產出需求規格書)
 > **觸發詞**：`to-prd`, `產生規格書`, `寫成 PRD`
 - **情境**：討論完一個新功能的點子後。
 - **運作方式**：我會將我們剛才所有的對話與共識，濃縮成一份結構嚴謹的產品需求規格書（PRD）。
 
-### 6. To-Issues (切分任務 Ticket)
+### 7. To-Issues (切分任務 Ticket)
 > **觸發詞**：`to-issues`, `切分任務`, `產生 issue`
 - **情境**：有了 PRD 或大型計畫後，準備動手實作前。
 - **運作方式**：我會把大型任務垂直切分成獨立、可執行的 Issue 列表，方便後續逐一擊破。
 
-### 7. Triage (議題分流)
+### 8. Triage (議題分流)
 > **觸發詞**：`triage`, `處理 issue`, `分流`
 - **情境**：面對一堆未處理的 Bug 回報或功能請求時。
 - **運作方式**：我會透過狀態機機制，幫您審核這些 Issue，加上標籤，並將其整理為可執行的狀態。
@@ -169,16 +175,16 @@
 
 ## 生產力與特殊工具 (Productivity & Misc)
 
-### 8. Grill-me (單純拷問)
+### 9. Grill-me (單純拷問)
 > **觸發詞**：`grill-me`, `拷問我`
 - **情境**：與 `grill-with-docs` 類似，但不涉及程式碼文件修改，純粹用來驗證您的點子是否有盲點。
 
-### 9. Git Guardrails (Git 防呆機制)
+### 10. Git Guardrails (Git 防呆機制)
 > **觸發詞**：`防呆`, `git guardrails`, `設定保護`
 - **情境**：擔心 AI 或自己手滑執行破壞性的 Git 指令。
 - **運作方式**：設定腳本攔截 `push`, `reset --hard`, `branch -D` 等危險操作。
 
-### 10. Setup Pre-commit (自動化程式碼檢查)
+### 11. Setup Pre-commit (自動化程式碼檢查)
 > **觸發詞**：`setup pre-commit`, `設定 husky`
 - **情境**：新專案想導入 Commit 前的格式化與型別檢查。
 - **運作方式**：一鍵幫您配置 Husky、lint-staged、Prettier 與測試掛鉤。

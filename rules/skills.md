@@ -52,6 +52,7 @@ This index tracks 30 active skills under `.agents/skills/`. Use the short trigge
 | `improve-codebase-architecture` | Find refactors, coupling, testability, architecture improvements. | `.agents/skills/engineering/improve-codebase-architecture/SKILL.md` |
 | `prototype` | Throwaway prototype for state, business logic, UI, or design options. | `.agents/skills/engineering/prototype/SKILL.md` |
 | `resolving-merge-conflicts` | Resolve an in-progress git merge/rebase conflict. | `.agents/skills/engineering/resolving-merge-conflicts/SKILL.md` |
+| `security-audit` | Security audit of a codebase (find security bugs, review vulnerabilities, pen-testing). | `.agents/skills/security-audit/SKILL.md` |
 | `setup-matt-pocock-skills` | Set up issue tracker, triage labels, and agent docs for engineering skills. | `.agents/skills/engineering/setup-matt-pocock-skills/SKILL.md` |
 | `tdd` | TDD, red-green-refactor, tests-first feature or bug work. | `.agents/skills/engineering/tdd/SKILL.md` |
 | `to-issues` | Convert a plan, PRD, or spec into executable issues. | `.agents/skills/engineering/to-issues/SKILL.md` |
