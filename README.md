@@ -4,38 +4,48 @@
 
 ---
 
-## `.agents/` 目錄導覽
+## 全域 `~/.agents/` 目錄導覽
 
-`.agents/` 目錄存放 coding agent 的規則、技能索引、領域語言與輔助腳本。它不是 runtime 程式碼目錄；主要用途 is 讓 agent 在修改專案前先取得正確工作流程與文件脈絡。
+家目錄下的 `~/.agents/` 目錄存放 coding agent 的全域規則、技能索引與輔助腳本。它負責為 AI 提供通用的執行技能，而各專案的具體術語則隔離在專案目錄下。
 
 開始任何非 trivial 修改前，請優先閱讀：
 
-1. `.agents/CONTEXT.md`：專案領域語言與 Agent framework language 的 canonical source。
-2. `.agents/rules/skills.md`：技能觸發規則與 Golden Workflow。
-3. `.agents/docs/adr/`：架構決策紀錄。
+1. **各專案目錄下**的 `.agents/CONTEXT.md`：該專案的領域語言與術語定義。
+2. `~/.agents/rules/skills.md`：技能觸發規則與 Golden Workflow。
+3. **各專案目錄下**的 `.agents/docs/adr/`：專案專屬的架構決策紀錄。
 
-目前 `.agents/` 內的主要分類：
+目前全域技能與專案設定的分類：
 
-| 路徑 | 用途 |
-|------|------|
-| `.agents/CONTEXT.md` | 統一領域語言、專案術語與 Agent framework terms。 |
-| `.agents/README.md` | Agent 技能與 `.agents/` 目錄使用指南。 |
-| `.agents/rules/skills.md` | 技能索引、觸發規則、Golden Workflow。 |
-| `.agents/docs/adr/` | Architecture Decision Records。 |
-| `.agents/scripts/` | Agent 輔助腳本，例如技能連結、列出技能、HITL loop template、git guardrails。 |
-| `.agents/skills/engineering/` | 工程技能，例如 TDD、diagnosing-bugs、to-issues。 |
-| `.agents/skills/productivity/` | 生產力技能，例如 grilling、handoff。 |
-| `.agents/skills/misc/` | 雜項技能，例如 setup-pre-commit、git guardrails。 |
-| `.agents/skills/personal/` | 個人工作流技能，例如 Obsidian vault、文章編輯。 |
-| `.agents/skills/in-progress/` | 尚在整理或試驗中的技能。 |
-| `.agents/skills/deprecated/` | 已棄用或保留參考的技能。 |
+| 目錄路徑 | 用途 | 存放層級 |
+|------|------|---|
+| **專案** `.agents/CONTEXT.md` | 統一領域語言、專案術語與專案定義。 | 專案實體目錄 (隔離) |
+| **專案** `.agents/docs/adr/` | 專案專屬的 Architecture Decision Records。 | 專案實體目錄 (隔離) |
+| `~/.agents/README.md` | Agent 技能與全域工具的使用指南。 | 全域家目錄 (共用) |
+| `~/.agents/rules/skills.md` | 技能索引、觸發規則、Golden Workflow。 | 全域家目錄 (共用) |
+| `~/.agents/docs/` | 全域通用技能的說明文檔與架構規範。 | 全域家目錄 (共用) |
+| `~/.agents/scripts/` | Agent 輔助腳本，例如技能連結、列出技能、git guardrails。 | 全域家目錄 (共用) |
+| `~/.agents/skills/` | 工程、生產力與安全稽核等 30+ 技能實體檔案。 | 全域家目錄 (共用) |
 
 維護原則：
 
-- 新增或更新技能時，先確認 `.agents/rules/skills.md` 的觸發描述是否同步。
-- 新的 ADR 應放在 `.agents/docs/adr/`，不要放在 repo root。
-- `.agents/CONTEXT.md` 是領域語言的權威來源；術語改動應同步更新這裡。
-- `.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
+- 新增或更新全域技能時，先確認 `~/.agents/rules/skills.md` 的觸發描述是否同步。
+- 專案特定的新 ADR 應放在各專案的 `.agents/docs/adr/`，不要放在 repo root。
+- 各專案目錄下的 `.agents/CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
+- `~/.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
+
+---
+
+## 在新專案中啟用此 .agents 設定（建立軟連結）
+
+若建立了新的專案資料夾，且希望該專案能共用此處的技能與文件設定（如 `CONTEXT.md`），請在新專案目錄下執行以下指令建立軟連結：
+
+```bash
+# 1. 切換至新專案目錄
+cd ~/path/to/<新專案名稱>
+
+# 2. 建立指向本目錄的軟連結
+ln -sfn ~/.agents .agents
+```
 
 ---
 
