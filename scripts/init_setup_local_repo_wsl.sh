@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
 # 1. 定義 Skills 倉庫的絕對路徑
-SKILLS_REPO="~/skills-for-antigravity"
+SKILLS_REPO="$HOME/skills-for-antigravity"
+
 
 # 2. 建立專案目錄結構
 mkdir -p .agents/rules

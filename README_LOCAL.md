@@ -26,7 +26,7 @@ bash ~/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
 
 *(如果您想手動執行，此腳本執行的內容如下：)*
 ```bash
-SKILLS_REPO="~/skills-for-antigravity"
+SKILLS_REPO="$HOME/skills-for-antigravity"
 mkdir -p .agents/rules
 mkdir -p .agents/skills
 ln -sfn "$SKILLS_REPO/rules/skills.md" .agents/rules/skills.md
