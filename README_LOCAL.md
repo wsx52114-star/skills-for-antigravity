@@ -2,7 +2,7 @@
 
 這份指南說明如何利用軟連結（Symlink/Junction）方式，在各專案中獨立啟用本倉庫的 Skills 與觸發規則，**完全不污染全域環境**。
 
-因為使用軟連結連結至此倉庫，未來您只需在 "/home/peterxd/skills-for-antigravity" (或對應 Windows 路徑) 內執行 `git pull`，**所有專案都會在一秒內自動同步至最新技能**，不需要重新設定。
+因為使用軟連結連結至此倉庫，未來您只需在本倉庫的目錄下（例如 "~/skills-for-antigravity" 或對應 Windows 路徑）內執行 `git pull`，**所有專案都會在一秒內自動同步至最新技能**，不需要重新設定。
 
 ---
 
@@ -129,5 +129,5 @@ Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Ob
 
 ## 🔄 日後如何同步更新技能？
 因為技能本身是用軟連結連過去的，所以未來原作者有更新技能時，您只需要在共享倉庫內執行同步即可，所有專案都會自動吃到最新版：
-1. 切換到此倉庫 `/home/peterxd/skills-for-antigravity` (或 Windows 對應路徑)。
+1. 切換至本倉庫目錄（例如 `~/skills-for-antigravity` 或 Windows 對應路徑）。
 2. 執行 `python scripts/sync_upstream.py` 或 `git pull` 取得最新技能更新。

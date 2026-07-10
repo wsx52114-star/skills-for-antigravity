@@ -40,12 +40,12 @@
 我們現在建議使用**專案獨立的軟連結方式**，不污染全域環境，並同時支援 WSL 與 Windows 本機環境。
 
 詳細的啟用步驟、自動化腳本說明以及工作流程，請參閱：
-* 📖 **[專案專屬啟用指南 (README_LOCAL.md)](file:///home/peterxd/skills-for-antigravity/README_LOCAL.md)**
+* 📖 **[專案專屬啟用指南 (README_LOCAL.md)](README_LOCAL.md)**
 
 ### 快速啟用指令：
 * **WSL/Linux 專案**：在您的新專案根目錄下執行：
   ```bash
-  bash /home/peterxd/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
+  bash ~/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
   ```
 * **Windows 專案**：在您的新專案根目錄下開啟 PowerShell 執行：
   ```powershell
