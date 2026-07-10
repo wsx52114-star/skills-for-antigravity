@@ -35,17 +35,23 @@
 
 ---
 
-## 在新專案中啟用此 .agents 設定（建立軟連結）
+## 在新專案中啟用此 .agents 設定 (專案獨立版)
 
-若建立了新的專案資料夾，且希望該專案能共用此處的技能與文件設定（如 `CONTEXT.md`），請在新專案目錄下執行以下指令建立軟連結：
+我們現在建議使用**專案獨立的軟連結方式**，不污染全域環境，並同時支援 WSL 與 Windows 本機環境。
 
-```bash
-# 1. 切換至新專案目錄
-cd ~/path/to/<新專案名稱>
+詳細的啟用步驟、自動化腳本說明以及工作流程，請參閱：
+* 📖 **[專案專屬啟用指南 (README_LOCAL.md)](file:///home/peterxd/skills-for-antigravity/README_LOCAL.md)**
 
-# 2. 建立指向本目錄的軟連結
-ln -sfn ~/.agents .agents
-```
+### 快速啟用指令：
+* **WSL/Linux 專案**：在您的新專案根目錄下執行：
+  ```bash
+  bash /home/peterxd/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
+  ```
+* **Windows 專案**：在您的新專案根目錄下開啟 PowerShell 執行：
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File "C:\path\to\skills-for-antigravity\scripts\init_setup_local_repo_win.ps1"
+  ```
+
 
 ---
 
