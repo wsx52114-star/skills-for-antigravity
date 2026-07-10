@@ -27,9 +27,16 @@ bash ~/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
 *(如果您想手動執行，此腳本執行的內容如下：)*
 ```bash
 SKILLS_REPO="$HOME/skills-for-antigravity"
-mkdir -p .agents/rules
+
+# 驗證路徑是否存在
+if [ ! -d "$SKILLS_REPO" ] || [ ! -f "$SKILLS_REPO/rules/skills.md" ]; then
+  echo "❌ Error: Skills repository or rules file not found." >&2
+  exit 1
+fi
+
+mkdir -p .agents
+sed 's|~/.gemini/config/skills/|.agents/skills/|g' "$SKILLS_REPO/rules/skills.md" > .agents/AGENTS.md
 mkdir -p .agents/skills
-ln -sfn "$SKILLS_REPO/rules/skills.md" .agents/rules/skills.md
 find "$SKILLS_REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -not -path '*/deprecated/*' -print0 | while IFS= read -r -d '' skill_md; do
   src="$(dirname "$skill_md")"
   name="$(basename "$src")"
@@ -38,28 +45,50 @@ done
 ```
 
 ### 🪟 選項 B：Windows 本機專案 (PowerShell)
-在專案根目錄開啟 PowerShell 並執行（利用 Junction 連結目錄，不需系統管理員權限）：
+在專案根目錄開啟 PowerShell，並執行以下統一的腳本。該腳本執行時會顯示互動式選單，讓您自由選擇要使用 **Copy 複製模式** 還是 **Link 連結模式**：
+
+> [!NOTE]
+> **複製模式 (Copy Mode) 與 連結模式 (Link Mode) 的差異與選擇建議：**
+> 
+> | 比較維度 | 複製模式 (Copy Mode) [預設] | 連結模式 (Link Mode) |
+> | :--- | :--- | :--- |
+> | **GUI / 選單相容性** | **最佳**。自訂技能會直接出現在輸入框 `/` 選單與 Customizations 面板中。 | **有限**。自訂技能**不會**出現在 `/` 選單中，但可在對話中直接透過自然語言關鍵字觸發。 |
+> | **技能更新同步** | **需手動**。全域倉庫更新時，專案需**重新執行此腳本**以拷貝最新代碼。 | **自動同步**。使用 Junction 捷徑連結，只要主倉庫 `git pull` 更新，所有專案立即可用。 |
+> | **適用場景** | 依賴 IDE 快捷選單，希望在 UI 中直觀看到可用技能的使用者。 | 習慣直接在對話中呼叫關鍵字（如 "tdd", "diagnose"），希望免維護自動同步的使用者。 |
+
 ```powershell
 # 請將其中的路徑替換為本倉庫在您 Windows 上的實際路徑
 powershell -ExecutionPolicy Bypass -File "C:\path\to\skills-for-antigravity\scripts\init_setup_local_repo_win.ps1"
 ```
 
-*(如果您想手動執行，此腳本執行的內容如下：)*
+> [!TIP]
+> **自動化/無互動執行**
+> 如果您想在腳本或自動化工具中執行，可以加上 `-Mode` 參數直接指定模式：
+> * 複製模式（推薦）：`powershell -ExecutionPolicy Bypass -File "...\init_setup_local_repo_win.ps1" -Mode Copy`
+> * 連結模式（Junction）：`powershell -ExecutionPolicy Bypass -File "...\init_setup_local_repo_win.ps1" -Mode Link`
+
+*(如果您想手動執行複製模式，此腳本執行的內容如下：)*
 ```powershell
 $SKILLS_REPO = "$HOME\skills-for-antigravity"
-New-Item -ItemType Directory -Force -Path ".agents\rules" | Out-Null
-New-Item -ItemType Directory -Force -Path ".agents\skills" | Out-Null
-$ruleDest = ".agents\rules\skills.md"
-if (Test-Path $ruleDest) { Remove-Item -Force $ruleDest }
-try {
-    New-Item -ItemType SymbolicLink -Force -Path $ruleDest -Value "$SKILLS_REPO\rules\skills.md" -ErrorAction Stop | Out-Null
-} catch {
-    try {
-        New-Item -ItemType HardLink -Force -Path $ruleDest -Value "$SKILLS_REPO\rules\skills.md" -ErrorAction Stop | Out-Null
-    } catch {
-        Copy-Item -Force -Path "$SKILLS_REPO\rules\skills.md" -Destination $ruleDest
-    }
+
+# 驗證路徑是否存在
+if (-not (Test-Path -Path $SKILLS_REPO -PathType Container)) {
+    Write-Error "Error: Skills repository directory not found."
+    exit 1
 }
+$ruleSource = "$SKILLS_REPO\rules\skills.md"
+if (-not (Test-Path -Path $ruleSource -PathType Leaf)) {
+    Write-Error "Error: Source rules file not found."
+    exit 1
+}
+
+New-Item -ItemType Directory -Force -Path ".agents" | Out-Null
+New-Item -ItemType Directory -Force -Path ".agents\skills" | Out-Null
+$agentsDest = ".agents\AGENTS.md"
+if (Test-Path $agentsDest) { Remove-Item -Force $agentsDest }
+
+(Get-Content -Raw -Encoding utf8 -Path $ruleSource) -replace '~/.gemini/config/skills/', '.agents/skills/' | Set-Content -Encoding utf8 -Path $agentsDest
+
 Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Object {
     $_.FullName -notmatch "node_modules" -and $_.FullName -notmatch "deprecated"
 } | ForEach-Object {
@@ -67,7 +96,8 @@ Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Ob
     $name = $_.Directory.Name
     $linkPath = ".agents\skills\$name"
     if (Test-Path $linkPath) { Remove-Item -Recurse -Force $linkPath }
-    New-Item -ItemType Junction -Path $linkPath -Value $src | Out-Null
+    # 複製模式：直接複製資料夾
+    Copy-Item -Recurse -Force -Path $src -Destination $linkPath | Out-Null
 }
 ```
 
@@ -75,16 +105,16 @@ Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Ob
 
 ## 步驟 2：初始化專案專屬設定（在 AI 對話中執行）
 
-連結建立完成後，開啟與 Antigravity 的對話，並直接輸入以下指令：
+連結建立與 `AGENTS.md` 自動生成完成後，開啟與 Antigravity 的對話，並直接輸入以下指令：
 
 > **「幫我初始化這套 skills 的專案設定」**
 
 **Agent 收到後會自動執行：**
 1. 詢問您此專案的 Issue Tracker 類型（GitHub / GitLab / 本地 Markdown）與 triage 標籤設定。
-2. 讀取 `.agents/rules/skills.md`，並在專案根目錄或 `.agents/` 下**建立客製化的 `AGENTS.md`（會自動將技能路徑轉換為專案內相對路徑 `.agents/skills/...`）**。
+2. 由於專案 `AGENTS.md` 已自動由初始化腳本將全域技能路徑轉換為 `.agents/skills/...`，Agent 將在此基礎上更新 `AGENTS.md`，追加您的 Issue Tracker 與專案專屬設定。
 3. 在您的專案中建立其他實體檔案：
-   - `.agents/CONTEXT.md` （專案專屬的領域術語與定義）。
-   - `.agents/docs/agents/` （專案專屬的 Agent 運作設定檔）。
+    - `.agents/CONTEXT.md` （專案專屬的領域術語與定義）。
+    - `.agents/docs/agents/` （專案專屬的 Agent 運作設定檔）。
 
 ---
 
