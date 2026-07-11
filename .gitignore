@@ -1,3 +1,5 @@
 scripts/deploy_to_pi.ps1
 LOCAL_DEPLOY_GUIDE.md
 .agents/
+node_modules
+

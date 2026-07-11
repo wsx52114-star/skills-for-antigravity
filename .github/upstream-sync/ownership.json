@@ -1,0 +1,33 @@
+{
+  "upstream": "https://github.com/mattpocock/skills",
+  "upstreamAllowlist": [
+    "skills/",
+    "docs/",
+    "LICENSE"
+  ],
+  "blockedUpstreamPaths": [
+    ".github/upstream-sync/",
+    "rules/",
+    "skills/security/",
+    "docs/security/"
+  ],
+  "excludedSkillNames": [
+    "claude-handoff",
+    "git-guardrails-claude-code"
+  ],
+  "excludedSkillPathSegments": [
+    "deprecated"
+  ],
+  "forkOwned": [
+    ".github/upstream-sync/",
+    "rules/",
+    "skills/security/",
+    "docs/security/",
+    ".github/workflows/",
+    "MAINTENANCE.md",
+    "UPSTREAM_ANALYSIS.md",
+    "README.md",
+    "CONTEXT.md",
+    ".gitignore"
+  ]
+}
