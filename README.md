@@ -65,15 +65,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 - 各專案目錄下的 `.agents/CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
 - `~/.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
 
----
 
-WSL／Raspberry Pi 5：
-
-```bash
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
-```
-
-如果目標目錄已存在，先備份並確認內容。
 
 ## 更新
 
