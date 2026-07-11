@@ -113,8 +113,8 @@ Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Ob
 1. 詢問您此專案的 Issue Tracker 類型（GitHub / GitLab / 本地 Markdown）與 triage 標籤設定。
 2. 由於專案 `AGENTS.md` 已自動由初始化腳本將全域技能路徑轉換為 `.agents/skills/...`，Agent 將在此基礎上更新 `AGENTS.md`，追加您的 Issue Tracker 與專案專屬設定。
 3. 在您的專案中建立其他實體檔案：
-    - `.agents/CONTEXT.md` （專案專屬的領域術語與定義）。
-    - `.agents/docs/agents/` （專案專屬的 Agent 運作設定檔）。
+    - `CONTEXT.md` （專案專屬的領域術語與定義，位於專案根目錄）。
+    - `docs/agents/` （專案專屬的 Agent 運作設定檔，位於專案根目錄）。
 
 ---
 

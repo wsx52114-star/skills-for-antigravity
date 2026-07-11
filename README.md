@@ -40,13 +40,8 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 | 目錄路徑 | 用途 | 存放層級 |
 |------|------|---|
-| **專案** `.agents/CONTEXT.md` | 統一領域語言、專案術語與專案定義。 | 專案實體目錄 (隔離) |
-| **專案** `.agents/docs/adr/` | 專案專屬的 Architecture Decision Records。 | 專案實體目錄 (隔離) |
-| `~/.agents/README.md` | Agent 技能與全域工具的使用指南。 | 全域家目錄 (共用) |
-| `~/.agents/rules/skills.md` | 技能索引、觸發規則、Golden Workflow。 | 全域家目錄 (共用) |
-| `~/.agents/docs/` | 全域通用技能的說明文檔與架構規範。 | 全域家目錄 (共用) |
-| `~/.agents/scripts/` | Agent 輔助腳本，例如技能連結、列出技能、git guardrails。 | 全域家目錄 (共用) |
-| `~/.agents/skills/` | 工程、生產力與安全稽核等 30+ 技能實體檔案。 | 全域家目錄 (共用) |
+| **專案** `.agents/AGENTS.md` | 專案專屬的 Agent 規則與 Golden Workflow。 | 專案實體目錄 (自動產生) |
+| **專案** `.agents/skills/` | 連結或複製至共享技能倉庫實體檔案的目錄。 | 專案實體目錄 (自動產生) |
 
 #### 快速啟用指令：
 * **WSL/Linux 專案**：在您的新專案根目錄下執行：
@@ -61,8 +56,8 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 維護原則：
 
 - 新增或更新全域技能時，先確認 `~/.agents/rules/skills.md` 的觸發描述是否同步。
-- 專案特定的新 ADR 應放在各專案的 `.agents/docs/adr/`，不要放在 repo root。
-- 各專案目錄下的 `.agents/CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
+- 專案特定的新 ADR 應放在各開發專案的 `docs/adr/`，不要放在本技能倉庫根目錄。
+- 各專案根目錄下的 `CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
 - `~/.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
 
 
