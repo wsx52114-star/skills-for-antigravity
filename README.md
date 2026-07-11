@@ -16,7 +16,7 @@ Repository 可直接安裝到 `~/.agents`。各開發專案則保有自己的領
 
 上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。自訂 [`security-audit`](skills/security/security-audit/SKILL.md) 由本專案獨立維護。
 
-本專案支援兩種安裝方式：**全域安裝**（將所有專案共用同一套技能與設定）與**專案獨立安裝**（推薦，將技能軟連結至各專案目錄，完全不污染全域環境）。
+本專案支援兩種安裝方式：**全域安裝**（將所有專案共用同一套技能與設定）與**專案獨立安裝**（將技能軟連結至各專案目錄，完全不污染全域環境）。
 
 ### 🔌 方式 A：全域安裝 (將本 repo 安裝至全域 `~/.agents`)
 
@@ -34,7 +34,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 ---
 
-### 📂 方式 B：專案獨立安裝 (推薦，專案獨立版)
+### 📂 方式 B：專案獨立安裝
 
 此方式利用軟連結（Symlink/Junction）在各專案中獨立啟用本倉庫的 Skills，不污染全域環境，並同時支援 WSL 與 Windows 本機環境。詳細啟用步驟請參閱 [專案專屬啟用指南 (README_LOCAL.md)](README_LOCAL.md)。
 
