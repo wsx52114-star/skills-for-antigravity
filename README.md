@@ -1,231 +1,98 @@
-# Antigravity Agent Skills 中文使用指南
+# Skills for Antigravity
 
-這份指南說明如何使用目前整合在 `.agents/skills/` 內的 30 項 active agent skills。這套系統讓 coding agent 在開始工作前能先讀取對應 workflow、專案領域語言與架構決策，而不是只依靠一般性的 coding 行為。
+一套供 Antigravity 使用的全域工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，保留原始 skill 內容，並加入 Antigravity rules 與 `security-audit`。
 
----
+Repository 可直接安裝到 `~/.agents`。各開發專案則保有自己的領域語言、架構決策與程式碼。
 
-## 全域 `~/.agents/` 目錄導覽
+## 內容
 
-家目錄下的 `~/.agents/` 目錄存放 coding agent 的全域規則、技能索引與輔助腳本。它負責為 AI 提供通用的執行技能，而各專案的具體術語則隔離在專案目錄下。
+| 路徑 | 用途 |
+| --- | --- |
+| [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、生產力、工具與安全 skills。 |
+| [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯規則。 |
+| [`docs/`](docs/) | 各 skills 的使用與開發參考。 |
+| [`.github/upstream-sync/`](.github/upstream-sync/) | 上游快照、所有權 policy、驗證與測試。 |
+| [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
 
-開始任何非 trivial 修改前，請優先閱讀：
+上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。自訂 [`security-audit`](skills/security/security-audit/SKILL.md) 由本專案獨立維護。
 
-1. **各專案目錄下**的 `.agents/CONTEXT.md`：該專案的領域語言與術語定義。
-2. `~/.agents/rules/skills.md`：技能觸發規則與 Golden Workflow。
-3. **各專案目錄下**的 `.agents/docs/adr/`：專案專屬的架構決策紀錄。
+## 安裝
 
-目前全域技能與專案設定的分類：
+Windows：
 
-| 目錄路徑 | 用途 | 存放層級 |
-|------|------|---|
-| **專案** `.agents/CONTEXT.md` | 統一領域語言、專案術語與專案定義。 | 專案實體目錄 (隔離) |
-| **專案** `.agents/docs/adr/` | 專案專屬的 Architecture Decision Records。 | 專案實體目錄 (隔離) |
-| `~/.agents/README.md` | Agent 技能與全域工具的使用指南。 | 全域家目錄 (共用) |
-| `~/.agents/rules/skills.md` | 技能索引、觸發規則、Golden Workflow。 | 全域家目錄 (共用) |
-| `~/.agents/docs/` | 全域通用技能的說明文檔與架構規範。 | 全域家目錄 (共用) |
-| `~/.agents/scripts/` | Agent 輔助腳本，例如技能連結、列出技能、git guardrails。 | 全域家目錄 (共用) |
-| `~/.agents/skills/` | 工程、生產力與安全稽核等 30+ 技能實體檔案。 | 全域家目錄 (共用) |
-
-維護原則：
-
-- 新增或更新全域技能時，先確認 `~/.agents/rules/skills.md` 的觸發描述是否同步。
-- 專案特定的新 ADR 應放在各專案的 `.agents/docs/adr/`，不要放在 repo root。
-- 各專案目錄下的 `.agents/CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
-- `~/.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
-
----
-
-## 在新專案中啟用此 .agents 設定（建立軟連結）
-
-若建立了新的專案資料夾，且希望該專案能共用此處的技能與文件設定（如 `CONTEXT.md`），請在新專案目錄下執行以下指令建立軟連結：
-
-```bash
-# 1. 切換至新專案目錄
-cd ~/path/to/<新專案名稱>
-
-# 2. 建立指向本目錄的軟連結
-ln -sfn ~/.agents .agents
+```powershell
+git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
 ```
 
----
+WSL／Raspberry Pi 5：
 
-## 如何觸發技能？
+```bash
+git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
+```
 
-在全新的架構下，您**不需要**輸入任何特殊的斜線指令（如 `/diagnose`）。
-您只需要在對話中**自然地提到關鍵字或使用情境**，我就會自動啟動對應的工作流程。
+如果目標目錄已存在，先備份並確認內容。
 
-**範例用法：**
-- 「這個 API 噴錯了，幫我 **diagnose** 一下。」
-- 「我們來用 **tdd** 開發登入功能。」
-- 「我們來做 **domain modeling**，把領域術語釐清。」
-- 「我要實作一個新模組，麻煩先 **grill me**（拷問我）確定細節。」
+## 更新
 
----
+Windows：
 
-## 技能總覽
+```powershell
+git -C "$HOME\.agents" pull --ff-only
+```
 
-完整觸發描述與路徑以 `.agents/rules/skills.md` 為準。每個技能的實際流程以自己的 `SKILL.md` 為準。
+WSL／Raspberry Pi 5：
 
-### Engineering
+```bash
+git -C ~/.agents pull --ff-only
+```
+
+## 使用 skills
+
+直接用自然語言描述需求。Antigravity 會依 skill description 選擇工作流程，並在執行前讀取對應的 `SKILL.md`。
+
+例如：
+
+- 「這個 API 一直失敗，請幫我 diagnose。」
+- 「用 TDD 實作登入流程。」
+- 「先做 domain modeling，把術語釐清。」
+- 「用 grill-with-docs 挑戰這個設計。」
+- 「對這個 repository 做 security audit。」
+
+## 核心工作流程
 
 | Skill | 用途 |
-|------|------|
-| `diagnosing-bugs` | 嚴謹除錯與效能回歸診斷。 |
+| --- | --- |
+| `diagnosing-bugs` | 重現、縮小範圍、驗證假設並修復問題。 |
+| `domain-modeling` | 維護專案術語、關係與必要的 ADR。 |
+| `grill-with-docs` | 透過追問釐清設計並同步領域文件。 |
+| `to-spec` | 將已確認的討論整理成規格。 |
+| `to-tickets` | 將規格切成具有阻擋關係的工作項目。 |
+| `implement`、`tdd` | 依規格實作並以測試驗證行為。 |
 | `code-review` | 依 Standards 與 Spec 兩軸審查變更。 |
-| `codebase-design` | 設計深模組（小介面、深實作）與接縫。 |
-| `domain-modeling` | 建立與深化專案的領域模型（術語、統一語言與 ADR）。 |
-| `grill-with-docs` | 依據 `.agents/CONTEXT.md` 拷問設計並同步文件與 ADR。 |
-| `implement` | 依據 PRD 或 issue 實作功能。 |
-| `improve-codebase-architecture` | 掃描架構問題並提出可執行重構方向。 |
-| `prototype` | 建立 throwaway prototype，用來驗證狀態、商業邏輯或 UI 方向。 |
-| `resolving-merge-conflicts` | 解決進行中的 Git merge/rebase 衝突。 |
-| `security-audit` | 針對專案（網頁、API、服務等）進行安全性稽核、弱點掃描與漏洞挖掘。 |
-| `setup-matt-pocock-skills` | 初始化 agent skills 所需的 issue tracker、triage label 與文件慣例。 |
-| `tdd` | 依 red-green-refactor 開發功能或修 bug。 |
-| `to-issues` | 將計畫、PRD 或 spec 切成可獨立執行的 issues。 |
-| `to-prd` | 將對話脈絡整理成 PRD 並發布到 issue tracker。 |
-| `triage` | 使用 triage state machine 管理 issues。 |
+| `security-audit` | 尋找、驗證並記錄可利用的安全問題。 |
 
-### Productivity
+常見工程流程：
 
-| Skill | 用途 |
-|------|------|
-| `grill-me` | 純對話式設計拷問，不強制同步文件。 |
-| `grilling` | 針對計畫或設計，對使用者進行連環拷問。 |
-| `handoff` | 將目前對話整理成 handoff 文件。 |
-| `teach` | 在 workspace 脈絡中教一項技能或概念。 |
-| `writing-great-skills` | 撰寫與編輯良好 Agent 技能的參考指引。 |
+```text
+grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
+```
 
-### Misc
+各 skill 的行為以自己的 `SKILL.md` 為準；[`rules/skills.md`](rules/skills.md) 負責全域觸發、編排與 Antigravity 轉譯。
 
-| Skill | 用途 |
-|------|------|
-| `git-guardrails-claude-code` | 設定 Antigravity 規則限制，攔截危險 git 指令。 |
-| `migrate-to-shoehorn` | 將 TypeScript 測試中的 `as` assertions 遷移到 `@total-typescript/shoehorn`。 |
-| `scaffold-exercises` | 建立課程 exercise 目錄、題目、解答與 explainers。 |
-| `setup-pre-commit` | 設定 Husky、lint-staged、Prettier、type check 與測試 hook。 |
+## 專案文件
 
-### Personal
+每個開發專案自行保存：
 
-| Skill | 用途 |
-|------|------|
-| `edit-article` | 編修文章草稿，改善結構與文字清晰度。 |
-| `obsidian-vault` | 搜尋、建立與整理 Obsidian vault notes。 |
+```text
+project/
+├── CONTEXT.md
+├── docs/
+│   └── adr/
+└── src/
+```
 
-### In Progress
+`CONTEXT.md` 是專案術語表；`docs/adr/` 只記錄難以逆轉、具有真實取捨且缺少背景會令人意外的決策。兩者都在需要時才建立。
 
-| Skill | 用途 |
-|------|------|
-| `decision-mapping` | 將模糊的想法轉化為循序漸進的調查工單地圖（不包含一般任務）。 |
-| `wayfinder` | 規劃模糊問題的探索路徑，將點子切分為工單逐步解決（包含任務與行動項）。 |
-| `writing-beats` | 以 beats 方式逐段組裝文章。 |
-| `writing-fragments` | 透過拷問蒐集文章 raw fragments。 |
-| `writing-shape` | 將 markdown raw material 逐步整理成可發布文章。 |
+## 維護
 
-### Deprecated
-
-| Skill | 用途 |
-|------|------|
-| `design-an-interface` | 產生多個不同 interface design 方向。 |
-| `qa` | 對話式 QA session 並建立 GitHub issues。 |
-| `request-refactor-plan` | 透過訪談建立 refactor plan 並轉為 issue。 |
-| `ubiquitous-language` | 從對話萃取 DDD-style ubiquitous language glossary。 |
-
----
-
-## 常用技能說明
-
-這是日常開發中最常使用的核心功能，主打提升程式碼品質與架構穩定性。
-
-### 1. Diagnosing Bugs (嚴謹除錯流程)
-> **觸發詞**：`diagnosing-bugs`, `diagnose`, `debug`, `遇到 Bug`, `效能退化`
-- **情境**：遇到難解的 Bug 或效能變差時。
-- **運作方式**：我不會瞎猜盲改，而是嚴格執行：建立重現環境 (Reproduce) → 縮小範圍 (Minimise) → 提出假設 (Hypothesise) → 加上觀測日誌 (Instrument) → 修復並加入回歸測試 (Fix + Test)。
-
-### 2. TDD (測試驅動開發)
-> **觸發詞**：`tdd`, `red-green-refactor`, `先寫測試`
-- **情境**：開發新功能或修復 Bug 時，希望確保測試覆蓋率。
-- **運作方式**：我會先撰寫一個會失敗的測試（紅燈），接著實作最小可行程式碼使其通過（綠燈），最後進行重構。
-
-### 3. Grill-with-docs (架構拷問與文件同步)
-> **觸發詞**：`grill-with-docs`, `挑戰我的設計`, `確認領域語言`
-- **情境**：實作重大架構前，確保雙方理解一致。
-- **運作方式**：我會針對您的設計提出連環追問，並依據對話結果即時更新 `CONTEXT.md`（領域專屬語言）與架構決策紀錄 (ADRs)。
-
-### 4. Improve Codebase Architecture (優化專案架構)
-> **觸發詞**：`improve-codebase-architecture`, `重構建議`, `改善架構`
-- **情境**：感覺專案變成「義大利麵條程式碼」時。
-- **運作方式**：我會掃描您的程式碼，並對照 `CONTEXT.md` 的領域語言，揪出高耦合、難以測試的區塊並給出具體的重構計畫。
-
-### 5. Security Audit (安全性稽核)
-> **觸發詞**：`security-audit`, `security review`, `安全性審查`, `找漏洞`, `滲透測試`
-- **情境**：想要對整個程式碼庫進行安全稽核，尋找潛在的安全漏洞時。
-- **運作方式**：引導多個專屬子代理程式（Subagents）進行偵察（Recon）、挖掘（Hunt）、驗證（Validate），並將具備具體攻擊情境的安全弱點整理成 `REPORT.md`、`FINDINGS-DETAIL.md` 與結構化的 `findings.json` 報告，存放於輸出目錄中。
-
----
-
-## 專案規劃與管理 (Planning)
-
-### 6. To-PRD (產出需求規格書)
-> **觸發詞**：`to-prd`, `產生規格書`, `寫成 PRD`
-- **情境**：討論完一個新功能的點子後。
-- **運作方式**：我會將我們剛才所有的對話與共識，濃縮成一份結構嚴謹的產品需求規格書（PRD）。
-
-### 7. To-Issues (切分任務 Ticket)
-> **觸發詞**：`to-issues`, `切分任務`, `產生 issue`
-- **情境**：有了 PRD 或大型計畫後，準備動手實作前。
-- **運作方式**：我會把大型任務垂直切分成獨立、可執行的 Issue 列表，方便後續逐一擊破。
-
-### 8. Triage (議題分流)
-> **觸發詞**：`triage`, `處理 issue`, `分流`
-- **情境**：面對一堆未處理的 Bug 回報或功能請求時。
-- **運作方式**：我會透過狀態機機制，幫您審核這些 Issue，加上標籤，並將其整理為可執行的狀態。
-
----
-
-## 生產力與特殊工具 (Productivity & Misc)
-
-### 9. Grill-me (單純拷問)
-> **觸發詞**：`grill-me`, `拷問我`
-- **情境**：與 `grill-with-docs` 類似，但不涉及程式碼文件修改，純粹用來驗證您的點子是否有盲點。
-
-### 10. Git Guardrails (Git 防呆機制)
-> **觸發詞**：`防呆`, `git guardrails`, `設定保護`
-- **情境**：擔心 AI 或自己手滑執行破壞性的 Git 指令。
-- **運作方式**：設定腳本攔截 `push`, `reset --hard`, `branch -D` 等危險操作。
-
-### 11. Setup Pre-commit (自動化程式碼檢查)
-> **觸發詞**：`setup pre-commit`, `設定 husky`
-- **情境**：新專案想導入 Commit 前的格式化與型別檢查。
-- **運作方式**：一鍵幫您配置 Husky、lint-staged、Prettier 與測試掛鉤。
-
----
-
-## 通用技術棧與領域轉譯層 (Domain & Tech Stack Adaptation Layer)
-
-本系統在 `rules/skills.md` 中內置了**動態技術棧轉譯機制**。當您在不同類型的專案中工作時，Agent 會自動識別當前的技術環境，並將通用技能（如 `tdd`、`diagnose` 等）的執行步驟與工具鏈即時適應至對應的開發實踐中：
-
-### 1. 前端網頁開發 (Frontend Web)
-* **測試驅動開發 (TDD)**：著重於 Vitest、Jest、Playwright 或 Cypress 等框架的 UI 元件與整合測試，模擬 API 回傳，驗證使用者可觀測的行為。
-* **偵錯與診斷 (Diagnose)**：引導使用瀏覽器開發者工具（Console、Network 面板、React/Vue DevTools）與 Lighthouse 效能與相容性檢測。
-
-### 2. 後端服務開發 (Backend Services)
-* **測試驅動開發 (TDD)**：著重於 API 端點與控制器整合測試，使用 Fake 或記憶體資料庫（如 SQLite in-memory）代替過度 Mocking。
-* **偵錯與診斷 (Diagnose)**：分析結構化日誌（Structured Logs）、資料庫查詢執行計畫（Query Plan）及記憶體/CPU Profile。
-
-### 3. 軟韌體嵌入式系統 (Firmware & Embedded)
-* **測試驅動開發 (TDD)**：著重於 C/C++（Unity, Ceedling, Google Test）或 Rust 的**主機端編譯與測試 (Host-side Testing)**，對 HAL 與暫存器進行 Mock 隔離。
-* **偵錯與診斷 (Diagnose)**：引導使用 SWD/JTAG 偵錯器（GDB、OpenOCD）進行單步執行，利用邏輯分析儀或示波器擷取匯流排訊號，並使用 RTT/UART 輸出日誌。
-
-### 4. 一般自動化與 Python 腳本 (Automation & Scripting)
-* **測試與診斷**：使用 pytest 或 unittest 進行檔案系統與系統指令模擬，診斷異常堆疊與結束代碼（Exit Code），並整合靜態檢查（如 pylint, black）。
-
----
-
-> [!TIP]
-> **最佳實踐**
-> 每次準備開發新功能時，建議的黃金組合是：
-> 1. 先用 **`grill-with-docs`** 確認架構與領域語言。
-> 2. 用 **`to-issues`** 把任務切小。
-> 3. 對每個小任務使用 **`tdd`** 進行嚴謹開發。
-> 4. 若途中遇到奇怪的錯誤，隨時呼叫 **`diagnosing-bugs`** 處理。
+自動同步與驗證方式見 [MAINTENANCE.md](MAINTENANCE.md)，上游各項目的承襲理由見 [UPSTREAM_ANALYSIS.md](UPSTREAM_ANALYSIS.md)。上游授權保留於 [LICENSE](LICENSE)。

@@ -14,7 +14,7 @@ npx skills update grilling
 
 `grilling` is the relentless interview that stress-tests a plan or design before you build it. It walks down the design tree branch by branch, resolving the dependencies between decisions one at a time until you and the agent share the same understanding.
 
-It asks **one question at a time** and waits for your answer before the next — never a bulk list, which is bewildering. Each question comes with the agent's own recommended answer, and any question the codebase can settle it explores instead of asking you.
+It asks **one question at a time** and waits for your answer before the next — never a bulk list, which is bewildering. Each question comes with the agent's own recommended answer, and any question the codebase can settle it explores instead of asking you. It won't start enacting the plan until you confirm the shared understanding has been reached.
 
 ## When to reach for it
 
@@ -34,4 +34,4 @@ Keeping the technique in one place means you can also reach for it directly when
 
 ## Where it fits
 
-`grilling` is the interview **primitive** under the main build chain: [grill-with-docs](https://aihero.dev/skills-grill-with-docs) runs it to sharpen context before [to-prd](https://aihero.dev/skills-to-prd) writes the spec. When you're unsure which entry point fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`grilling` is the interview **primitive** under the main build chain: [grill-with-docs](https://aihero.dev/skills-grill-with-docs) runs it to sharpen context before [to-spec](https://aihero.dev/skills-to-spec) writes the spec. When you're unsure which entry point fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.

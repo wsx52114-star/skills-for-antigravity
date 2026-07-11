@@ -1,39 +1,125 @@
-name: Sync Upstream Skills
+name: Sync Upstream Snapshot
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 00:00 (台灣時間上午 8 點) 自動執行
-  workflow_dispatch: # 允許手動觸發
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-upstream-snapshot
+  cancel-in-progress: false
 
 jobs:
-  sync-skills:
+  sync:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout target repo
-        uses: actions/checkout@v6
+      - name: Checkout fork
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          python-version: '3.x'
+          node-version: 22
 
-      - name: Configure Git and Run Sync Script
+      - name: Fetch latest upstream tree
+        id: upstream
+        shell: bash
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          
-          # 執行我們的自動化同步與轉譯腳本
-          python scripts/sync_upstream.py
+          set -euo pipefail
+          git remote add upstream https://github.com/mattpocock/skills.git
+          git fetch --depth=1 upstream main
+          upstream_sha="$(git rev-parse FETCH_HEAD)"
+          current_sha="$(node -e "console.log(require('./.github/upstream-sync/upstream-lock.json').commit)")"
+          echo "sha=$upstream_sha" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${upstream_sha:0:12}" >> "$GITHUB_OUTPUT"
+          if [[ "$upstream_sha" == "$current_sha" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/upstream-snapshot"
+          git archive --format=tar FETCH_HEAD -o "$RUNNER_TEMP/upstream.tar"
+          tar -xf "$RUNNER_TEMP/upstream.tar" -C "$RUNNER_TEMP/upstream-snapshot"
 
-      - name: Push Changes
+      - name: Apply snapshot while preserving fork-owned paths
+        if: steps.upstream.outputs.changed == 'true'
+        run: >-
+          node .github/upstream-sync/apply-upstream-snapshot.mjs
+          --repo-root .
+          --snapshot-root "$RUNNER_TEMP/upstream-snapshot"
+          --sha "${{ steps.upstream.outputs.sha }}"
+
+      - name: Test and validate composed repository
+        if: steps.upstream.outputs.changed == 'true'
         run: |
-          # 檢查是否有任何變更（不論是 commit 還是 unstaged）
-          # 因為 sync_upstream.py 會進行 git merge，如果有更新，HEAD 會往前移動
-          # 我們可以使用 git status 或者 git diff 來檢查是否需要 push
-          # 更穩健的做法是直接嘗試 push
-          git push origin main || echo "No changes to push or push failed"
+          node --test .github/upstream-sync/tests/*.test.mjs
+          node .github/upstream-sync/validate.mjs
 
+      - name: Commit snapshot and classify change
+        if: steps.upstream.outputs.changed == 'true'
+        id: classify
+        shell: bash
+        run: |
+          set -euo pipefail
+          base_sha="$(git rev-parse HEAD)"
+          branch="sync/upstream-${{ steps.upstream.outputs.short_sha }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -A
+          git restore --staged .github/upstream-sync/upstream-lock.json
+          content_commit=false
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: sync upstream snapshot ${{ steps.upstream.outputs.short_sha }}"
+            content_commit=true
+          fi
+          node .github/upstream-sync/classify-sync.mjs \
+            --repo-root . \
+            --before "$base_sha" \
+            --after HEAD \
+            --github-output "$GITHUB_OUTPUT"
+          git add .github/upstream-sync/upstream-lock.json
+          if [[ "$content_commit" == "true" ]]; then
+            git commit --amend --no-edit
+          else
+            git commit -m "chore: sync upstream snapshot ${{ steps.upstream.outputs.short_sha }}"
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Push synchronization branch
+        if: steps.upstream.outputs.changed == 'true' && steps.classify.outputs.blocked == 'false'
+        run: git push --force-with-lease origin "HEAD:${{ steps.classify.outputs.branch }}"
+
+      - name: Create or update pull request
+        if: steps.upstream.outputs.changed == 'true' && steps.classify.outputs.blocked == 'false'
+        id: pull_request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${{ steps.classify.outputs.branch }}"
+          url="$(gh pr list --head "$branch" --state open --json url --jq '.[0].url // empty')"
+          if [[ -z "$url" ]]; then
+            url="$(gh pr create \
+              --head "$branch" \
+              --base main \
+              --title "chore: sync upstream ${{ steps.upstream.outputs.short_sha }}" \
+              --body "Automated upstream snapshot. Structural change: ${{ steps.classify.outputs.structural }}. Upstream commit: ${{ steps.upstream.outputs.sha }}.")"
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Merge validated content-only update
+        if: >-
+          steps.upstream.outputs.changed == 'true' &&
+          steps.classify.outputs.blocked == 'false' &&
+          steps.classify.outputs.structural == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr merge --squash --auto "${{ steps.pull_request.outputs.url }}"
