@@ -130,4 +130,4 @@ Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Ob
 ## 🔄 日後如何同步更新技能？
 因為技能本身是用軟連結連過去的，所以未來原作者有更新技能時，您只需要在共享倉庫內執行同步即可，所有專案都會自動吃到最新版：
 1. 切換至本倉庫目錄（例如 `~/skills-for-antigravity` 或 Windows 對應路徑）。
-2. 執行 `python scripts/sync_upstream.py` 或 `git pull` 取得最新技能更新。
+2. 執行 `git pull` 取得最新更新（本倉庫已設定 GitHub Actions 自動化同步，每天會自動檢查原作者更新並合併，您只需本地 `git pull` 即可）。
