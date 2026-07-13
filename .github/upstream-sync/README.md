@@ -19,3 +19,7 @@ node .github/upstream-sync/validate.mjs
 that must not enter the direct runtime checkout. During composition, index
 lines for excluded skills are removed from imported category READMEs.
 `upstream-lock.json` records the source commit and composed file inventory.
+
+The fork-owned `skills/security/security-audit/` subtree is managed separately
+by [`.github/security-audit-sync/`](../security-audit-sync/) and is never
+imported from `mattpocock/skills`.

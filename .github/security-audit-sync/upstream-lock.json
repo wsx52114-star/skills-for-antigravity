@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/cloudflare/security-audit-skill",
+  "commit": "8bac42001ddd90a4dcd8d5a5045199283a8eba75",
+  "syncedAt": "2026-07-13T05:01:17.397Z",
+  "files": [
+    "LICENSE",
+    "skills/security-audit/AI-AND-LLM.md",
+    "skills/security-audit/ATTACK-CLASSES.md",
+    "skills/security-audit/CLIENT-SIDE.md",
+    "skills/security-audit/HUNTING.md",
+    "skills/security-audit/MEMORY-SAFETY-AND-BINARY.md",
+    "skills/security-audit/RECONNAISSANCE.md",
+    "skills/security-audit/SKILL.md",
+    "skills/security-audit/VALIDATION-AND-REPORTING.md",
+    "skills/security-audit/WEB-PROTOCOL-AND-AUTH.md",
+    "skills/security-audit/report-schema.json",
+    "skills/security-audit/validate-findings.cjs"
+  ]
+}

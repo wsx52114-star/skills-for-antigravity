@@ -26,13 +26,29 @@ function fixture(lock) {
   };
   write(root, ".github/upstream-sync/ownership.json", `${JSON.stringify(policy)}\n`);
   write(root, ".github/upstream-sync/upstream-lock.json", `${JSON.stringify(lock)}\n`);
+  write(
+    root,
+    ".github/security-audit-sync/upstream-lock.json",
+    `${JSON.stringify({
+      repository: "https://github.com/cloudflare/security-audit-skill",
+      commit: "b".repeat(40),
+      files: [
+        "LICENSE",
+        "skills/security-audit/SKILL.md",
+        "skills/security-audit/report-schema.json",
+      ],
+    })}\n`,
+  );
   for (const required of [
     ".github/upstream-sync/apply-upstream-snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
+    ".github/security-audit-sync/apply-upstream-snapshot.mjs",
     "rules/skills.md",
     "skills/security/README.md",
+    "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
     "MAINTENANCE.md",
+    ".github/workflows/sync-security-audit.yml",
     ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
@@ -69,6 +85,30 @@ test("validator rejects invalid lock metadata and ordering", () => {
     assert.match(result.stderr, /repository does not match policy/);
     assert.match(result.stderr, /full lowercase commit SHA/);
     assert.match(result.stderr, /sorted and unique/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("validator rejects a Cloudflare lock whose inventory does not match the installed skill", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  write(
+    root,
+    ".github/security-audit-sync/upstream-lock.json",
+    `${JSON.stringify({
+      repository: "https://github.com/cloudflare/security-audit-skill",
+      commit: "b".repeat(40),
+      files: [],
+    })}\n`,
+  );
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Security-audit lock inventory does not match/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

@@ -1,0 +1,114 @@
+name: Sync Cloudflare Security Audit
+
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-cloudflare-security-audit
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+
+      - name: Fetch and validate latest Cloudflare snapshot
+        id: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote add security-audit-upstream https://github.com/cloudflare/security-audit-skill.git
+          git fetch --depth=1 security-audit-upstream main
+          upstream_sha="$(git rev-parse FETCH_HEAD)"
+          current_sha="$(node -e "console.log(require('./.github/security-audit-sync/upstream-lock.json').commit)")"
+          echo "sha=$upstream_sha" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${upstream_sha:0:12}" >> "$GITHUB_OUTPUT"
+          if [[ "$upstream_sha" == "$current_sha" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          branch="sync/security-audit-${upstream_sha:0:12}"
+          remote_branch="$(git ls-remote --heads origin "refs/heads/$branch")"
+          if [[ -n "$remote_branch" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare commit $upstream_sha already has synchronization branch $branch."
+            exit 0
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          invalid_entries="$(git ls-tree -r FETCH_HEAD -- LICENSE skills/security-audit | awk '$1 !~ /^100(644|755)$/ || $2 != "blob"')"
+          if [[ -n "$invalid_entries" ]]; then
+            echo "Cloudflare snapshot contains unsupported Git entries:" >&2
+            echo "$invalid_entries" >&2
+            exit 1
+          fi
+          git cat-file -e FETCH_HEAD:LICENSE
+          git cat-file -e FETCH_HEAD:skills/security-audit/SKILL.md
+
+          mkdir -p "$RUNNER_TEMP/security-audit-snapshot"
+          git archive --format=tar FETCH_HEAD LICENSE skills/security-audit \
+            -o "$RUNNER_TEMP/security-audit.tar"
+          tar -xf "$RUNNER_TEMP/security-audit.tar" \
+            -C "$RUNNER_TEMP/security-audit-snapshot"
+
+      - name: Apply Cloudflare security-audit snapshot
+        if: steps.upstream.outputs.changed == 'true'
+        run: >-
+          node .github/security-audit-sync/apply-upstream-snapshot.mjs
+          --repo-root .
+          --snapshot-root "$RUNNER_TEMP/security-audit-snapshot"
+          --sha "${{ steps.upstream.outputs.sha }}"
+
+      - name: Test and validate composed repository
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          node --test .github/upstream-sync/tests/*.test.mjs
+          node .github/upstream-sync/validate.mjs
+
+      - name: Commit snapshot
+        if: steps.upstream.outputs.changed == 'true'
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="sync/security-audit-${{ steps.upstream.outputs.short_sha }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -A
+          git commit -m "chore: sync Cloudflare security audit ${{ steps.upstream.outputs.short_sha }}"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Push synchronization branch
+        if: steps.upstream.outputs.changed == 'true'
+        run: git push --force-with-lease origin "HEAD:${{ steps.commit.outputs.branch }}"
+
+      - name: Create pull request
+        if: steps.upstream.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${{ steps.commit.outputs.branch }}"
+          gh pr create \
+            --head "$branch" \
+            --base main \
+            --title "chore: sync Cloudflare security audit ${{ steps.upstream.outputs.short_sha }}" \
+            --body "Automated snapshot from cloudflare/security-audit-skill at commit ${{ steps.upstream.outputs.sha }}. This update requires human review and will not be auto-merged."

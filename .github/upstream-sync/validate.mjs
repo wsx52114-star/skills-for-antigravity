@@ -16,6 +16,9 @@ const repoRoot = path.resolve(
 );
 const errors = [];
 const controlPlaneRoot = path.join(repoRoot, ".github", "upstream-sync");
+const securityAuditControlPlaneRoot = path.join(repoRoot, ".github", "security-audit-sync");
+const securityAuditRepository = "https://github.com/cloudflare/security-audit-skill";
+const securityAuditDestinationPrefix = "skills/security/security-audit/";
 const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
@@ -105,11 +108,15 @@ const required = [
   ".github/upstream-sync/apply-upstream-snapshot.mjs",
   ".github/upstream-sync/lib/policy.mjs",
   ".github/upstream-sync/ownership.json",
+  ".github/security-audit-sync/apply-upstream-snapshot.mjs",
+  ".github/security-audit-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
+  "skills/security/security-audit/LICENSE",
   "skills/security/security-audit/SKILL.md",
   "skills/security/security-audit/report-schema.json",
   "MAINTENANCE.md",
+  ".github/workflows/sync-security-audit.yml",
   ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
 ];
@@ -162,6 +169,43 @@ try {
   }
 } catch (error) {
   errors.push(`Invalid upstream lock: ${error.message}`);
+}
+
+try {
+  const lock = JSON.parse(
+    readFileSync(path.join(securityAuditControlPlaneRoot, "upstream-lock.json"), "utf8"),
+  );
+  if (lock.repository !== securityAuditRepository) {
+    errors.push("Security-audit lock repository does not match Cloudflare upstream");
+  }
+  if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "")) {
+    errors.push("Security-audit lock commit must be a full lowercase commit SHA");
+  }
+  if (!Array.isArray(lock.files) || lock.files.some((file) => typeof file !== "string")) {
+    errors.push("Security-audit lock files must be an array of paths");
+  } else {
+    const sortedUnique = [...new Set(lock.files)].sort();
+    if (JSON.stringify(lock.files) !== JSON.stringify(sortedUnique)) {
+      errors.push("Security-audit lock files must be sorted and unique");
+    }
+    const actual = repositoryFiles
+      .filter((file) => file.startsWith(securityAuditDestinationPrefix))
+      .map((file) => {
+        const relative = file.slice(securityAuditDestinationPrefix.length);
+        return relative === "LICENSE" ? "LICENSE" : `skills/security-audit/${relative}`;
+      })
+      .sort();
+    if (JSON.stringify(sortedUnique) !== JSON.stringify(actual)) {
+      errors.push("Security-audit lock inventory does not match the installed Cloudflare files");
+    }
+    for (const file of lock.files) {
+      if (file !== "LICENSE" && !file.startsWith("skills/security-audit/")) {
+        errors.push(`Security-audit lock contains an out-of-scope file: ${file}`);
+      }
+    }
+  }
+} catch (error) {
+  errors.push(`Invalid security-audit lock: ${error.message}`);
 }
 
 if (errors.length) {
