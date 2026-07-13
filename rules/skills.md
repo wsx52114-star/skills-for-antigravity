@@ -21,12 +21,13 @@ Use the installed skills as behavioral workflows. Skill frontmatter is the live 
 
 ## Project Knowledge
 
-- Read the current project's root `CONTEXT.md` when domain vocabulary matters. It is a glossary, not a specification or implementation log.
-- Read relevant decisions under the current project's `docs/adr/` before changing an affected area.
-- If `CONTEXT-MAP.md` exists, use it to find context-specific `CONTEXT.md` and `docs/adr/` locations.
-- Create project knowledge lazily. Add `CONTEXT.md` when the first domain term is resolved and `docs/adr/` when the first qualifying decision is accepted.
+- Read the current project's `.agents/CONTEXT.md` when domain vocabulary matters; fall back to the root `CONTEXT.md` when the `.agents` file does not exist. It is a glossary, not a specification or implementation log.
+- Read relevant decisions under the current project's `.agents/docs/adr/` before changing an affected area; fall back to `docs/adr/` when the `.agents` directory does not exist.
+- If `.agents/CONTEXT-MAP.md` exists, use it to find context-specific `CONTEXT.md` and `docs/adr/` locations; otherwise fall back to a root `CONTEXT-MAP.md`.
+- Create project knowledge lazily. Add `.agents/CONTEXT.md` when the first domain term is resolved and `.agents/docs/adr/` when the first qualifying decision is accepted.
 - Write an ADR only when a decision is hard to reverse, surprising without context, and the result of a real trade-off.
 - Keep project knowledge inside the current project. Never write it into the global Agent home.
+- Never use the Agent home's `CONTEXT.md` as the current development project's **Project context**.
 - Treat the Agent home's `docs/` as skill documentation, not as a target project's documentation.
 
 ## Golden Workflow

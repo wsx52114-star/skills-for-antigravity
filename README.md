@@ -16,7 +16,7 @@ Repository 可直接安裝到 `~/.agents`。各開發專案則保有自己的領
 
 上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。自訂 [`security-audit`](skills/security/security-audit/SKILL.md) 由本專案獨立維護。
 
-本專案支援兩種安裝方式：**全域安裝**（將所有專案共用同一套技能與設定）與**專案獨立安裝**（將技能軟連結至各專案目錄，完全不污染全域環境）。
+本專案支援兩種安裝方式：**全域安裝**（將 repository 安裝成 Agent home）與**專案連結**（讓專案使用共享 skills 與 rules，同時保留自己的 context 與 ADR）。
 
 ### 🔌 方式 A：全域安裝 (將本 repo 安裝至全域 `~/.agents`)
 
@@ -34,30 +34,33 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 ---
 
-### 📂 方式 B：專案獨立安裝
+### 📂 方式 B：專案連結
 
-此方式利用軟連結（Symlink/Junction）在各專案中獨立啟用本倉庫的 Skills，不污染全域環境，並同時支援 WSL 與 Windows 本機環境。詳細啟用步驟請參閱 [專案專屬啟用指南 (README_LOCAL.md)](README_LOCAL.md)。
+此方式利用 Symlink／Junction 共享 Agent home 的 skills 與 rules。每個專案的 `AGENTS.md`、`CONTEXT.md` 與 ADR 仍是 local 實體檔案。詳細步驟見 [專案啟用指南](README_LOCAL.md)。
 
 | 目錄路徑 | 用途 | 存放層級 |
 |------|------|---|
 | **專案** `.agents/AGENTS.md` | 專案專屬的 Agent 規則與 Golden Workflow。 | 專案實體目錄 (自動產生) |
-| **專案** `.agents/skills/` | 連結或複製至共享技能倉庫實體檔案的目錄。 | 專案實體目錄 (自動產生) |
+| **專案** `.agents/CONTEXT.md` | 專案領域語言。 | 專案實體檔案 (隔離) |
+| **專案** `.agents/docs/adr/` | 專案架構決策。 | 專案實體目錄 (隔離) |
+| **專案** `.agents/skills` | 指向 Agent home 的 `skills/`。 | 機器本機連結 |
+| **專案** `.agents/rules` | 指向 Agent home 的 `rules/`。 | 機器本機連結 |
 
 #### 快速啟用指令：
-* **WSL/Linux 專案**：在您的新專案根目錄下執行：
+* **WSL/Linux 專案**：在專案根目錄執行：
   ```bash
-  bash ~/skills-for-antigravity/scripts/init_setup_local_repo_wsl.sh
+  bash ~/.agents/scripts/init_setup_local_repo_wsl.sh
   ```
-* **Windows 專案**：在您的新專案根目錄下開啟 PowerShell 執行：
+* **Windows 專案**：在專案根目錄開啟 PowerShell 執行：
   ```powershell
-  powershell -ExecutionPolicy Bypass -File "C:\path\to\skills-for-antigravity\scripts\init_setup_local_repo_win.ps1"
+  powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local_repo_win.ps1" -Mode Link
   ```
 
 維護原則：
 
 - 新增或更新全域技能時，先確認 `~/.agents/rules/skills.md` 的觸發描述是否同步。
-- 專案特定的新 ADR 應放在各開發專案的 `docs/adr/`，不要放在本技能倉庫根目錄。
-- 各專案根目錄下的 `CONTEXT.md` 是該專案領域語言的權威來源；術語改動應同步更新至專案本機。
+- 專案特定的新 ADR 應放在各開發專案的 `.agents/docs/adr/`，不要放在 Agent home。
+- 各專案的 `.agents/CONTEXT.md` 是該專案領域語言的權威來源。
 - `~/.agents/scripts/` 只放 agent workflow 輔助腳本，不放專案 runtime 腳本。
 
 
@@ -115,13 +118,16 @@ grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
 
 ```text
 project/
-├── CONTEXT.md
-├── docs/
-│   └── adr/
+├── .agents/
+│   ├── AGENTS.md
+│   ├── CONTEXT.md
+│   ├── docs/adr/
+│   ├── skills -> Agent home/skills
+│   └── rules  -> Agent home/rules
 └── src/
 ```
 
-`CONTEXT.md` 是專案術語表；`docs/adr/` 只記錄難以逆轉、具有真實取捨且缺少背景會令人意外的決策。兩者都在需要時才建立。
+`.agents/CONTEXT.md` 是專案術語表；`.agents/docs/adr/` 只記錄難以逆轉、具有真實取捨且缺少背景會令人意外的決策。初始化 script 不會覆寫既有 local 文件。
 
 ## 維護
 

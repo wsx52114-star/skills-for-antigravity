@@ -2,6 +2,7 @@
 
 import {
   existsSync,
+  lstatSync,
   readFileSync,
   readdirSync,
 } from "node:fs";
@@ -117,7 +118,12 @@ for (const relative of required) {
 }
 
 for (const forbidden of [".agents", ".antigravity"]) {
-  if (existsSync(path.join(repoRoot, forbidden))) {
+  const forbiddenPath = path.join(repoRoot, forbidden);
+  if (!existsSync(forbiddenPath)) continue;
+
+  const entry = lstatSync(forbiddenPath);
+  const isEmptyDirectory = entry.isDirectory() && readdirSync(forbiddenPath).length === 0;
+  if (!isEmptyDirectory) {
     errors.push(`Direct checkout contains a forbidden nested runtime/control directory: ${forbidden}`);
   }
 }

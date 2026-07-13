@@ -1,76 +1,191 @@
 param (
-    [string]$Mode = "" # "Copy" or "Link"
+    [string]$Mode = ""
 )
 
-# 1. 定義 Skills 倉庫的絕對路徑 (預設在家目錄下，可依需求調整)
-$SKILLS_REPO = "$HOME\skills-for-antigravity"
+$ErrorActionPreference = "Stop"
+$SkillsRepo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+$ProjectRoot = (Get-Location).Path
+$AgentsDir = Join-Path $ProjectRoot ".agents"
 
-# 驗證路徑是否存在，如果不存在則報錯退出
-if (-not (Test-Path -Path $SKILLS_REPO -PathType Container)) {
-    Write-Error "Error: Skills repository directory not found at: $SKILLS_REPO"
-    Write-Warning "Please check the `$SKILLS_REPO path defined in this script."
-    exit 1
+function Get-NormalizedPath {
+    param ([string]$Path)
+    return [System.IO.Path]::GetFullPath($Path).TrimEnd('\', '/')
 }
 
-$ruleSource = "$SKILLS_REPO\rules\skills.md"
-if (-not (Test-Path -Path $ruleSource -PathType Leaf)) {
-    Write-Error "Error: Source rules file not found at: $ruleSource"
-    exit 1
+function Test-PathExists {
+    param ([string]$Path)
+    return Test-Path -LiteralPath $Path
 }
 
-# 若未指定 Mode 參數，則啟動互動式選單讓使用者選擇
-if ($null -eq $Mode -or $Mode -eq "") {
-    Write-Host "========================================="
-    Write-Host "  Antigravity Agent Skills Setup (Windows)"
-    Write-Host "========================================="
-    Write-Host "Please select installation mode:"
-    Write-Host "  [1] Copy Mode (Recommended - Full GUI/Slash Command select list, but needs re-run to update)"
-    Write-Host "  [2] Link Mode (NTFS Junctions - auto-syncs on git pull, but custom skills won't show in IDE / menu)"
-    Write-Host "========================================="
-    $choice = Read-Host "Enter option [1 or 2, default is 1]"
-    
-    if ($choice -eq "2") {
-        $Mode = "Link"
-    } else {
-        $Mode = "Copy"
+function Assert-DirectorySlot {
+    param ([string]$Path)
+    if (-not (Test-PathExists $Path)) { return }
+
+    $item = Get-Item -LiteralPath $Path -Force
+    if ($null -ne $item.LinkType) {
+        throw "Expected a project-local directory but found a link: $Path"
     }
+    if (-not $item.PSIsContainer) {
+        throw "Expected a directory but found another file type: $Path"
+    }
+}
+
+function Assert-FileSlot {
+    param ([string]$Path)
+    if (-not (Test-PathExists $Path)) { return }
+
+    $item = Get-Item -LiteralPath $Path -Force
+    if ($null -ne $item.LinkType) {
+        throw "Expected a project-local file but found a link: $Path"
+    }
+    if ($item.PSIsContainer) {
+        throw "Expected a regular file but found a directory: $Path"
+    }
+}
+
+function Assert-LinkSlot {
+    param (
+        [string]$Source,
+        [string]$Destination
+    )
+
+    if (-not (Test-PathExists $Destination)) { return }
+
+    $item = Get-Item -LiteralPath $Destination -Force
+    if ($item.LinkType -notin @("Junction", "SymbolicLink")) {
+        throw "Refusing to replace an existing file or directory: $Destination"
+    }
+
+    $target = [string]$item.Target
+    if (-not [System.IO.Path]::IsPathRooted($target)) {
+        $target = Join-Path $item.Parent.FullName $target
+    }
+
+    if ((Get-NormalizedPath $target) -ne (Get-NormalizedPath $Source)) {
+        throw "Existing link points to '$target'; expected '$Source': $Destination"
+    }
+}
+
+function Write-FileIfMissing {
+    param (
+        [string]$Path,
+        [string]$Content
+    )
+
+    if (Test-PathExists $Path) {
+        Write-Host "Unchanged: $Path"
+        return
+    }
+
+    [System.IO.File]::WriteAllText(
+        $Path,
+        $Content + [Environment]::NewLine,
+        [System.Text.UTF8Encoding]::new($false)
+    )
+    Write-Host "Created: $Path"
+}
+
+function Install-SharedDirectory {
+    param (
+        [string]$Source,
+        [string]$Destination,
+        [string]$InstallMode
+    )
+
+    if ($InstallMode -eq "Link") {
+        if (Test-PathExists $Destination) {
+            Write-Host "Unchanged: $Destination"
+            return
+        }
+
+        New-Item -ItemType Junction -Path $Destination -Target $Source | Out-Null
+        Write-Host "Linked: $Destination -> $Source"
+        return
+    }
+
+    if (-not (Test-PathExists $Destination)) {
+        Copy-Item -LiteralPath $Source -Destination $Destination -Recurse
+        Write-Host "Copied: $Destination"
+        return
+    }
+
+    $item = Get-Item -LiteralPath $Destination -Force
+    if ($null -ne $item.LinkType -or -not $item.PSIsContainer) {
+        throw "Copy Mode requires a regular directory: $Destination"
+    }
+
+    Copy-Item -Path (Join-Path $Source "*") -Destination $Destination -Recurse -Force
+    Write-Host "Refreshed without deleting local files: $Destination"
+}
+
+if (-not (Test-Path -LiteralPath (Join-Path $SkillsRepo "skills") -PathType Container)) {
+    throw "Skills directory not found: $SkillsRepo\skills"
+}
+if (-not (Test-Path -LiteralPath (Join-Path $SkillsRepo "rules\skills.md") -PathType Leaf)) {
+    throw "Rules file not found: $SkillsRepo\rules\skills.md"
+}
+if ((Get-NormalizedPath $ProjectRoot) -eq (Get-NormalizedPath $SkillsRepo)) {
+    throw "Run this script from a development project, not from the Agent home."
+}
+
+if ([string]::IsNullOrWhiteSpace($Mode)) {
+    Write-Host "Select installation mode:"
+    Write-Host "  [1] Link Mode (recommended; updates with the Agent home)"
+    Write-Host "  [2] Copy Mode (for IDE compatibility; rerun to refresh)"
+    $choice = Read-Host "Enter option [1 or 2, default is 1]"
+    $Mode = if ($choice -eq "2") { "Copy" } else { "Link" }
 }
 
 if ($Mode -notin @("Copy", "Link")) {
-    Write-Error "Invalid mode. Please use 'Copy' or 'Link'."
-    exit 1
+    throw "Invalid mode. Use 'Copy' or 'Link'."
 }
 
-# 2. 建立專案目錄結構
-New-Item -ItemType Directory -Force -Path ".agents" | Out-Null
-New-Item -ItemType Directory -Force -Path ".agents\skills" | Out-Null
+$skillsSource = Join-Path $SkillsRepo "skills"
+$rulesSource = Join-Path $SkillsRepo "rules"
+$skillsDestination = Join-Path $AgentsDir "skills"
+$rulesDestination = Join-Path $AgentsDir "rules"
 
-# 3. 複製並翻譯技能觸發規則為專案專屬的 AGENTS.md (替換全域路徑為本機相對路徑)
-$agentsDest = ".agents\AGENTS.md"
-if (Test-Path $agentsDest) { Remove-Item -Force $agentsDest }
-
-# 顯式指定 -Encoding utf8 以防止 Windows PowerShell (v5.1) 以 ANSI 讀寫導致中文字元亂碼
-(Get-Content -Raw -Encoding utf8 -Path $ruleSource) -replace '~/.gemini/config/skills/', '.agents/skills/' | Set-Content -Encoding utf8 -Path $agentsDest
-
-# 4. 扁平化建立連結或複製所有 Skills 工具組
-Write-Host "Installing skills in $Mode mode..."
-Get-ChildItem -Path "$SKILLS_REPO\skills" -Filter "SKILL.md" -Recurse | Where-Object {
-    $_.FullName -notmatch "node_modules" -and $_.FullName -notmatch "deprecated"
-} | ForEach-Object {
-    $src = $_.Directory.FullName
-    $name = $_.Directory.Name
-    $linkPath = ".agents\skills\$name"
-    if (Test-Path $linkPath) { Remove-Item -Recurse -Force $linkPath }
-    
-    if ($Mode -eq "Link") {
-        New-Item -ItemType Junction -Path $linkPath -Value $src | Out-Null
-    } else {
-        Copy-Item -Recurse -Force -Path $src -Destination $linkPath | Out-Null
-    }
-}
-
+# Preflight every destination before creating or changing anything.
+Assert-DirectorySlot $AgentsDir
+Assert-DirectorySlot (Join-Path $AgentsDir "docs")
+Assert-DirectorySlot (Join-Path $AgentsDir "docs\adr")
+Assert-FileSlot (Join-Path $AgentsDir "AGENTS.md")
+Assert-FileSlot (Join-Path $AgentsDir "CONTEXT.md")
+Assert-FileSlot (Join-Path $AgentsDir ".gitignore")
 if ($Mode -eq "Link") {
-    Write-Host "Success: Skills linked and AGENTS.md initialized successfully!"
+    Assert-LinkSlot $skillsSource $skillsDestination
+    Assert-LinkSlot $rulesSource $rulesDestination
 } else {
-    Write-Host "Success: Skills copied and AGENTS.md initialized successfully!"
+    Assert-DirectorySlot $skillsDestination
+    Assert-DirectorySlot $rulesDestination
 }
+
+New-Item -ItemType Directory -Force -Path (Join-Path $AgentsDir "docs\adr") | Out-Null
+
+Write-FileIfMissing (Join-Path $AgentsDir "AGENTS.md") @'
+# Project Agent Instructions
+
+Before non-trivial work:
+
+1. Read `.agents/rules/skills.md`.
+2. Read `.agents/CONTEXT.md` when domain language matters.
+3. Read relevant decisions under `.agents/docs/adr/`.
+4. Keep project knowledge inside this project.
+'@
+
+Write-FileIfMissing (Join-Path $AgentsDir "CONTEXT.md") @'
+# Project Context
+
+Project-specific domain language and relationships belong here.
+'@
+
+Write-FileIfMissing (Join-Path $AgentsDir ".gitignore") @'
+# Machine-local shared Agent home links
+/skills
+/rules
+'@
+
+Install-SharedDirectory $skillsSource $skillsDestination $Mode
+Install-SharedDirectory $rulesSource $rulesDestination $Mode
+
+Write-Host "Agent project initialization complete."

@@ -26,6 +26,8 @@ test("global skill rules stay compact and preserve the required contracts", () =
     "unavailable or unreadable",
     "system and safety constraints",
     "glossary-only `CONTEXT.md`",
+    ".agents/CONTEXT.md",
+    ".agents/docs/adr/",
   ]) {
     assert.ok(content.includes(contract), `Missing rules contract: ${contract}`);
   }
@@ -34,8 +36,6 @@ test("global skill rules stay compact and preserve the required contracts", () =
 test("global skill rules contain no legacy paths, names, or static inventory", () => {
   for (const legacy of [
     "~/.gemini/config/skills",
-    ".agents/CONTEXT.md",
-    ".agents/docs/adr",
     "to-issues",
     "to-prd",
     "git-guardrails-claude-code",

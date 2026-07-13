@@ -105,3 +105,23 @@ test("validator rejects excluded skill paths even when they contain no SKILL.md"
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("validator allows an empty harness directory but rejects nested runtime content", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  mkdirSync(path.join(root, ".agents"), { recursive: true });
+  try {
+    const emptyResult = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(emptyResult.status, 0, emptyResult.stderr);
+
+    write(root, ".agents/AGENTS.md", "nested runtime\n");
+    const contentResult = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(contentResult.status, 1);
+    assert.match(contentResult.stderr, /forbidden nested runtime\/control directory: \.agents/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
