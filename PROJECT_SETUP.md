@@ -1,4 +1,4 @@
-# 專案啟用 Agent Skills 指南
+# 專案 Agent Skills 啟用指南
 
 這份指南說明如何讓開發專案共享 Agent home 的 skills 與 rules，同時保留自己的領域語言、架構決策與專案規則。
 

@@ -25,7 +25,6 @@
     "docs/security/",
     ".github/workflows/",
     "MAINTENANCE.md",
-    "UPSTREAM_ANALYSIS.md",
     "README.md",
     "CONTEXT.md",
     ".gitignore"
