@@ -107,13 +107,25 @@ jobs:
             exit 1
           fi
           branch="${{ steps.classify.outputs.branch }}"
-          url="$(gh pr list --head "$branch" --state open --json url --jq '.[0].url // empty')"
+          head="${{ github.repository_owner }}:$branch"
+          url="$(gh api --method GET \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "repos/${{ github.repository }}/pulls" \
+            -f state=open \
+            -f head="$head" \
+            --jq '.[0].html_url // empty')"
           if [[ -z "$url" ]]; then
-            gh pr create \
-              --head "$branch" \
-              --base main \
-              --title "chore: sync upstream ${{ steps.upstream.outputs.short_sha }}" \
-              --body "Automated upstream snapshot. Structural change: ${{ steps.classify.outputs.structural }}. Upstream commit: ${{ steps.upstream.outputs.sha }}. Human review is required."
+            url="$(gh api --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "repos/${{ github.repository }}/pulls" \
+              -f title="chore: sync upstream ${{ steps.upstream.outputs.short_sha }}" \
+              -f head="$branch" \
+              -f base=main \
+              -f body="Automated upstream snapshot. Structural change: ${{ steps.classify.outputs.structural }}. Upstream commit: ${{ steps.upstream.outputs.sha }}. Human review is required." \
+              --jq .html_url)"
+            echo "Created pull request: $url"
           else
             echo "Pull request already exists: $url"
           fi

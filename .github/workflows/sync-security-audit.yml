@@ -110,8 +110,13 @@ jobs:
             exit 1
           fi
           branch="${{ steps.commit.outputs.branch }}"
-          gh pr create \
-            --head "$branch" \
-            --base main \
-            --title "chore: sync Cloudflare security audit ${{ steps.upstream.outputs.short_sha }}" \
-            --body "Automated snapshot from cloudflare/security-audit-skill at commit ${{ steps.upstream.outputs.sha }}. This update requires human review and will not be auto-merged."
+          url="$(gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "repos/${{ github.repository }}/pulls" \
+            -f title="chore: sync Cloudflare security audit ${{ steps.upstream.outputs.short_sha }}" \
+            -f head="$branch" \
+            -f base=main \
+            -f body="Automated snapshot from cloudflare/security-audit-skill at commit ${{ steps.upstream.outputs.sha }}. This update requires human review and will not be auto-merged." \
+            --jq .html_url)"
+          echo "Created pull request: $url"

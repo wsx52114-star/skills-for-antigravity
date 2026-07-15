@@ -114,6 +114,9 @@ Cloudflare commit 與檔案 inventory 記錄在
   `SYNC_PR_TOKEN`，值為上述 token。兩個同步 workflow 只在建立 review-only PR
   的 step 使用此 secret；同步分支仍由權限限縮為 `contents: write` 的
   `GITHUB_TOKEN` 推送。
+- PR step 直接呼叫 REST `POST /repos/{owner}/{repo}/pulls`，不使用會額外要求
+  `Contents: read` 的 `gh pr create` GraphQL 路徑；`SYNC_PR_TOKEN` 不需要
+  `Contents` permission。
 - Token 到期或撤銷後必須更新 `SYNC_PR_TOKEN`；workflow 若找不到 secret，會在
   呼叫 GitHub API 前以明確錯誤停止。
 - Sync job 會在建立 PR 前完成測試，但不會自動合併。若 ruleset 要求另一個 PR
