@@ -28,14 +28,14 @@ function runSetup(project) {
   });
 }
 
-test("WSL setup creates project-local knowledge and shared directory links", () => {
+test("WSL setup creates project-local context and shared directory links", () => {
   const project = projectFixture();
   try {
     const result = runSetup(project);
     assert.equal(result.status, 0, result.stderr);
 
     const agents = path.join(project, ".agents");
-    assert.equal(lstatSync(path.join(agents, "AGENTS.md")).isFile(), true);
+    assert.throws(() => lstatSync(path.join(agents, "AGENTS.md")), /ENOENT/);
     assert.equal(lstatSync(path.join(agents, "CONTEXT.md")).isFile(), true);
     assert.equal(lstatSync(path.join(agents, "docs", "adr")).isDirectory(), true);
     assert.equal(lstatSync(path.join(agents, "skills")).isSymbolicLink(), true);

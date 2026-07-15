@@ -149,7 +149,6 @@ $rulesDestination = Join-Path $AgentsDir "rules"
 Assert-DirectorySlot $AgentsDir
 Assert-DirectorySlot (Join-Path $AgentsDir "docs")
 Assert-DirectorySlot (Join-Path $AgentsDir "docs\adr")
-Assert-FileSlot (Join-Path $AgentsDir "AGENTS.md")
 Assert-FileSlot (Join-Path $AgentsDir "CONTEXT.md")
 Assert-FileSlot (Join-Path $AgentsDir ".gitignore")
 if ($Mode -eq "Link") {
@@ -161,17 +160,6 @@ if ($Mode -eq "Link") {
 }
 
 New-Item -ItemType Directory -Force -Path (Join-Path $AgentsDir "docs\adr") | Out-Null
-
-Write-FileIfMissing (Join-Path $AgentsDir "AGENTS.md") @'
-# Project Agent Instructions
-
-Before non-trivial work:
-
-1. Read `.agents/rules/skills.md`.
-2. Read `.agents/CONTEXT.md` when domain language matters.
-3. Read relevant decisions under `.agents/docs/adr/`.
-4. Keep project knowledge inside this project.
-'@
 
 Write-FileIfMissing (Join-Path $AgentsDir "CONTEXT.md") @'
 # Project Context

@@ -83,22 +83,12 @@ write_if_missing() {
 check_directory_slot "$AGENTS_DIR"
 check_directory_slot "$AGENTS_DIR/docs"
 check_directory_slot "$AGENTS_DIR/docs/adr"
-check_file_slot "$AGENTS_DIR/AGENTS.md"
 check_file_slot "$AGENTS_DIR/CONTEXT.md"
 check_file_slot "$AGENTS_DIR/.gitignore"
 check_link_slot "$SKILLS_REPO/skills" "$AGENTS_DIR/skills"
 check_link_slot "$SKILLS_REPO/rules" "$AGENTS_DIR/rules"
 
 mkdir -p -- "$AGENTS_DIR/docs/adr"
-
-write_if_missing "$AGENTS_DIR/AGENTS.md" '# Project Agent Instructions
-
-Before non-trivial work:
-
-1. Read `.agents/rules/skills.md`.
-2. Read `.agents/CONTEXT.md` when domain language matters.
-3. Read relevant decisions under `.agents/docs/adr/`.
-4. Keep project knowledge inside this project.'
 
 write_if_missing "$AGENTS_DIR/CONTEXT.md" '# Project Context
 

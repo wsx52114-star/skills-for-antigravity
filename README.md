@@ -39,7 +39,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 ### 專案連結
 
 開發專案可透過 Symlink／Junction 共用 Agent home 的 skills 與 rules，同時保留
-project-local 的 `AGENTS.md`、`CONTEXT.md` 與 ADR。WSL、Linux、Raspberry Pi、
+project-local 的 `CONTEXT.md` 與 ADR。WSL、Linux、Raspberry Pi、
 Windows、Link／Copy Mode、Git ignore 與安全行為詳見
 [專案 Agent Skills 啟用指南](PROJECT_SETUP.md)。
 ## 更新
@@ -91,9 +91,10 @@ grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
 
 ## 專案文件
 
-每個開發專案自行保存 `.agents/AGENTS.md`、`.agents/CONTEXT.md` 與
-`.agents/docs/adr/`；共享的 skills 與 rules 僅以機器本機連結接入。完整目錄結構
-與 Git 管理方式見 [PROJECT_SETUP.md](PROJECT_SETUP.md)。
+每個開發專案自行保存 `.agents/CONTEXT.md` 與 `.agents/docs/adr/`；共享的 skills
+與 rules 僅以機器本機連結接入。專案若需要特殊操作規則，可自行維護根目錄
+`AGENTS.md` 或 `GEMINI.md`。完整目錄結構與 Git 管理方式見
+[PROJECT_SETUP.md](PROJECT_SETUP.md)。
 
 ## 維護
 
