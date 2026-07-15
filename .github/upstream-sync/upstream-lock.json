@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/mattpocock/skills",
-  "commit": "66898f60e8c744e269f8ce06c2b2b99ce7660d5f",
-  "syncedAt": "2026-07-14T03:17:14.490Z",
+  "commit": "e9fcdf95b402d360f90f1db8d776d5dd450f9234",
+  "syncedAt": "2026-07-15T03:06:47.629Z",
   "files": [
     "LICENSE",
     "docs/engineering/ask-matt.md",
@@ -84,6 +84,8 @@
     "skills/in-progress/setup-ts-deep-modules/SKILL.md",
     "skills/in-progress/setup-ts-deep-modules/agents/openai.yaml",
     "skills/in-progress/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+    "skills/in-progress/to-questionnaire/SKILL.md",
+    "skills/in-progress/to-questionnaire/agents/openai.yaml",
     "skills/in-progress/wizard/SKILL.md",
     "skills/in-progress/wizard/agents/openai.yaml",
     "skills/in-progress/wizard/template.sh",
