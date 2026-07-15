@@ -106,7 +106,16 @@ Cloudflare commit 與檔案 inventory 記錄在
 
 ## GitHub 設定
 
-- `Settings → Actions → General`：允許 GitHub Actions 建立 Pull Request。
+- 建立 [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)，
+  repository access 僅選擇此 repository，repository permission 僅將
+  `Pull requests` 設為 `Read and write`。
+- 到 `Settings → Secrets and variables → Actions` 建立
+  [repository secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+  `SYNC_PR_TOKEN`，值為上述 token。兩個同步 workflow 只在建立 review-only PR
+  的 step 使用此 secret；同步分支仍由權限限縮為 `contents: write` 的
+  `GITHUB_TOKEN` 推送。
+- Token 到期或撤銷後必須更新 `SYNC_PR_TOKEN`；workflow 若找不到 secret，會在
+  呼叫 GitHub API 前以明確錯誤停止。
 - Sync job 會在建立 PR 前完成測試，但不會自動合併。若 ruleset 要求另一個 PR
   check，需為 bot PR 提供 GitHub App／PAT，或人工核准該 workflow run。
 

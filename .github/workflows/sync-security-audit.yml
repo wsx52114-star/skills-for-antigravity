@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: sync-cloudflare-security-audit
@@ -102,10 +101,14 @@ jobs:
       - name: Create pull request
         if: steps.upstream.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.SYNC_PR_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
+          if [[ -z "${GH_TOKEN:-}" ]]; then
+            echo "::error::Required repository secret SYNC_PR_TOKEN is not configured."
+            exit 1
+          fi
           branch="${{ steps.commit.outputs.branch }}"
           gh pr create \
             --head "$branch" \
