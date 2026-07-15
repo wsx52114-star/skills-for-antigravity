@@ -98,7 +98,6 @@ jobs:
 
       - name: Create or update pull request
         if: steps.upstream.outputs.changed == 'true' && steps.classify.outputs.blocked == 'false'
-        id: pull_request
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -107,19 +106,11 @@ jobs:
           branch="${{ steps.classify.outputs.branch }}"
           url="$(gh pr list --head "$branch" --state open --json url --jq '.[0].url // empty')"
           if [[ -z "$url" ]]; then
-            url="$(gh pr create \
+            gh pr create \
               --head "$branch" \
               --base main \
               --title "chore: sync upstream ${{ steps.upstream.outputs.short_sha }}" \
-              --body "Automated upstream snapshot. Structural change: ${{ steps.classify.outputs.structural }}. Upstream commit: ${{ steps.upstream.outputs.sha }}.")"
+              --body "Automated upstream snapshot. Structural change: ${{ steps.classify.outputs.structural }}. Upstream commit: ${{ steps.upstream.outputs.sha }}. Human review is required."
+          else
+            echo "Pull request already exists: $url"
           fi
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-
-      - name: Merge validated content-only update
-        if: >-
-          steps.upstream.outputs.changed == 'true' &&
-          steps.classify.outputs.blocked == 'false' &&
-          steps.classify.outputs.structural == 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh pr merge --squash --auto "${{ steps.pull_request.outputs.url }}"

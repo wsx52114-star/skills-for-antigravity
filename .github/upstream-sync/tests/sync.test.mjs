@@ -33,7 +33,7 @@ function classify(repo, before, after) {
   return spawnSync(process.execPath, [classifier, "--repo-root", repo, "--before", before, "--after", after], { encoding: "utf8" });
 }
 
-test("content-only upstream edits are eligible for automatic merge", () => {
+test("content-only upstream edits are classified as non-structural", () => {
   const item = fixture();
   try {
     const before = git(item.repo, "rev-parse", "HEAD");

@@ -12,8 +12,10 @@ const securityAuditWorkflow = readFileSync(
 );
 const validationWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "validate-antigravity.yml"), "utf8");
 
-test("content-only synchronization waits for required checks", () => {
-  assert.match(syncWorkflow, /gh pr merge --squash --auto/);
+test("mattpocock synchronization opens a review-only pull request", () => {
+  assert.match(syncWorkflow, /gh pr create/);
+  assert.doesNotMatch(syncWorkflow, /gh pr merge/);
+  assert.doesNotMatch(syncWorkflow, /--auto(?:\s|$)/m);
 });
 
 test("validation workflow uses read-only repository permissions", () => {

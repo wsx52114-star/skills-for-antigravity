@@ -81,6 +81,7 @@ skills/security-audit/** → skills/security/security-audit/**
 - Claude-only 與 deprecated skills 不得進入 runtime。
 - 專案的 `CONTEXT.md` 與 `docs/adr/` 必須留在該專案。
 - Runtime skill 的新增、刪除、改名或移動必須人工審查。
+- 所有 upstream 同步 Pull Request 都必須人工審查，不得 auto-merge。
 - `rules/skills.md` 必須保持在 12,000 字元內，並由 rules contract test 檢查舊路徑與名稱。
 
 ## 自動更新
@@ -91,14 +92,14 @@ skills/security-audit/** → skills/security/security-audit/**
 2. 套用允許的檔案並更新 upstream lock。
 3. 執行測試與 repository validation。
 4. 建立同步 Pull Request。
-5. 既有 skill 內已修改的 Markdown 可自動合併；其他變更等待人工審查。
+5. 等待人工審查與合併；content-only 更新也不例外。
 
 上游 commit 記錄在 [`.github/upstream-sync/upstream-lock.json`](.github/upstream-sync/upstream-lock.json)。
 
 [`.github/workflows/sync-security-audit.yml`](.github/workflows/sync-security-audit.yml)
 每日或手動檢查 Cloudflare 上游，驗證 snapshot 僅含一般檔案後，套用到獨立
-ownership 邊界並建立 Pull Request。此流程永不 auto-merge，因為上游 skill
-包含可執行的 validator；每次更新都必須人工審查。
+ownership 邊界並建立 Pull Request。此流程同樣不會 auto-merge；每次更新都必須
+人工審查。
 
 Cloudflare commit 與檔案 inventory 記錄在
 [`.github/security-audit-sync/upstream-lock.json`](.github/security-audit-sync/upstream-lock.json)。
@@ -106,8 +107,8 @@ Cloudflare commit 與檔案 inventory 記錄在
 ## GitHub 設定
 
 - `Settings → Actions → General`：允許 GitHub Actions 建立 Pull Request。
-- `Settings → General → Pull Requests`：啟用 squash merging 與 auto-merge。
-- Sync job 會在建立 PR 前完成測試；若 ruleset 要求另一個 PR check，需為 bot PR 提供 GitHub App／PAT，或人工核准該 workflow run。
+- Sync job 會在建立 PR 前完成測試，但不會自動合併。若 ruleset 要求另一個 PR
+  check，需為 bot PR 提供 GitHub App／PAT，或人工核准該 workflow run。
 
 ## 驗證
 
