@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/mattpocock/skills",
-  "commit": "e9fcdf95b402d360f90f1db8d776d5dd450f9234",
-  "syncedAt": "2026-07-15T03:06:47.629Z",
+  "commit": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+  "syncedAt": "2026-07-17T03:26:22.724Z",
   "files": [
     "LICENSE",
     "docs/engineering/ask-matt.md",
@@ -79,6 +79,8 @@
     "skills/engineering/wayfinder/SKILL.md",
     "skills/engineering/wayfinder/agents/openai.yaml",
     "skills/in-progress/README.md",
+    "skills/in-progress/batch-grill-me/SKILL.md",
+    "skills/in-progress/batch-grill-me/agents/openai.yaml",
     "skills/in-progress/loop-me/SKILL.md",
     "skills/in-progress/loop-me/agents/openai.yaml",
     "skills/in-progress/setup-ts-deep-modules/SKILL.md",
