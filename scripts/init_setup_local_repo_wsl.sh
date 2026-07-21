@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 SKILLS_REPO="$(cd -- "$SCRIPT_DIR/.." && pwd -P)"
 PROJECT_ROOT="$(pwd -P)"
 AGENTS_DIR="$PROJECT_ROOT/.agents"
+SKILLS_DIR="$AGENTS_DIR/skills"
 
 fail() {
   printf 'Error: %s\n' "$1" >&2
@@ -62,6 +63,18 @@ ensure_link() {
   printf 'Linked: %s -> %s\n' "$destination" "$source"
 }
 
+declare -A SKILL_SOURCES=()
+while IFS= read -r -d '' skill_file; do
+  skill_source="$(dirname -- "$skill_file")"
+  skill_name="$(basename -- "$skill_source")"
+  if [[ -n "${SKILL_SOURCES[$skill_name]+present}" ]]; then
+    fail "Duplicate skill name '$skill_name': ${SKILL_SOURCES[$skill_name]} and $skill_source"
+  fi
+  SKILL_SOURCES["$skill_name"]="$skill_source"
+done < <(find "$SKILLS_REPO/skills" -type f -name SKILL.md -print0 | sort -z)
+
+[[ ${#SKILL_SOURCES[@]} -gt 0 ]] || fail "No skills found under: $SKILLS_REPO/skills"
+
 write_if_missing() {
   local path="$1"
   local content="$2"
@@ -85,8 +98,23 @@ check_directory_slot "$AGENTS_DIR/docs"
 check_directory_slot "$AGENTS_DIR/docs/adr"
 check_file_slot "$AGENTS_DIR/CONTEXT.md"
 check_file_slot "$AGENTS_DIR/.gitignore"
-check_link_slot "$SKILLS_REPO/skills" "$AGENTS_DIR/skills"
 check_link_slot "$SKILLS_REPO/rules" "$AGENTS_DIR/rules"
+
+legacy_skills_link=false
+if [[ -L "$SKILLS_DIR" ]]; then
+  actual="$(readlink -f -- "$SKILLS_DIR" || true)"
+  [[ "$actual" == "$SKILLS_REPO/skills" ]] || \
+    fail "Existing symlink points to '$actual'; expected '$SKILLS_REPO/skills': $SKILLS_DIR"
+  legacy_skills_link=true
+elif [[ -e "$SKILLS_DIR" && ! -d "$SKILLS_DIR" ]]; then
+  fail "Expected a directory but found another file type: $SKILLS_DIR"
+fi
+
+if [[ "$legacy_skills_link" == false ]]; then
+  for skill_name in "${!SKILL_SOURCES[@]}"; do
+    check_link_slot "${SKILL_SOURCES[$skill_name]}" "$SKILLS_DIR/$skill_name"
+  done
+fi
 
 mkdir -p -- "$AGENTS_DIR/docs/adr"
 
@@ -98,7 +126,18 @@ write_if_missing "$AGENTS_DIR/.gitignore" '# Machine-local shared Agent home lin
 /skills
 /rules'
 
-ensure_link "$SKILLS_REPO/skills" "$AGENTS_DIR/skills"
+if [[ "$legacy_skills_link" == true ]]; then
+  rm -- "$SKILLS_DIR"
+  mkdir -p -- "$SKILLS_DIR"
+  printf 'Migrated: %s from whole-directory link to flat skill links\n' "$SKILLS_DIR"
+else
+  mkdir -p -- "$SKILLS_DIR"
+fi
+
+while IFS= read -r skill_name; do
+  ensure_link "${SKILL_SOURCES[$skill_name]}" "$SKILLS_DIR/$skill_name"
+done < <(printf '%s\n' "${!SKILL_SOURCES[@]}" | sort)
+
 ensure_link "$SKILLS_REPO/rules" "$AGENTS_DIR/rules"
 
 if git -C "$PROJECT_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1 &&

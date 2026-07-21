@@ -39,7 +39,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 ### 專案連結
 
-開發專案可透過 Symlink／Junction 共用 Agent home 的 skills 與 rules，同時保留
+開發專案可透過 flat Symlink／Junction 共用 Agent home 的 skills 與 rules，同時保留
 project-local 的 `CONTEXT.md` 與 ADR。WSL、Linux、Raspberry Pi、
 Windows、Link／Copy Mode、Git ignore 與安全行為詳見
 [專案 Agent Skills 啟用指南](PROJECT_SETUP.md)。
@@ -71,7 +71,7 @@ git -C ~/.agents pull --ff-only
 
 ## Skills 關鍵字與用途
 
-下表以 skill name 作為關鍵字。可直接輸入 `skill-name` 或 `/skill-name`；標示
+下表以 skill name 作為關鍵字。完成專案初始化後，可輸入 `/skill-name`，也可在自然語言中明確提到 `skill-name`；標示
 「需明確指定」的 skill 只有在使用者點名時才會執行，「可自動選用」則可由
 Antigravity 依需求與 frontmatter description 判斷是否使用。
 

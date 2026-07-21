@@ -28,7 +28,7 @@ function runSetup(project) {
   });
 }
 
-test("WSL setup creates project-local context and shared directory links", () => {
+test("WSL setup creates project-local context and flat skill links", () => {
   const project = projectFixture();
   try {
     const result = runSetup(project);
@@ -38,9 +38,18 @@ test("WSL setup creates project-local context and shared directory links", () =>
     assert.throws(() => lstatSync(path.join(agents, "AGENTS.md")), /ENOENT/);
     assert.equal(lstatSync(path.join(agents, "CONTEXT.md")).isFile(), true);
     assert.equal(lstatSync(path.join(agents, "docs", "adr")).isDirectory(), true);
-    assert.equal(lstatSync(path.join(agents, "skills")).isSymbolicLink(), true);
+    assert.equal(lstatSync(path.join(agents, "skills")).isDirectory(), true);
     assert.equal(lstatSync(path.join(agents, "rules")).isSymbolicLink(), true);
-    assert.equal(realpathSync(path.join(agents, "skills")), realpathSync(path.join(repoRoot, "skills")));
+    assert.equal(lstatSync(path.join(agents, "skills", "tdd")).isSymbolicLink(), true);
+    assert.equal(lstatSync(path.join(agents, "skills", "i-have-adhd")).isSymbolicLink(), true);
+    assert.equal(
+      realpathSync(path.join(agents, "skills", "tdd")),
+      realpathSync(path.join(repoRoot, "skills", "engineering", "tdd")),
+    );
+    assert.equal(
+      realpathSync(path.join(agents, "skills", "i-have-adhd")),
+      realpathSync(path.join(repoRoot, "skills", "productivity", "i-have-adhd")),
+    );
     assert.equal(realpathSync(path.join(agents, "rules")), realpathSync(path.join(repoRoot, "rules")));
     assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/skills$/m);
     assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/rules$/m);
@@ -61,22 +70,41 @@ test("WSL setup is idempotent and preserves local project knowledge", () => {
     assert.equal(result.status, 0, result.stderr);
     assert.equal(readFileSync(context, "utf8"), localContent);
     assert.match(result.stdout, /Unchanged: .*CONTEXT\.md/);
-    assert.match(result.stdout, /Unchanged: .*skills/);
+    assert.match(result.stdout, /Unchanged: .*skills\/tdd/);
     assert.match(result.stdout, /Unchanged: .*rules/);
   } finally {
     rmSync(project, { recursive: true, force: true });
   }
 });
 
-test("WSL setup rejects a conflicting skills directory before writing local files", () => {
+test("WSL setup rejects a conflicting flat skill before writing local files", () => {
   const project = projectFixture();
   try {
-    mkdirSync(path.join(project, ".agents", "skills"), { recursive: true });
+    mkdirSync(path.join(project, ".agents", "skills", "tdd"), { recursive: true });
 
     const result = runSetup(project);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /Refusing to replace an existing file or directory/);
     assert.throws(() => lstatSync(path.join(project, ".agents", "CONTEXT.md")), /ENOENT/);
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("WSL setup migrates the legacy whole-directory skills link", () => {
+  const project = projectFixture();
+  try {
+    const agents = path.join(project, ".agents");
+    mkdirSync(agents, { recursive: true });
+    const legacy = path.join(agents, "skills");
+    const result = spawnSync("ln", ["-s", path.join(repoRoot, "skills"), legacy], { encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+
+    const setup = runSetup(project);
+    assert.equal(setup.status, 0, setup.stderr);
+    assert.equal(lstatSync(legacy).isDirectory(), true);
+    assert.equal(lstatSync(path.join(legacy, "tdd")).isSymbolicLink(), true);
+    assert.match(setup.stdout, /Migrated: .*\.agents\/skills/);
   } finally {
     rmSync(project, { recursive: true, force: true });
   }

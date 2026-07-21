@@ -144,6 +144,23 @@ $skillsSource = Join-Path $SkillsRepo "skills"
 $rulesSource = Join-Path $SkillsRepo "rules"
 $skillsDestination = Join-Path $AgentsDir "skills"
 $rulesDestination = Join-Path $AgentsDir "rules"
+$skillSources = @(
+    Get-ChildItem -LiteralPath $skillsSource -Filter "SKILL.md" -File -Recurse |
+        Sort-Object FullName |
+        ForEach-Object {
+            [PSCustomObject]@{
+                Name = $_.Directory.Name
+                Source = $_.Directory.FullName
+            }
+        }
+)
+if ($skillSources.Count -eq 0) {
+    throw "No skills found under: $skillsSource"
+}
+$duplicateSkills = @($skillSources | Group-Object Name | Where-Object Count -gt 1)
+if ($duplicateSkills.Count -gt 0) {
+    throw "Duplicate skill name: $($duplicateSkills[0].Name)"
+}
 
 # Preflight every destination before creating or changing anything.
 Assert-DirectorySlot $AgentsDir
@@ -151,11 +168,36 @@ Assert-DirectorySlot (Join-Path $AgentsDir "docs")
 Assert-DirectorySlot (Join-Path $AgentsDir "docs\adr")
 Assert-FileSlot (Join-Path $AgentsDir "CONTEXT.md")
 Assert-FileSlot (Join-Path $AgentsDir ".gitignore")
+$legacySkillsLink = $false
+if (Test-PathExists $skillsDestination) {
+    $skillsItem = Get-Item -LiteralPath $skillsDestination -Force
+    if ($null -ne $skillsItem.LinkType) {
+        $target = [string]$skillsItem.Target
+        if (-not [System.IO.Path]::IsPathRooted($target)) {
+            $target = Join-Path $skillsItem.Parent.FullName $target
+        }
+        if ((Get-NormalizedPath $target) -ne (Get-NormalizedPath $skillsSource)) {
+            throw "Existing link points to '$target'; expected '$skillsSource': $skillsDestination"
+        }
+        $legacySkillsLink = $true
+    } elseif (-not $skillsItem.PSIsContainer) {
+        throw "Expected a directory but found another file type: $skillsDestination"
+    }
+}
+
+if (-not $legacySkillsLink) {
+    foreach ($skill in $skillSources) {
+        $destination = Join-Path $skillsDestination $skill.Name
+        if ($Mode -eq "Link") {
+            Assert-LinkSlot $skill.Source $destination
+        } else {
+            Assert-DirectorySlot $destination
+        }
+    }
+}
 if ($Mode -eq "Link") {
-    Assert-LinkSlot $skillsSource $skillsDestination
     Assert-LinkSlot $rulesSource $rulesDestination
 } else {
-    Assert-DirectorySlot $skillsDestination
     Assert-DirectorySlot $rulesDestination
 }
 
@@ -173,7 +215,18 @@ Write-FileIfMissing (Join-Path $AgentsDir ".gitignore") @'
 /rules
 '@
 
-Install-SharedDirectory $skillsSource $skillsDestination $Mode
+if ($legacySkillsLink) {
+    Remove-Item -LiteralPath $skillsDestination -Force
+    New-Item -ItemType Directory -Path $skillsDestination | Out-Null
+    Write-Host "Migrated: $skillsDestination from whole-directory link to flat skill entries"
+} elseif (-not (Test-PathExists $skillsDestination)) {
+    New-Item -ItemType Directory -Path $skillsDestination | Out-Null
+}
+
+foreach ($skill in $skillSources) {
+    Install-SharedDirectory $skill.Source (Join-Path $skillsDestination $skill.Name) $Mode
+}
+
 Install-SharedDirectory $rulesSource $rulesDestination $Mode
 
 Write-Host "Agent project initialization complete."
