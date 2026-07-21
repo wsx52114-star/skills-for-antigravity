@@ -19,6 +19,9 @@ const controlPlaneRoot = path.join(repoRoot, ".github", "upstream-sync");
 const securityAuditControlPlaneRoot = path.join(repoRoot, ".github", "security-audit-sync");
 const securityAuditRepository = "https://github.com/cloudflare/security-audit-skill";
 const securityAuditDestinationPrefix = "skills/security/security-audit/";
+const iHaveAdhdControlPlaneRoot = path.join(repoRoot, ".github", "i-have-adhd-sync");
+const iHaveAdhdRepository = "https://github.com/ayghri/i-have-adhd";
+const iHaveAdhdDestinationPrefix = "skills/productivity/i-have-adhd/";
 const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
@@ -110,13 +113,19 @@ const required = [
   ".github/upstream-sync/ownership.json",
   ".github/security-audit-sync/apply-upstream-snapshot.mjs",
   ".github/security-audit-sync/upstream-lock.json",
+  ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
+  ".github/i-have-adhd-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
   "skills/security/security-audit/LICENSE",
   "skills/security/security-audit/SKILL.md",
   "skills/security/security-audit/report-schema.json",
+  "skills/productivity/i-have-adhd/LICENSE",
+  "skills/productivity/i-have-adhd/SKILL.md",
+  "skills/productivity/i-have-adhd/agents/openai.yaml",
   "MAINTENANCE.md",
   ".github/workflows/sync-security-audit.yml",
+  ".github/workflows/sync-i-have-adhd.yml",
   ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
 ];
@@ -139,6 +148,17 @@ try {
   JSON.parse(readFileSync(path.join(repoRoot, "skills/security/security-audit/report-schema.json"), "utf8"));
 } catch (error) {
   errors.push(`Invalid security-audit report schema: ${error.message}`);
+}
+
+try {
+  const skill = readFileSync(path.join(repoRoot, "skills/productivity/i-have-adhd/SKILL.md"), "utf8");
+  const codex = readFileSync(path.join(repoRoot, "skills/productivity/i-have-adhd/agents/openai.yaml"), "utf8");
+  if (!/^disable-model-invocation:\s*true\s*$/m.test(skill) ||
+      !/^\s*allow_implicit_invocation:\s*false\s*$/m.test(codex)) {
+    errors.push("i-have-adhd must require explicit invocation");
+  }
+} catch (error) {
+  errors.push(`Invalid i-have-adhd invocation policy: ${error.message}`);
 }
 
 try {
@@ -206,6 +226,27 @@ try {
   }
 } catch (error) {
   errors.push(`Invalid security-audit lock: ${error.message}`);
+}
+
+try {
+  const lock = JSON.parse(readFileSync(path.join(iHaveAdhdControlPlaneRoot, "upstream-lock.json"), "utf8"));
+  if (lock.repository !== iHaveAdhdRepository) errors.push("i-have-adhd lock repository does not match upstream");
+  if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "")) errors.push("i-have-adhd lock commit must be a full lowercase commit SHA");
+  const sortedUnique = Array.isArray(lock.files) ? [...new Set(lock.files)].sort() : [];
+  const actual = repositoryFiles
+    .filter((file) => file.startsWith(iHaveAdhdDestinationPrefix))
+    .map((file) => {
+      const relative = file.slice(iHaveAdhdDestinationPrefix.length);
+      return relative === "LICENSE" ? "LICENSE" : `skills/i-have-adhd/${relative}`;
+    })
+    .sort();
+  if (!Array.isArray(lock.files) || JSON.stringify(lock.files) !== JSON.stringify(sortedUnique)) {
+    errors.push("i-have-adhd lock files must be a sorted unique array");
+  } else if (JSON.stringify(sortedUnique) !== JSON.stringify(actual)) {
+    errors.push("i-have-adhd lock inventory does not match the installed files");
+  }
+} catch (error) {
+  errors.push(`Invalid i-have-adhd lock: ${error.message}`);
 }
 
 if (errors.length) {

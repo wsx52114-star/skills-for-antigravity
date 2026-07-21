@@ -10,6 +10,10 @@ const securityAuditWorkflow = readFileSync(
   path.join(repoRoot, ".github", "workflows", "sync-security-audit.yml"),
   "utf8",
 );
+const iHaveAdhdWorkflow = readFileSync(
+  path.join(repoRoot, ".github", "workflows", "sync-i-have-adhd.yml"),
+  "utf8",
+);
 const validationWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "validate-antigravity.yml"), "utf8");
 
 test("mattpocock synchronization opens a review-only pull request", () => {
@@ -42,4 +46,14 @@ test("Cloudflare security-audit synchronization validates and opens a review-onl
   assert.doesNotMatch(securityAuditWorkflow, /pull-requests:\s*write/);
   assert.doesNotMatch(securityAuditWorkflow, /gh pr merge/);
   assert.doesNotMatch(securityAuditWorkflow, /--auto(?:\s|$)/m);
+});
+
+test("i-have-adhd synchronization validates and opens a review-only pull request", () => {
+  assert.match(iHaveAdhdWorkflow, /https:\/\/github\.com\/ayghri\/i-have-adhd\.git/);
+  assert.match(iHaveAdhdWorkflow, /git ls-tree -r FETCH_HEAD/);
+  assert.match(iHaveAdhdWorkflow, /i-have-adhd-sync\/apply-upstream-snapshot\.mjs/);
+  assert.match(iHaveAdhdWorkflow, /gh api --method POST/);
+  assert.match(iHaveAdhdWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
+  assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr create/);
+  assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr merge|--auto(?:\s|$)/m);
 });

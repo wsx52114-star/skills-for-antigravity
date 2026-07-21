@@ -19,10 +19,10 @@ function fixture(lock) {
   const policy = {
     upstream: "https://github.com/mattpocock/skills",
     upstreamAllowlist: ["skills/", "docs/", "LICENSE"],
-    blockedUpstreamPaths: ["skills/security/"],
+    blockedUpstreamPaths: ["skills/security/", "skills/productivity/i-have-adhd/"],
     excludedSkillNames: ["claude-handoff"],
     excludedSkillPathSegments: ["deprecated"],
-    forkOwned: ["skills/security/"],
+    forkOwned: ["skills/security/", "skills/productivity/i-have-adhd/"],
   };
   write(root, ".github/upstream-sync/ownership.json", `${JSON.stringify(policy)}\n`);
   write(root, ".github/upstream-sync/upstream-lock.json", `${JSON.stringify(lock)}\n`);
@@ -39,20 +39,34 @@ function fixture(lock) {
       ],
     })}\n`,
   );
+  write(
+    root,
+    ".github/i-have-adhd-sync/upstream-lock.json",
+    `${JSON.stringify({
+      repository: "https://github.com/ayghri/i-have-adhd",
+      commit: "c".repeat(40),
+      files: ["LICENSE", "skills/i-have-adhd/SKILL.md", "skills/i-have-adhd/agents/openai.yaml"],
+    })}\n`,
+  );
   for (const required of [
     ".github/upstream-sync/apply-upstream-snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/security-audit-sync/apply-upstream-snapshot.mjs",
+    ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
     "rules/skills.md",
     "skills/security/README.md",
     "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
     "MAINTENANCE.md",
     ".github/workflows/sync-security-audit.yml",
+    ".github/workflows/sync-i-have-adhd.yml",
     ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
   write(root, "skills/security/security-audit/SKILL.md", "---\nname: security-audit\ndescription: Audit.\n---\n");
+  write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
+  write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\ndisable-model-invocation: true\n---\n");
+  write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: false\n");
   write(root, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
   write(root, "LICENSE", "MIT\n");
   return root;
@@ -109,6 +123,22 @@ test("validator rejects a Cloudflare lock whose inventory does not match the ins
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
     assert.match(result.stderr, /Security-audit lock inventory does not match/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("validator rejects implicit invocation for i-have-adhd", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: true\n");
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /i-have-adhd must require explicit invocation/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

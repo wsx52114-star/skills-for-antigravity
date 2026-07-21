@@ -9,6 +9,7 @@
     ".github/upstream-sync/",
     "rules/",
     "skills/security/",
+    "skills/productivity/i-have-adhd/",
     "docs/security/"
   ],
   "excludedSkillNames": [
@@ -22,6 +23,7 @@
     ".github/upstream-sync/",
     "rules/",
     "skills/security/",
+    "skills/productivity/i-have-adhd/",
     "docs/security/",
     ".github/workflows/",
     "MAINTENANCE.md",
