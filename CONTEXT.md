@@ -21,8 +21,8 @@ _Avoid_: status, stage
 ### Skill distribution
 
 **Agent home**:
-The global collection from which Antigravity loads shared **Runtime skills** and **Compatibility rules**.
-_Avoid_: global project context, runtime repo
+The centrally managed source repository linked into selected workspaces to provide shared **Runtime skills** and **Compatibility rules**.
+_Avoid_: native Antigravity global scope, global project context, runtime repo
 
 **Runtime skill**:
 A skill included in this distribution and available for Antigravity to invoke.

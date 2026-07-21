@@ -1,8 +1,8 @@
 # Skills for Antigravity
 
-一套供 Antigravity 使用的全域工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，保留原始 skill 內容，並加入 Antigravity rules 與 `security-audit`。
+一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，保留原始 skill 內容，並加入 Antigravity rules 與 `security-audit`。
 
-Repository 可直接安裝到 `~/.agents`。各開發專案則保有自己的領域語言、架構決策與程式碼。
+Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開發專案再透過 project-local 連結啟用，並保有自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的 global configuration。
 
 ## 內容
 
@@ -20,7 +20,7 @@ Repository 可直接安裝到 `~/.agents`。各開發專案則保有自己的領
 
 ## 安裝
 
-### 全域安裝
+### 集中式安裝
 
 Windows：
 
@@ -148,7 +148,7 @@ grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
 ```
 
 這份索引是目前 Runtime skills 的閱讀入口；各 skill 的 frontmatter 與完整行為仍以
-自己的 `SKILL.md` 為準。[`rules/skills.md`](rules/skills.md) 負責全域觸發、編排與
+自己的 `SKILL.md` 為準。[`rules/skills.md`](rules/skills.md) 負責 workspace 內的觸發、編排與
 Antigravity 轉譯。
 
 ## 專案文件

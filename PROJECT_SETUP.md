@@ -2,6 +2,8 @@
 
 這份指南說明如何讓開發專案共享 Agent home 的 skills 與 rules，同時保留自己的領域語言與架構決策。
 
+這是 workspace-local 啟用方式，不是將 skills 安裝到 Antigravity 原生的 `~/.gemini/config/skills/` global scope。
+
 ## 目標結構
 
 ```text
