@@ -1,10 +1,11 @@
 {
   "repository": "https://github.com/ayghri/i-have-adhd",
-  "commit": "0241185d6c7f2d0763a988ce52eceb13ea9f5c1f",
-  "syncedAt": "2026-07-22T04:21:52.360Z",
+  "commit": "34f746dda9664fb5ea52149be5dbab2adc6e60d3",
+  "syncedAt": "2026-07-31T04:28:55.149Z",
   "files": [
     "LICENSE",
     "skills/i-have-adhd/SKILL.md",
+    "skills/i-have-adhd/agents/gemini.toml",
     "skills/i-have-adhd/agents/openai.yaml"
   ]
 }
