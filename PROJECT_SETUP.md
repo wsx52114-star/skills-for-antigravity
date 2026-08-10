@@ -24,7 +24,7 @@ project/
 - Flat skill links 符合 Antigravity 官方 `.agents/skills/<skill-name>/SKILL.md` 結構，可使用 `/skill-name`。
 - Agent home 執行 `git pull --ff-only` 後，既有 Link Mode skills 與 rules 立即更新；新增或移除 skill 時需重跑初始化 script 以刷新 links。
 
-初始化不需要刪除既有的 Gemini、Antigravity 或其他 Agent 設定。
+初始化不會修改既有的 Agent 設定。
 
 ## WSL／Linux／Raspberry Pi
 
@@ -77,8 +77,8 @@ Skills 以 `.agents/skills/<skill-name>/SKILL.md` 的官方 flat layout 接入�
 可用 `/skill-name`，也可在自然語言中明確提到 skill name。
 
 若專案有特殊的 build、test 或修改限制，可由該專案自行維護根目錄
-`AGENTS.md` 或 `GEMINI.md`。這些操作規則不應寫入 glossary-only 的
-`.agents/CONTEXT.md`，初始化 script 也不會建立或修改它們。
+`AGENTS.md`。這些操作規則不應寫入 glossary-only 的 `.agents/CONTEXT.md`，
+初始化 script 也不會建立或修改它。
 
 ## Git 管理
 
@@ -132,7 +132,7 @@ Copy Mode 每次更新後都必須重新執行 PowerShell script。
 
 初始化 scripts 遵守以下規則：
 
-- 不建立或修改專案的 `AGENTS.md`、`GEMINI.md`。
+- 不建立或修改專案的 `AGENTS.md`。
 - 不覆寫既有 `CONTEXT.md` 或 ADR。
 - 不執行 recursive deletion。
 - 正確連結會保持不變。

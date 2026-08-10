@@ -157,7 +157,7 @@ Antigravity 轉譯。
 
 每個開發專案自行保存 `.agents/CONTEXT.md` 與 `.agents/docs/adr/`；共享的 skills
 與 rules 僅以機器本機連結接入。專案若需要特殊操作規則，可自行維護根目錄
-`AGENTS.md` 或 `GEMINI.md`。完整目錄結構與 Git 管理方式見
+`AGENTS.md`。完整目錄結構與 Git 管理方式見
 [PROJECT_SETUP.md](PROJECT_SETUP.md)。
 
 ## 維護
