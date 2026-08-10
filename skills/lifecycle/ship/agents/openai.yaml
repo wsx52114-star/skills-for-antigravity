@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ship"
+  short_description: "Decide release readiness and prepare a safe rollout"
+  default_prompt: "Use $ship to decide release readiness and prepare rollout."
+policy:
+  allow_implicit_invocation: false

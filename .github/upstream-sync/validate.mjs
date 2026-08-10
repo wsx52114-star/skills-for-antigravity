@@ -22,6 +22,10 @@ const securityAuditDestinationPrefix = "skills/security/security-audit/";
 const iHaveAdhdControlPlaneRoot = path.join(repoRoot, ".github", "i-have-adhd-sync");
 const iHaveAdhdRepository = "https://github.com/ayghri/i-have-adhd";
 const iHaveAdhdDestinationPrefix = "skills/productivity/i-have-adhd/";
+const agentSkillsControlPlaneRoot = path.join(repoRoot, ".github", "agent-skills-sync");
+const agentSkillsRepository = "https://github.com/addyosmani/agent-skills";
+const agentSkillsDestinationPrefix = "skills/addyosmani-pack/";
+const lifecyclePhases = ["spec", "planning", "build", "test", "review", "ship"];
 const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
@@ -115,6 +119,10 @@ const required = [
   ".github/security-audit-sync/upstream-lock.json",
   ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
   ".github/i-have-adhd-sync/upstream-lock.json",
+  ".github/agent-skills-sync/apply-upstream-snapshot.mjs",
+  ".github/agent-skills-sync/README.md",
+  ".github/agent-skills-sync/selection.json",
+  ".github/agent-skills-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
   "skills/security/security-audit/LICENSE",
@@ -126,11 +134,17 @@ const required = [
   "MAINTENANCE.md",
   ".github/workflows/sync-security-audit.yml",
   ".github/workflows/sync-i-have-adhd.yml",
+  ".github/workflows/sync-agent-skills.yml",
   ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
 ];
 for (const relative of required) {
   if (!existsSync(path.join(repoRoot, relative))) errors.push(`Required fork file is missing: ${relative}`);
+}
+for (const phase of lifecyclePhases) {
+  for (const relative of [`skills/lifecycle/${phase}/SKILL.md`, `skills/lifecycle/${phase}/agents/openai.yaml`]) {
+    if (!existsSync(path.join(repoRoot, relative))) errors.push(`Required lifecycle file is missing: ${relative}`);
+  }
 }
 
 for (const forbidden of [".agents", ".antigravity"]) {
@@ -247,6 +261,77 @@ try {
   }
 } catch (error) {
   errors.push(`Invalid i-have-adhd lock: ${error.message}`);
+}
+
+try {
+  const selection = JSON.parse(readFileSync(path.join(agentSkillsControlPlaneRoot, "selection.json"), "utf8"));
+  const lock = JSON.parse(readFileSync(path.join(agentSkillsControlPlaneRoot, "upstream-lock.json"), "utf8"));
+  const sortedSkills = Array.isArray(selection.skills) ? [...new Set(selection.skills)].sort() : [];
+  if (selection.repository !== agentSkillsRepository || lock.repository !== agentSkillsRepository) {
+    errors.push("Addy repository metadata does not match upstream");
+  }
+  if (!Array.isArray(selection.skills) || JSON.stringify(selection.skills) !== JSON.stringify(sortedSkills)) {
+    errors.push("Addy selection skills must be a sorted unique array");
+  }
+  if (selection.skills?.includes("using-agent-skills")) errors.push("Addy selection must not install its competing router");
+  if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "")) errors.push("Addy lock commit must be a full lowercase commit SHA");
+  if (JSON.stringify(lock.skills) !== JSON.stringify(sortedSkills)) errors.push("Addy lock skills do not match selection");
+
+  const sortedFiles = Array.isArray(lock.files) ? [...new Set(lock.files)].sort() : [];
+  const actual = repositoryFiles
+    .filter((file) => file.startsWith(agentSkillsDestinationPrefix))
+    .map((file) => file.slice(agentSkillsDestinationPrefix.length))
+    .sort();
+  if (!Array.isArray(lock.files) || JSON.stringify(lock.files) !== JSON.stringify(sortedFiles)) {
+    errors.push("Addy lock files must be a sorted unique array");
+  } else if (JSON.stringify(sortedFiles) !== JSON.stringify(actual)) {
+    errors.push("Addy lock inventory does not match installed files");
+  }
+  for (const name of sortedSkills) {
+    const relative = `skills/addyosmani-pack/skills/${name}/SKILL.md`;
+    const skillPath = path.join(repoRoot, relative);
+    if (!existsSync(skillPath)) {
+      errors.push(`Selected Addy skill is missing: ${name}`);
+      continue;
+    }
+    const content = readFileSync(skillPath, "utf8");
+    if (/^disable-model-invocation:\s*true\s*$/m.test(content)) {
+      errors.push(`Lifecycle dependency cannot be explicit-only: ${name}`);
+    }
+    for (const match of content.matchAll(/\.\.\/\.\.\/references\/([A-Za-z0-9._/-]+)/g)) {
+      if (!existsSync(path.resolve(path.dirname(skillPath), match[0]))) {
+        errors.push(`Addy skill has a missing shared reference '${match[1]}': ${relative}`);
+      }
+    }
+  }
+  for (const file of lock.files ?? []) {
+    const selectedName = file.match(/^skills\/([^/]+)\//)?.[1];
+    if (file !== "LICENSE" && !file.startsWith("references/") && !sortedSkills.includes(selectedName)) {
+      errors.push(`Addy lock contains an out-of-scope file: ${file}`);
+    }
+  }
+  for (const file of skillFiles.filter((file) => normalize(path.relative(repoRoot, file)).startsWith(
+    `${agentSkillsDestinationPrefix}skills/`,
+  ))) {
+    const name = path.basename(path.dirname(file));
+    if (!sortedSkills.includes(name)) errors.push(`Unselected Addy skill is installed: ${name}`);
+  }
+} catch (error) {
+  errors.push(`Invalid Addy agent-skills integration: ${error.message}`);
+}
+
+for (const phase of lifecyclePhases) {
+  try {
+    const root = path.join(repoRoot, "skills", "lifecycle", phase);
+    const skill = readFileSync(path.join(root, "SKILL.md"), "utf8");
+    const codex = readFileSync(path.join(root, "agents", "openai.yaml"), "utf8");
+    if (!/^disable-model-invocation:\s*true\s*$/m.test(skill) ||
+        !/^\s*allow_implicit_invocation:\s*false\s*$/m.test(codex)) {
+      errors.push(`Lifecycle phase must require explicit invocation: ${phase}`);
+    }
+  } catch (error) {
+    errors.push(`Invalid lifecycle phase '${phase}': ${error.message}`);
+  }
 }
 
 if (errors.length) {

@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/addyosmani/agent-skills",
+  "skills": [
+    "api-and-interface-design",
+    "ci-cd-and-automation",
+    "code-simplification",
+    "deprecation-and-migration",
+    "observability-and-instrumentation",
+    "performance-optimization",
+    "security-and-hardening",
+    "shipping-and-launch",
+    "source-driven-development"
+  ]
+}

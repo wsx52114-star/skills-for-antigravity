@@ -7,8 +7,9 @@
 | [`mattpocock/skills`](https://github.com/mattpocock/skills) | 適用的 skills、開發文件與授權 | [upstream lock](.github/upstream-sync/upstream-lock.json) | [sync-upstream.yml](.github/workflows/sync-upstream.yml) |
 | [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) | `security-audit` 與其授權 | [security-audit lock](.github/security-audit-sync/upstream-lock.json) | [sync-security-audit.yml](.github/workflows/sync-security-audit.yml) |
 | [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd) | explicit-only `i-have-adhd` 與其授權 | [i-have-adhd lock](.github/i-have-adhd-sync/upstream-lock.json) | [sync-i-have-adhd.yml](.github/workflows/sync-i-have-adhd.yml) |
+| [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) | Allowlisted specialists、共享 references 與授權 | [Addy lock](.github/agent-skills-sync/upstream-lock.json) | [sync-agent-skills.yml](.github/workflows/sync-agent-skills.yml) |
 
-三份 lock 是目前採用版本與檔案 inventory 的權威來源；維護文件不另存固定
+四份 lock 是目前採用版本與檔案 inventory 的權威來源；維護文件不另存固定
 baseline SHA。
 
 ## `mattpocock/skills` 採用政策
@@ -65,6 +66,13 @@ skills/security-audit/** → skills/security/security-audit/**
 `disable-model-invocation: true` 並將 Codex policy 設為
 `allow_implicit_invocation: false`；其餘內容維持 upstream snapshot。
 
+## Addy `agent-skills` 同步範圍
+
+[`selection.json`](.github/agent-skills-sync/selection.json) 是唯一採用清單。Adapter 將
+選定的 `skills/<name>/**`、完整 `references/**` 與 `LICENSE` 同步到
+`skills/addyosmani-pack/`，保留上游相對路徑，不接收 `using-agent-skills`、commands、
+personas、hooks 或未核准的新 skill。
+
 ## 所有權
 
 [`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、排除項目與 fork-owned paths。
@@ -72,6 +80,8 @@ skills/security-audit/** → skills/security/security-audit/**
 以下路徑不接受 `mattpocock/skills` 更新：
 
 - `rules/**`
+- `skills/lifecycle/**`
+- `skills/addyosmani-pack/**`
 - `skills/security/**`
 - `skills/productivity/i-have-adhd/**`
 - `docs/security/**`
@@ -84,6 +94,9 @@ skills/security-audit/** → skills/security/security-audit/**
 `skills/security/README.md` 仍由本專案維護。
 `skills/productivity/i-have-adhd/**` 則由
 [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) 單獨管理。
+`skills/addyosmani-pack/**` 由
+[`.github/agent-skills-sync/`](.github/agent-skills-sync/) 單獨管理；
+`skills/lifecycle/**` 則是本專案維護的 phase interface。
 
 ## 架構約束
 
@@ -118,6 +131,10 @@ Cloudflare commit 與檔案 inventory 記錄在
 [`sync-i-have-adhd.yml`](.github/workflows/sync-i-have-adhd.yml) 每日或手動檢查
 `ayghri/i-have-adhd`，套用 explicit-only adapter 後建立需人工審查的 Pull Request。
 
+[`sync-agent-skills.yml`](.github/workflows/sync-agent-skills.yml) 每週或手動檢查
+`addyosmani/agent-skills`，只套用 allowlist 與共享 references，完成 routing、inventory
+及 lifecycle contract 驗證後建立需人工審查的 Pull Request。
+
 ## GitHub 設定
 
 - 建立 [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)，
@@ -125,7 +142,7 @@ Cloudflare commit 與檔案 inventory 記錄在
   `Pull requests` 設為 `Read and write`。
 - 到 `Settings → Secrets and variables → Actions` 建立
   [repository secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
-  `SYNC_PR_TOKEN`，值為上述 token。三個同步 workflow 只在建立 review-only PR
+  `SYNC_PR_TOKEN`，值為上述 token。四個同步 workflow 只在建立 review-only PR
   的 step 使用此 secret；同步分支仍由權限限縮為 `contents: write` 的
   `GITHUB_TOKEN` 推送。
 - PR step 直接呼叫 REST `POST /repos/{owner}/{repo}/pulls`，不使用會額外要求

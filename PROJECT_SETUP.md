@@ -14,14 +14,17 @@ project/
     │   └── adr/
     ├── skills/
     │   ├── tdd -> <Agent home>/skills/engineering/tdd
+    │   ├── spec -> <Agent home>/skills/lifecycle/spec
     │   ├── i-have-adhd -> <Agent home>/skills/productivity/i-have-adhd
-    │   └── <skill-name> -> <Agent home>/skills/<category>/<skill-name>
+    │   ├── source-driven-development -> <Agent home>/skills/addyosmani-pack/skills/source-driven-development
+    │   └── <skill-name> -> <Agent home>/skills/**/<skill-name>
     └── rules  -> <Agent home>/rules
 ```
 
 - `CONTEXT.md` 與 `docs/adr/` 是 project-local 實體內容。
 - `skills/<skill-name>` 與 `rules` 是機器本機的共享連結，應由 Git 忽略。
 - Flat skill links 符合 Antigravity 官方 `.agents/skills/<skill-name>/SKILL.md` 結構，可使用 `/skill-name`。
+- `/spec`、`/planning`、`/build`、`/test`、`/review`、`/ship` 提供 explicit-only 產品開發生命週期入口。
 - Agent home 執行 `git pull --ff-only` 後，既有 Link Mode skills 與 rules 立即更新；新增或移除 skill 時需重跑初始化 script 以刷新 links。
 
 初始化不會修改既有的 Agent 設定。

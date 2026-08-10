@@ -1,0 +1,6 @@
+interface:
+  display_name: "Test"
+  short_description: "Prove the implemented behavior with relevant evidence"
+  default_prompt: "Use $test to prove the implemented behavior works."
+policy:
+  allow_implicit_invocation: false

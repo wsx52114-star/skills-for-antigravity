@@ -19,10 +19,20 @@ function fixture(lock) {
   const policy = {
     upstream: "https://github.com/mattpocock/skills",
     upstreamAllowlist: ["skills/", "docs/", "LICENSE"],
-    blockedUpstreamPaths: ["skills/security/", "skills/productivity/i-have-adhd/"],
+    blockedUpstreamPaths: [
+      "skills/addyosmani-pack/",
+      "skills/lifecycle/",
+      "skills/security/",
+      "skills/productivity/i-have-adhd/",
+    ],
     excludedSkillNames: ["claude-handoff"],
     excludedSkillPathSegments: ["deprecated"],
-    forkOwned: ["skills/security/", "skills/productivity/i-have-adhd/"],
+    forkOwned: [
+      "skills/addyosmani-pack/",
+      "skills/lifecycle/",
+      "skills/security/",
+      "skills/productivity/i-have-adhd/",
+    ],
   };
   write(root, ".github/upstream-sync/ownership.json", `${JSON.stringify(policy)}\n`);
   write(root, ".github/upstream-sync/upstream-lock.json", `${JSON.stringify(lock)}\n`);
@@ -41,6 +51,28 @@ function fixture(lock) {
   );
   write(
     root,
+    ".github/agent-skills-sync/selection.json",
+    `${JSON.stringify({
+      repository: "https://github.com/addyosmani/agent-skills",
+      skills: ["api-and-interface-design"],
+    })}\n`,
+  );
+  write(
+    root,
+    ".github/agent-skills-sync/upstream-lock.json",
+    `${JSON.stringify({
+      repository: "https://github.com/addyosmani/agent-skills",
+      commit: "d".repeat(40),
+      skills: ["api-and-interface-design"],
+      files: [
+        "LICENSE",
+        "references/definition-of-done.md",
+        "skills/api-and-interface-design/SKILL.md",
+      ],
+    })}\n`,
+  );
+  write(
+    root,
     ".github/i-have-adhd-sync/upstream-lock.json",
     `${JSON.stringify({
       repository: "https://github.com/ayghri/i-have-adhd",
@@ -53,6 +85,8 @@ function fixture(lock) {
     ".github/upstream-sync/lib/policy.mjs",
     ".github/security-audit-sync/apply-upstream-snapshot.mjs",
     ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
+    ".github/agent-skills-sync/apply-upstream-snapshot.mjs",
+    ".github/agent-skills-sync/README.md",
     "rules/skills.md",
     "skills/security/README.md",
     "skills/security/security-audit/LICENSE",
@@ -60,9 +94,25 @@ function fixture(lock) {
     "MAINTENANCE.md",
     ".github/workflows/sync-security-audit.yml",
     ".github/workflows/sync-i-have-adhd.yml",
+    ".github/workflows/sync-agent-skills.yml",
     ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
+  write(root, "skills/addyosmani-pack/LICENSE", "MIT\n");
+  write(root, "skills/addyosmani-pack/references/definition-of-done.md", "# Done\n");
+  write(
+    root,
+    "skills/addyosmani-pack/skills/api-and-interface-design/SKILL.md",
+    "---\nname: api-and-interface-design\ndescription: Design interfaces.\n---\n",
+  );
+  for (const phase of ["spec", "planning", "build", "test", "review", "ship"]) {
+    write(
+      root,
+      `skills/lifecycle/${phase}/SKILL.md`,
+      `---\nname: ${phase}\ndescription: Run ${phase}.\ndisable-model-invocation: true\n---\n`,
+    );
+    write(root, `skills/lifecycle/${phase}/agents/openai.yaml`, "policy:\n  allow_implicit_invocation: false\n");
+  }
   write(root, "skills/security/security-audit/SKILL.md", "---\nname: security-audit\ndescription: Audit.\n---\n");
   write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
   write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\ndisable-model-invocation: true\n---\n");

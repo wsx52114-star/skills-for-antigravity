@@ -1,0 +1,6 @@
+interface:
+  display_name: "Planning"
+  short_description: "Turn an approved specification into an executable plan"
+  default_prompt: "Use $planning to turn the approved specification into an executable plan."
+policy:
+  allow_implicit_invocation: false

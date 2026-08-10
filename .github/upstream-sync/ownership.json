@@ -8,6 +8,8 @@
   "blockedUpstreamPaths": [
     ".github/upstream-sync/",
     "rules/",
+    "skills/addyosmani-pack/",
+    "skills/lifecycle/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/"
@@ -21,7 +23,10 @@
   ],
   "forkOwned": [
     ".github/upstream-sync/",
+    ".github/agent-skills-sync/",
     "rules/",
+    "skills/addyosmani-pack/",
+    "skills/lifecycle/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/",

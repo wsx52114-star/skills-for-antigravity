@@ -1,6 +1,6 @@
 # Skills for Antigravity
 
-一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit` 與 explicit-only 的 `i-have-adhd`。
+一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、完整產品開發生命週期、Cloudflare `security-audit`、explicit-only 的 `i-have-adhd`，以及精選的 [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) 專業能力。
 
 Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開發專案再透過 project-local 連結啟用，並保有自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的 global configuration。
 
@@ -14,10 +14,11 @@ Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開�
 | [`.github/upstream-sync/`](.github/upstream-sync/) | `mattpocock/skills` 上游快照、所有權 policy、驗證與測試。 |
 | [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的獨立同步 control plane。 |
 | [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的 explicit-only 同步 control plane。 |
+| [`.github/agent-skills-sync/`](.github/agent-skills-sync/) | Addy allowlist、版本鎖定與獨立同步 control plane。 |
 | [`PROJECT_SETUP.md`](PROJECT_SETUP.md) | 開發專案連結 Agent home 的完整設定指南。 |
 | [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
 
-上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。[`security-audit`](skills/security/security-audit/SKILL.md) 與 [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) 分別由獨立 Action 同步自 [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) 與 [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)，所有更新均須經 Pull Request 人工審查。
+上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。Matt、Cloudflare、i-have-adhd 與 Addy 更新均由獨立 policy 控制，並須經 Pull Request 人工審查。
 
 ## 安裝
 
@@ -75,6 +76,19 @@ git -C ~/.agents pull --ff-only
 「需明確指定」的 skill 只有在使用者點名時才會執行，「可自動選用」則可由
 Antigravity 依需求與 frontmatter description 判斷是否使用。
 
+### Lifecycle
+
+六個入口皆需明確指定；每次只執行一個階段並停在下一個核准點。
+
+| 關鍵字 | 觸發方式 | 用途 |
+| --- | --- | --- |
+| [`spec`](skills/lifecycle/spec/SKILL.md) | 需明確指定 | 定義並核准可驗證的規格。 |
+| [`planning`](skills/lifecycle/planning/SKILL.md) | 需明確指定 | 將核准規格拆成依賴有序的 vertical slices。 |
+| [`build`](skills/lifecycle/build/SKILL.md) | 需明確指定 | 實作下一個核准 slice 並提供證據。 |
+| [`test`](skills/lifecycle/test/SKILL.md) | 需明確指定 | 依 acceptance criteria 證明行為與回歸狀態。 |
+| [`review`](skills/lifecycle/review/SKILL.md) | 需明確指定 | 執行品質與風險 gates，回傳整合決策。 |
+| [`ship`](skills/lifecycle/ship/SKILL.md) | 需明確指定 | 判斷發布就緒程度並準備 rollout 與 rollback。 |
+
 ### Engineering
 
 | 關鍵字 | 觸發方式 | 用途 |
@@ -96,6 +110,23 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`to-tickets`](skills/engineering/to-tickets/SKILL.md) | 需明確指定 | 將 plan 或 spec 切成 tracer-bullet issues 並記錄 blocking edges。 |
 | [`triage`](skills/engineering/triage/SKILL.md) | 需明確指定 | 依 triage role state machine 分類、驗證 issues 與外部 PR。 |
 | [`wayfinder`](skills/engineering/wayfinder/SKILL.md) | 需明確指定 | 將跨多個 agent session 的大型工作規劃成 decision issues。 |
+| [`wizard`](skills/engineering/wizard/SKILL.md) | 可自動選用 | 產生互動式 Bash wizard，引導人工完成 credentials、dashboard 或 cutover。 |
+
+### Addy Specialists
+
+這些 model-invoked skills 是 lifecycle 的專業實作層；`using-agent-skills` 與重疊的 TDD、debug、review router 不會匯入。
+
+| 關鍵字 | 觸發方式 | 用途 |
+| --- | --- | --- |
+| [`api-and-interface-design`](skills/addyosmani-pack/skills/api-and-interface-design/SKILL.md) | 可自動選用 | 設計穩定的公開 interface 與錯誤語意。 |
+| [`ci-cd-and-automation`](skills/addyosmani-pack/skills/ci-cd-and-automation/SKILL.md) | 可自動選用 | 建立 CI/CD 與自動化 quality gates。 |
+| [`code-simplification`](skills/addyosmani-pack/skills/code-simplification/SKILL.md) | 可自動選用 | 在保持行為不變下簡化程式碼。 |
+| [`deprecation-and-migration`](skills/addyosmani-pack/skills/deprecation-and-migration/SKILL.md) | 可自動選用 | 規劃 deprecation、相容期與 migration。 |
+| [`observability-and-instrumentation`](skills/addyosmani-pack/skills/observability-and-instrumentation/SKILL.md) | 可自動選用 | 建立 logging、metrics、tracing 與 alerting。 |
+| [`performance-optimization`](skills/addyosmani-pack/skills/performance-optimization/SKILL.md) | 可自動選用 | 以量測與 profiling 驗證效能改善。 |
+| [`security-and-hardening`](skills/addyosmani-pack/skills/security-and-hardening/SKILL.md) | 可自動選用 | 在實作階段處理 trust boundary 與防護。 |
+| [`shipping-and-launch`](skills/addyosmani-pack/skills/shipping-and-launch/SKILL.md) | 可自動選用 | 準備 staged rollout、monitoring 與 rollback。 |
+| [`source-driven-development`](skills/addyosmani-pack/skills/source-driven-development/SKILL.md) | 可自動選用 | 依官方文件驗證 framework 與 library 決策。 |
 
 ### Security
 
@@ -120,14 +151,9 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`handoff`](skills/productivity/handoff/SKILL.md) | 需明確指定 | 將目前對話壓縮成可交給另一個 agent 接手的文件。 |
 | [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) | 需明確指定 | 將回覆整理成 action-first、可直接執行的 ADHD-friendly 格式。 |
 | [`teach`](skills/productivity/teach/SKILL.md) | 需明確指定 | 在目前 workspace 脈絡中教授技能或概念。 |
-| [`writing-great-skills`](skills/productivity/writing-great-skills/SKILL.md) | 需明確指定 | 提供撰寫與編修可預測、清楚 skills 的原則與詞彙。 |
-
-### Personal
-
-| 關鍵字 | 觸發方式 | 用途 |
-| --- | --- | --- |
-| [`edit-article`](skills/personal/edit-article/SKILL.md) | 需明確指定 | 重整文章段落、改善清晰度並收緊文字。 |
-| [`obsidian-vault`](skills/personal/obsidian-vault/SKILL.md) | 可自動選用 | 使用 wikilinks 與 index notes 搜尋、建立及整理 Obsidian notes。 |
+| [`to-questionnaire`](skills/productivity/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成 questionnaire。 |
+| [`wait-what`](skills/productivity/wait-what/SKILL.md) | 需明確指定 | 要求以不同方式重新說明未能理解的內容。 |
+| [`writing-for-agents`](skills/productivity/writing-for-agents/SKILL.md) | 可自動選用 | 撰寫或修改給 Agent 使用的 skills 與規則文件。 |
 
 ### In Progress
 
@@ -137,8 +163,6 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | --- | --- | --- |
 | [`loop-me`](skills/in-progress/loop-me/SKILL.md) | 需明確指定 | 針對想建立的 workflows 進行規格訪談。 |
 | [`setup-ts-deep-modules`](skills/in-progress/setup-ts-deep-modules/SKILL.md) | 需明確指定 | 為 TypeScript repository 設定 dependency-cruiser 與 deep module 邊界。 |
-| [`to-questionnaire`](skills/in-progress/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成供他人填寫的 questionnaire。 |
-| [`wizard`](skills/in-progress/wizard/SKILL.md) | 需明確指定 | 產生互動式 Bash wizard，引導人工完成設定或一次性 migration。 |
 | [`writing-beats`](skills/in-progress/writing-beats/SKILL.md) | 需明確指定 | 將原始素材組合成有先後脈絡的文章 beats。 |
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |
 | [`writing-shape`](skills/in-progress/writing-shape/SKILL.md) | 需明確指定 | 將原始素材逐段整理成文章。 |
@@ -146,7 +170,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 常見工程流程：
 
 ```text
-grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
+/spec → /planning → /build → /test → /review → /ship
 ```
 
 這份索引是目前 Runtime skills 的閱讀入口；各 skill 的 frontmatter 與完整行為仍以

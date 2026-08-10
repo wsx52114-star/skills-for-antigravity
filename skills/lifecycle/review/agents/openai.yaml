@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review"
+  short_description: "Run quality and risk gates before integration"
+  default_prompt: "Use $review to run the required quality and risk gates."
+policy:
+  allow_implicit_invocation: false

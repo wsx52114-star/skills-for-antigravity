@@ -1,0 +1,35 @@
+{
+  "repository": "https://github.com/addyosmani/agent-skills",
+  "commit": "7676817c12a1317454ae3898a0c5c1eacf5dd3d5",
+  "syncedAt": "2026-08-10T07:16:51.148Z",
+  "skills": [
+    "api-and-interface-design",
+    "ci-cd-and-automation",
+    "code-simplification",
+    "deprecation-and-migration",
+    "observability-and-instrumentation",
+    "performance-optimization",
+    "security-and-hardening",
+    "shipping-and-launch",
+    "source-driven-development"
+  ],
+  "files": [
+    "LICENSE",
+    "references/accessibility-checklist.md",
+    "references/definition-of-done.md",
+    "references/observability-checklist.md",
+    "references/orchestration-patterns.md",
+    "references/performance-checklist.md",
+    "references/security-checklist.md",
+    "references/testing-patterns.md",
+    "skills/api-and-interface-design/SKILL.md",
+    "skills/ci-cd-and-automation/SKILL.md",
+    "skills/code-simplification/SKILL.md",
+    "skills/deprecation-and-migration/SKILL.md",
+    "skills/observability-and-instrumentation/SKILL.md",
+    "skills/performance-optimization/SKILL.md",
+    "skills/security-and-hardening/SKILL.md",
+    "skills/shipping-and-launch/SKILL.md",
+    "skills/source-driven-development/SKILL.md"
+  ]
+}

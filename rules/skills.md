@@ -32,26 +32,17 @@ Use the installed skills as behavioral workflows. Skill frontmatter is the live 
 
 ## Golden Workflow
 
-For a significant feature or architecture change, recommend this chain:
+For a significant product change, recommend the explicit lifecycle:
 
 ```text
-grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
+/spec → /planning → /build → /test → /review → /ship
 ```
 
-Most chain steps are user-invoked. Recommend them by name, but wait for the human to invoke each user-only skill.
+Each phase is user-invoked and owns one approval gate. Run only the phase the human named, then stop before the next phase. Invoking a phase does not authorize another user-only skill, an external write, a commit, a push, a release, a deployment, or a physical hardware test.
 
-When the human explicitly chooses the full chain:
+The phase skill may select model-invoked specialists named in its workflow. Keep one authoritative artifact for each phase and preserve the configured issue tracker, project context and ADR boundaries.
 
-1. Run `grill-with-docs` to challenge the design and sharpen project language.
-2. Stop after grilling and request explicit approval before publishing a spec or creating work items.
-3. Run `to-spec` to synthesize the settled conversation without interviewing again.
-4. Run `to-tickets` to create tracer-bullet work items and blocking relationships.
-5. Run `implement`; use `tdd` at agreed public seams where practical.
-6. Run `code-review` against a fixed point along Standards and Spec axes.
-
-If implementation exposes an unexpected bug, failure, or regression, use `diagnosing-bugs` before guessing at a fix.
-
-Do not force the full chain onto small fixes, routine maintenance, documentation edits, or narrowly scoped refactors. Use only the workflow the task earns.
+Small fixes, routine maintenance, documentation edits and narrow refactors may enter at the relevant phase or use a specialist directly. The lifecycle is a set of gates, not mandatory ceremony.
 
 ## Antigravity Translation
 

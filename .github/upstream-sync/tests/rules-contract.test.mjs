@@ -28,6 +28,8 @@ test("global skill rules stay compact and preserve the required contracts", () =
     "glossary-only `CONTEXT.md`",
     ".agents/CONTEXT.md",
     ".agents/docs/adr/",
+    "/spec → /planning → /build → /test → /review → /ship",
+    "Invoking a phase does not authorize",
   ]) {
     assert.ok(content.includes(contract), `Missing rules contract: ${contract}`);
   }

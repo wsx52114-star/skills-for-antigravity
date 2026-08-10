@@ -14,6 +14,10 @@ const iHaveAdhdWorkflow = readFileSync(
   path.join(repoRoot, ".github", "workflows", "sync-i-have-adhd.yml"),
   "utf8",
 );
+const agentSkillsWorkflow = readFileSync(
+  path.join(repoRoot, ".github", "workflows", "sync-agent-skills.yml"),
+  "utf8",
+);
 const validationWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "validate-antigravity.yml"), "utf8");
 
 test("mattpocock synchronization opens a review-only pull request", () => {
@@ -56,4 +60,15 @@ test("i-have-adhd synchronization validates and opens a review-only pull request
   assert.match(iHaveAdhdWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr create/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr merge|--auto(?:\s|$)/m);
+});
+
+test("Addy agent-skills synchronization is allowlisted and review-only", () => {
+  assert.match(agentSkillsWorkflow, /https:\/\/github\.com\/addyosmani\/agent-skills\.git/);
+  assert.match(agentSkillsWorkflow, /agent-skills-sync\/selection\.json/);
+  assert.match(agentSkillsWorkflow, /agent-skills-sync\/apply-upstream-snapshot\.mjs/);
+  assert.match(agentSkillsWorkflow, /gh api --method POST/);
+  assert.match(agentSkillsWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
+  assert.match(agentSkillsWorkflow, /Required repository secret SYNC_PR_TOKEN is not configured/);
+  assert.doesNotMatch(agentSkillsWorkflow, /pull-requests:\s*write/);
+  assert.doesNotMatch(agentSkillsWorkflow, /gh pr create|gh pr merge|--auto(?:\s|$)/m);
 });
