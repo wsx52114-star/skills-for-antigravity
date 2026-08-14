@@ -7,7 +7,9 @@
   ],
   "blockedUpstreamPaths": [
     ".github/upstream-sync/",
+    ".github/taiwan-terminology-sync/",
     "rules/",
+    "skills/language/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/"
@@ -21,7 +23,9 @@
   ],
   "forkOwned": [
     ".github/upstream-sync/",
+    ".github/taiwan-terminology-sync/",
     "rules/",
+    "skills/language/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/",

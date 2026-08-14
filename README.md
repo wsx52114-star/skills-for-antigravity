@@ -1,6 +1,6 @@
 # Skills for Antigravity
 
-一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit` 與 explicit-only 的 `i-have-adhd`。
+一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
 Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開發專案再透過 project-local 連結啟用，並保有自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的 global configuration。
 
@@ -8,16 +8,19 @@ Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開�
 
 | 路徑 | 用途 |
 | --- | --- |
-| [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、生產力、工具與安全 skills。 |
+| [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、生產力、語言、工具與安全 skills。 |
 | [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯規則。 |
 | [`docs/`](docs/) | 各 skills 的使用與開發參考。 |
 | [`.github/upstream-sync/`](.github/upstream-sync/) | `mattpocock/skills` 上游快照、所有權 policy、驗證與測試。 |
 | [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的獨立同步 control plane。 |
 | [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的 explicit-only 同步 control plane。 |
+| [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) | Taiwan.md 固定詞庫快照的獨立同步 control plane。 |
 | [`PROJECT_SETUP.md`](PROJECT_SETUP.md) | 開發專案連結 Agent home 的完整設定指南。 |
 | [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
 
 上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。[`security-audit`](skills/security/security-audit/SKILL.md) 與 [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) 分別由獨立 Action 同步自 [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) 與 [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)，所有更新均須經 Pull Request 人工審查。
+
+[`taiwan-term`](skills/language/taiwan-term/SKILL.md) 的流程與掃描器由本專案維護；詞庫快照固定於 Taiwan.md commit，更新只透過需人工審查的 Pull Request 採用。
 
 ## 安裝
 
@@ -102,6 +105,12 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
 | [`security-audit`](skills/security/security-audit/SKILL.md) | 可自動選用 | 稽核 codebase，尋找並驗證具有實際影響的可利用安全問題。 |
+
+### Language
+
+| 關鍵字 | 觸發方式 | 用途 |
+| --- | --- | --- |
+| [`taiwan-term`](skills/language/taiwan-term/SKILL.md) | 可自動選用 | 依固定 Taiwan.md 詞庫快照檢查並修正台灣用語，保留領域術語與受保護文字。 |
 
 ### Misc
 

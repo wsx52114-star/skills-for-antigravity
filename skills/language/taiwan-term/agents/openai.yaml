@@ -1,0 +1,4 @@
+interface:
+  display_name: "Taiwan Terminology"
+  short_description: "Audit Taiwan usage and project domain terminology"
+  default_prompt: "Use $taiwan-term to audit this repository and propose context-aware Taiwan terminology fixes."

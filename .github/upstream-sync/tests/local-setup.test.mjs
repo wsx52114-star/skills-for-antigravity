@@ -42,6 +42,7 @@ test("WSL setup creates project-local context and flat skill links", () => {
     assert.equal(lstatSync(path.join(agents, "rules")).isSymbolicLink(), true);
     assert.equal(lstatSync(path.join(agents, "skills", "tdd")).isSymbolicLink(), true);
     assert.equal(lstatSync(path.join(agents, "skills", "i-have-adhd")).isSymbolicLink(), true);
+    assert.equal(lstatSync(path.join(agents, "skills", "taiwan-term")).isSymbolicLink(), true);
     assert.equal(
       realpathSync(path.join(agents, "skills", "tdd")),
       realpathSync(path.join(repoRoot, "skills", "engineering", "tdd")),
@@ -49,6 +50,10 @@ test("WSL setup creates project-local context and flat skill links", () => {
     assert.equal(
       realpathSync(path.join(agents, "skills", "i-have-adhd")),
       realpathSync(path.join(repoRoot, "skills", "productivity", "i-have-adhd")),
+    );
+    assert.equal(
+      realpathSync(path.join(agents, "skills", "taiwan-term")),
+      realpathSync(path.join(repoRoot, "skills", "language", "taiwan-term")),
     );
     assert.equal(realpathSync(path.join(agents, "rules")), realpathSync(path.join(repoRoot, "rules")));
     assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/skills$/m);

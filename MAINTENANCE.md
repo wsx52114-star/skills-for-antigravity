@@ -7,8 +7,9 @@
 | [`mattpocock/skills`](https://github.com/mattpocock/skills) | 適用的 skills、開發文件與授權 | [upstream lock](.github/upstream-sync/upstream-lock.json) | [sync-upstream.yml](.github/workflows/sync-upstream.yml) |
 | [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) | `security-audit` 與其授權 | [security-audit lock](.github/security-audit-sync/upstream-lock.json) | [sync-security-audit.yml](.github/workflows/sync-security-audit.yml) |
 | [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd) | explicit-only `i-have-adhd` 與其授權 | [i-have-adhd lock](.github/i-have-adhd-sync/upstream-lock.json) | [sync-i-have-adhd.yml](.github/workflows/sync-i-have-adhd.yml) |
+| [`frank890417/taiwan-md`](https://github.com/frank890417/taiwan-md) | 正規化 Taiwan.md 用語快照 | [Taiwan.md lock](.github/taiwan-terminology-sync/upstream-lock.json) | [sync-taiwan-terminology.yml](.github/workflows/sync-taiwan-terminology.yml) |
 
-三份 lock 是目前採用版本與檔案 inventory 的權威來源；維護文件不另存固定
+四份 lock 是目前採用版本與檔案 inventory 的權威來源；維護文件不另存固定
 baseline SHA。
 
 ## `mattpocock/skills` 採用政策
@@ -65,6 +66,13 @@ skills/security-audit/** → skills/security/security-audit/**
 `disable-model-invocation: true` 並將 Codex policy 設為
 `allow_implicit_invocation: false`；其餘內容維持 upstream snapshot。
 
+## Taiwan.md 詞庫同步範圍
+
+`taiwan-term` 的 skill 流程與掃描器由本專案維護。獨立同步流程只讀取
+Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit 的
+正規化 JSON 快照；Runtime skill 執行時不連線到上游。快照保留 Taiwan.md
+來源、版本與 CC BY-SA 4.0 授權資訊。
+
 ## 所有權
 
 [`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、排除項目與 fork-owned paths。
@@ -72,10 +80,12 @@ skills/security-audit/** → skills/security/security-audit/**
 以下路徑不接受 `mattpocock/skills` 更新：
 
 - `rules/**`
+- `skills/language/**`
 - `skills/security/**`
 - `skills/productivity/i-have-adhd/**`
 - `docs/security/**`
 - `.github/upstream-sync/**`
+- `.github/taiwan-terminology-sync/**`
 - `.github/workflows/**`
 - 根目錄文件
 
@@ -84,6 +94,8 @@ skills/security-audit/** → skills/security/security-audit/**
 `skills/security/README.md` 仍由本專案維護。
 `skills/productivity/i-have-adhd/**` 則由
 [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) 單獨管理。
+`skills/language/taiwan-term/**` 的 skill 邏輯由本專案維護，詞庫資料則由
+[`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) 正規化更新。
 
 ## 架構約束
 
@@ -118,6 +130,9 @@ Cloudflare commit 與檔案 inventory 記錄在
 [`sync-i-have-adhd.yml`](.github/workflows/sync-i-have-adhd.yml) 每日或手動檢查
 `ayghri/i-have-adhd`，套用 explicit-only adapter 後建立需人工審查的 Pull Request。
 
+[`sync-taiwan-terminology.yml`](.github/workflows/sync-taiwan-terminology.yml) 每週或手動
+檢查 Taiwan.md，驗證詞庫格式、重新產生固定快照，並建立需人工審查的 Pull Request。
+
 ## GitHub 設定
 
 - 建立 [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)，
@@ -125,7 +140,7 @@ Cloudflare commit 與檔案 inventory 記錄在
   `Pull requests` 設為 `Read and write`。
 - 到 `Settings → Secrets and variables → Actions` 建立
   [repository secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
-  `SYNC_PR_TOKEN`，值為上述 token。三個同步 workflow 只在建立 review-only PR
+  `SYNC_PR_TOKEN`，值為上述 token。四個同步 workflow 只在建立 review-only PR
   的 step 使用此 secret；同步分支仍由權限限縮為 `contents: write` 的
   `GITHUB_TOKEN` 推送。
 - PR step 直接呼叫 REST `POST /repos/{owner}/{repo}/pulls`，不使用會額外要求

@@ -6,6 +6,7 @@ import {
   readFileSync,
   readdirSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -22,6 +23,9 @@ const securityAuditDestinationPrefix = "skills/security/security-audit/";
 const iHaveAdhdControlPlaneRoot = path.join(repoRoot, ".github", "i-have-adhd-sync");
 const iHaveAdhdRepository = "https://github.com/ayghri/i-have-adhd";
 const iHaveAdhdDestinationPrefix = "skills/productivity/i-have-adhd/";
+const taiwanTerminologyControlPlaneRoot = path.join(repoRoot, ".github", "taiwan-terminology-sync");
+const taiwanTerminologyRepository = "https://github.com/frank890417/taiwan-md";
+const taiwanTerminologyRoot = path.join(repoRoot, "skills", "language", "taiwan-term");
 const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
@@ -115,6 +119,8 @@ const required = [
   ".github/security-audit-sync/upstream-lock.json",
   ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
   ".github/i-have-adhd-sync/upstream-lock.json",
+  ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
+  ".github/taiwan-terminology-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
   "skills/security/security-audit/LICENSE",
@@ -123,9 +129,17 @@ const required = [
   "skills/productivity/i-have-adhd/LICENSE",
   "skills/productivity/i-have-adhd/SKILL.md",
   "skills/productivity/i-have-adhd/agents/openai.yaml",
+  "skills/language/taiwan-term/SKILL.md",
+  "skills/language/taiwan-term/agents/openai.yaml",
+  "skills/language/taiwan-term/scripts/audit_terms.py",
+  "skills/language/taiwan-term/scripts/build_snapshot.py",
+  "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
+  "skills/language/taiwan-term/references/taiwan-md/UPSTREAM.json",
+  "skills/language/taiwan-term/references/taiwan-md/terminology.snapshot.json",
   "MAINTENANCE.md",
   ".github/workflows/sync-security-audit.yml",
   ".github/workflows/sync-i-have-adhd.yml",
+  ".github/workflows/sync-taiwan-terminology.yml",
   ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
 ];
@@ -247,6 +261,58 @@ try {
   }
 } catch (error) {
   errors.push(`Invalid i-have-adhd lock: ${error.message}`);
+}
+
+try {
+  const lock = JSON.parse(
+    readFileSync(path.join(taiwanTerminologyControlPlaneRoot, "upstream-lock.json"), "utf8"),
+  );
+  const metadata = JSON.parse(
+    readFileSync(path.join(taiwanTerminologyRoot, "references", "taiwan-md", "UPSTREAM.json"), "utf8"),
+  );
+  const snapshotPath = path.join(
+    taiwanTerminologyRoot,
+    "references",
+    "taiwan-md",
+    "terminology.snapshot.json",
+  );
+  const snapshotBytes = readFileSync(snapshotPath);
+  const snapshot = JSON.parse(snapshotBytes.toString("utf8"));
+  const expectedSourcePaths = ["README.md", "data/terminology/*.yaml"];
+  if (lock.repository !== taiwanTerminologyRepository || metadata.repository !== taiwanTerminologyRepository) {
+    errors.push("Taiwan terminology source repository does not match Taiwan.md upstream");
+  }
+  if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "") || lock.commit !== metadata.commit) {
+    errors.push("Taiwan terminology lock and runtime metadata must share a full commit SHA");
+  }
+  if (JSON.stringify(lock.source_paths) !== JSON.stringify(expectedSourcePaths) ||
+      JSON.stringify(metadata.source_paths) !== JSON.stringify(expectedSourcePaths)) {
+    errors.push("Taiwan terminology source paths do not match the synchronization contract");
+  }
+  if (lock.snapshot !== "terminology.snapshot.json" || metadata.snapshot !== lock.snapshot) {
+    errors.push("Taiwan terminology snapshot filename does not match the synchronization contract");
+  }
+  const digest = createHash("sha256").update(snapshotBytes).digest("hex");
+  if (lock.snapshot_sha256 !== digest || metadata.snapshot_sha256 !== digest) {
+    errors.push("Taiwan terminology snapshot digest does not match its lock metadata");
+  }
+  if (snapshot.schema_version !== 1 || snapshot.source?.repository !== taiwanTerminologyRepository ||
+      snapshot.source?.commit !== lock.commit || !Array.isArray(snapshot.terms)) {
+    errors.push("Taiwan terminology snapshot schema or source metadata is invalid");
+  } else {
+    const severityA = snapshot.terms.filter((term) => term.detection?.severity === "A").length;
+    const severityB = snapshot.terms.filter((term) => term.detection?.severity === "B").length;
+    if (snapshot.terms.length !== lock.terms || snapshot.terms.length !== metadata.terms ||
+        severityA !== lock.severity_a || severityA !== metadata.severity_a ||
+        severityB !== lock.severity_b || severityB !== metadata.severity_b ||
+        snapshot.statistics?.terms !== lock.terms ||
+        snapshot.statistics?.severity_a !== lock.severity_a ||
+        snapshot.statistics?.severity_b !== lock.severity_b) {
+      errors.push("Taiwan terminology snapshot statistics do not match its lock metadata");
+    }
+  }
+} catch (error) {
+  errors.push(`Invalid Taiwan terminology snapshot: ${error.message}`);
 }
 
 if (errors.length) {

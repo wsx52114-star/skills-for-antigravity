@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -19,10 +20,20 @@ function fixture(lock) {
   const policy = {
     upstream: "https://github.com/mattpocock/skills",
     upstreamAllowlist: ["skills/", "docs/", "LICENSE"],
-    blockedUpstreamPaths: ["skills/security/", "skills/productivity/i-have-adhd/"],
+    blockedUpstreamPaths: [
+      ".github/taiwan-terminology-sync/",
+      "skills/language/",
+      "skills/security/",
+      "skills/productivity/i-have-adhd/",
+    ],
     excludedSkillNames: ["claude-handoff"],
     excludedSkillPathSegments: ["deprecated"],
-    forkOwned: ["skills/security/", "skills/productivity/i-have-adhd/"],
+    forkOwned: [
+      ".github/taiwan-terminology-sync/",
+      "skills/language/",
+      "skills/security/",
+      "skills/productivity/i-have-adhd/",
+    ],
   };
   write(root, ".github/upstream-sync/ownership.json", `${JSON.stringify(policy)}\n`);
   write(root, ".github/upstream-sync/upstream-lock.json", `${JSON.stringify(lock)}\n`);
@@ -48,18 +59,68 @@ function fixture(lock) {
       files: ["LICENSE", "skills/i-have-adhd/SKILL.md", "skills/i-have-adhd/agents/openai.yaml"],
     })}\n`,
   );
+  const terminologyCommit = "d".repeat(40);
+  const terminologySnapshot = `${JSON.stringify({
+    schema_version: 1,
+    source: {
+      repository: "https://github.com/frank890417/taiwan-md",
+      commit: terminologyCommit,
+    },
+    statistics: { terms: 1, severity_a: 0, severity_b: 0 },
+    terms: [
+      {
+        china: ["串口"],
+        taiwan: ["串列埠"],
+        fork_type: "semantic",
+        detection: null,
+        source_file: "串口.yaml",
+      },
+    ],
+  })}\n`;
+  const terminologyDigest = createHash("sha256").update(terminologySnapshot).digest("hex");
+  const terminologyMetadata = {
+    repository: "https://github.com/frank890417/taiwan-md",
+    commit: terminologyCommit,
+    source_paths: ["README.md", "data/terminology/*.yaml"],
+    snapshot: "terminology.snapshot.json",
+    snapshot_sha256: terminologyDigest,
+    terms: 1,
+    severity_a: 0,
+    severity_b: 0,
+  };
+  write(
+    root,
+    ".github/taiwan-terminology-sync/upstream-lock.json",
+    `${JSON.stringify({ ...terminologyMetadata, syncedAt: "2026-08-14T00:00:00Z" })}\n`,
+  );
+  write(
+    root,
+    "skills/language/taiwan-term/references/taiwan-md/UPSTREAM.json",
+    `${JSON.stringify(terminologyMetadata)}\n`,
+  );
+  write(
+    root,
+    "skills/language/taiwan-term/references/taiwan-md/terminology.snapshot.json",
+    terminologySnapshot,
+  );
   for (const required of [
     ".github/upstream-sync/apply-upstream-snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/security-audit-sync/apply-upstream-snapshot.mjs",
     ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
+    ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
     "rules/skills.md",
     "skills/security/README.md",
     "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
+    "skills/language/taiwan-term/agents/openai.yaml",
+    "skills/language/taiwan-term/scripts/audit_terms.py",
+    "skills/language/taiwan-term/scripts/build_snapshot.py",
+    "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
     "MAINTENANCE.md",
     ".github/workflows/sync-security-audit.yml",
     ".github/workflows/sync-i-have-adhd.yml",
+    ".github/workflows/sync-taiwan-terminology.yml",
     ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
@@ -67,6 +128,7 @@ function fixture(lock) {
   write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
   write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\ndisable-model-invocation: true\n---\n");
   write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: false\n");
+  write(root, "skills/language/taiwan-term/SKILL.md", "---\nname: taiwan-term\ndescription: Audit Taiwan terminology.\n---\n");
   write(root, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
   write(root, "LICENSE", "MIT\n");
   return root;

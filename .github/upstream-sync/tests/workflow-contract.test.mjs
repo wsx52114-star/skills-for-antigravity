@@ -14,6 +14,10 @@ const iHaveAdhdWorkflow = readFileSync(
   path.join(repoRoot, ".github", "workflows", "sync-i-have-adhd.yml"),
   "utf8",
 );
+const taiwanTerminologyWorkflow = readFileSync(
+  path.join(repoRoot, ".github", "workflows", "sync-taiwan-terminology.yml"),
+  "utf8",
+);
 const validationWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "validate-antigravity.yml"), "utf8");
 
 test("mattpocock synchronization opens a review-only pull request", () => {
@@ -56,4 +60,14 @@ test("i-have-adhd synchronization validates and opens a review-only pull request
   assert.match(iHaveAdhdWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr create/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr merge|--auto(?:\s|$)/m);
+});
+
+test("Taiwan.md terminology synchronization pins data through a review-only pull request", () => {
+  assert.match(taiwanTerminologyWorkflow, /https:\/\/github\.com\/frank890417\/taiwan-md\.git/);
+  assert.match(taiwanTerminologyWorkflow, /git ls-tree -r FETCH_HEAD -- README\.md data\/terminology/);
+  assert.match(taiwanTerminologyWorkflow, /taiwan-terminology-sync\/apply_upstream_snapshot\.py/);
+  assert.match(taiwanTerminologyWorkflow, /gh api --method POST/);
+  assert.match(taiwanTerminologyWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
+  assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr create/);
+  assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr merge|--auto(?:\s|$)/m);
 });
