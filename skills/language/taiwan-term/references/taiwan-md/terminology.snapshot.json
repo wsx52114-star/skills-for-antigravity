@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "45029b0f1951151057fe73801f568b4d48d19374",
+    "commit": "ca1f6e3684eb55cdf2d65d08bfff15035a111cf2",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
     "severity_a": 26,
     "severity_b": 5,
-    "terms": 2367
+    "terms": 2382
   },
   "terms": [
     {
@@ -3294,6 +3294,20 @@
       "source_file": "關鍵字.yaml",
       "taiwan": [
         "關鍵字"
+      ]
+    },
+    {
+      "china": [
+        "具體",
+        "給我具體時間、具體怎麼說"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "具體.yaml",
+      "taiwan": [
+        "明確",
+        "確切",
+        "詳細"
       ]
     },
     {
@@ -8870,7 +8884,8 @@
       "fork_type": "E",
       "source_file": "巨好吃.yaml",
       "taiwan": [
-        "超好吃"
+        "超好吃",
+        "有夠好吃"
       ]
     },
     {
@@ -10874,7 +10889,7 @@
         "抑鬱症"
       ],
       "detection": null,
-      "fork_type": "E",
+      "fork_type": "B",
       "source_file": "抑鬱症.yaml",
       "taiwan": [
         "憂鬱症"
@@ -11134,6 +11149,19 @@
       "source_file": "探勘.yaml",
       "taiwan": [
         "探勘"
+      ]
+    },
+    {
+      "china": [
+        "挺",
+        "挺好的、挺不錯的"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "挺.yaml",
+      "taiwan": [
+        "蠻",
+        "滿"
       ]
     },
     {
@@ -13168,6 +13196,20 @@
     },
     {
       "china": [
+        "暈碳"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "暈碳.yaml",
+      "taiwan": [
+        "飯後想睡",
+        "食睏",
+        "餐後嗜睡",
+        "醫學正式名稱"
+      ]
+    },
+    {
+      "china": [
         "暴击"
       ],
       "detection": null,
@@ -14668,7 +14710,7 @@
         "水平"
       ],
       "detection": null,
-      "fork_type": "B",
+      "fork_type": "F",
       "source_file": "水準.yaml",
       "taiwan": [
         "水準"
@@ -15160,6 +15202,21 @@
     },
     {
       "china": [
+        "流量",
+        "流量明星、蹭流量、流量密碼"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "流量.yaml",
+      "taiwan": [
+        "點閱率",
+        "瀏覽人次",
+        "人氣",
+        "聲量"
+      ]
+    },
+    {
+      "china": [
         "浪頭"
       ],
       "detection": null,
@@ -15524,6 +15581,20 @@
         "退回",
         "還原",
         "轉返"
+      ]
+    },
+    {
+      "china": [
+        "漂亮飯",
+        "吃漂亮飯、漂亮餐"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "漂亮飯.yaml",
+      "taiwan": [
+        "網美餐廳",
+        "網美餐",
+        "好拍的店"
       ]
     },
     {
@@ -17306,6 +17377,18 @@
     },
     {
       "china": [
+        "硫酸紙"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "硫酸紙.yaml",
+      "taiwan": [
+        "描圖紙",
+        "透寫紙"
+      ]
+    },
+    {
+      "china": [
         "硬件"
       ],
       "detection": {
@@ -19017,6 +19100,19 @@
     },
     {
       "china": [
+        "素質",
+        "國民素質、素質教育"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "素質.yaml",
+      "taiwan": [
+        "素質",
+        "台灣本有詞"
+      ]
+    },
+    {
+      "china": [
         "索尼移動"
       ],
       "detection": null,
@@ -20007,6 +20103,18 @@
     },
     {
       "china": [
+        "聯繫",
+        "跟他聯繫一下"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "聯繫.yaml",
+      "taiwan": [
+        "聯絡"
+      ]
+    },
+    {
+      "china": [
         "聲卡"
       ],
       "detection": null,
@@ -20085,6 +20193,19 @@
     },
     {
       "china": [
+        "肯定",
+        "他肯定還在睡覺"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "肯定.yaml",
+      "taiwan": [
+        "一定",
+        "絕對"
+      ]
+    },
+    {
+      "china": [
         "肾内科"
       ],
       "detection": null,
@@ -20148,6 +20269,18 @@
       "source_file": "Facebook.yaml",
       "taiwan": [
         "Facebook"
+      ]
+    },
+    {
+      "china": [
+        "腦子",
+        "腦子好使、腦子進水"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "腦子.yaml",
+      "taiwan": [
+        "腦袋"
       ]
     },
     {
@@ -20787,6 +20920,20 @@
     },
     {
       "china": [
+        "薅羊毛",
+        "羊毛黨"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "薅羊毛.yaml",
+      "taiwan": [
+        "撿便宜",
+        "衝優惠",
+        "賺回饋"
+      ]
+    },
+    {
+      "china": [
         "薌劇"
       ],
       "detection": null,
@@ -21007,6 +21154,19 @@
       "source_file": "血糖機.yaml",
       "taiwan": [
         "血糖機"
+      ]
+    },
+    {
+      "china": [
+        "行吧"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "行吧.yaml",
+      "taiwan": [
+        "好啦",
+        "可以啦",
+        "那就這樣吧"
       ]
     },
     {
@@ -23656,6 +23816,20 @@
     },
     {
       "china": [
+        "邪修",
+        "邪修做飯、邪修健身"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "邪修.yaml",
+      "taiwan": [
+        "歪招",
+        "偷吃步",
+        "野路子"
+      ]
+    },
+    {
+      "china": [
         "部件"
       ],
       "detection": null,
@@ -23917,6 +24091,18 @@
       "source_file": "金槍魚.yaml",
       "taiwan": [
         "鮪魚"
+      ]
+    },
+    {
+      "china": [
+        "金色飛賊",
+        "金飛賊"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "金色飛賊.yaml",
+      "taiwan": [
+        "金探子"
       ]
     },
     {
@@ -25965,6 +26151,20 @@
       "source_file": "健檢.yaml",
       "taiwan": [
         "健檢"
+      ]
+    },
+    {
+      "china": [
+        "體現",
+        "充分體現、體現了"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "體現.yaml",
+      "taiwan": [
+        "展現",
+        "呈現",
+        "表現出"
       ]
     },
     {
