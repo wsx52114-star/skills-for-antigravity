@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "ca1f6e3684eb55cdf2d65d08bfff15035a111cf2",
+    "commit": "3f1c1432d83d50567aa1eb9664e1c71ab8c83d90",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
@@ -16227,7 +16227,7 @@
       "fork_type": "B",
       "source_file": "副詞.yaml",
       "taiwan": [
-        "副詞"
+        "狀語"
       ]
     },
     {
@@ -18950,13 +18950,15 @@
     },
     {
       "china": [
-        "粉絲"
+        "粉絲",
+        "食物義"
       ],
       "detection": null,
       "fork_type": "semantic",
       "source_file": "粉絲.yaml",
       "taiwan": [
-        "冬粉"
+        "冬粉",
+        "食物義"
       ]
     },
     {
