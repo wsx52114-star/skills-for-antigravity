@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
+  existsSync,
   lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   realpathSync,
   rmSync,
+  symlinkSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -21,8 +24,8 @@ function projectFixture() {
   return mkdtempSync(path.join(tmpdir(), "antigravity-project-"));
 }
 
-function runSetup(project) {
-  return spawnSync("bash", [setupScript], {
+function runSetup(project, ...args) {
+  return spawnSync("bash", [setupScript, ...args], {
     cwd: project,
     encoding: "utf8",
   });
@@ -58,6 +61,76 @@ test("WSL setup creates project-local context and flat skill links", () => {
     assert.equal(realpathSync(path.join(agents, "rules")), realpathSync(path.join(repoRoot, "rules")));
     assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/skills$/m);
     assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/rules$/m);
+    assert.match(readFileSync(path.join(agents, ".gitignore"), "utf8"), /^\/\.install-state$/m);
+    assert.match(readFileSync(path.join(agents, ".install-state"), "utf8"), /^version=1\nmode=link\nchannel=all\nsource=/);
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("WSL uninstall removes only managed runtime entries and preserves project knowledge", () => {
+  const project = projectFixture();
+  try {
+    assert.equal(runSetup(project).status, 0);
+    const agents = path.join(project, ".agents");
+    const skills = path.join(agents, "skills");
+    symlinkSync(tmpdir(), path.join(skills, "project-local"));
+    const context = path.join(agents, "CONTEXT.md");
+    writeFileSync(context, "# Project Context\n\nPreserve me.\n");
+
+    const result = runSetup(project, "--uninstall");
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(existsSync(path.join(skills, "tdd")), false);
+    assert.equal(realpathSync(path.join(skills, "project-local")), realpathSync(tmpdir()));
+    assert.equal(existsSync(path.join(agents, "rules")), false);
+    assert.equal(existsSync(path.join(agents, ".install-state")), false);
+    assert.equal(readFileSync(context, "utf8"), "# Project Context\n\nPreserve me.\n");
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("WSL setup supports an explicit stable channel without in-progress skills", () => {
+  const project = projectFixture();
+  try {
+    const stable = runSetup(project, "--sync", "--channel", "stable");
+    assert.equal(stable.status, 0, stable.stderr);
+    const skills = path.join(project, ".agents", "skills");
+    assert.equal(existsSync(path.join(skills, "tdd")), true);
+    assert.equal(existsSync(path.join(skills, "implement-spec")), false);
+    assert.equal(existsSync(path.join(skills, "retro")), false);
+    assert.match(readFileSync(path.join(project, ".agents", ".install-state"), "utf8"), /^channel=stable$/m);
+    assert.equal(runSetup(project, "--check", "--channel", "stable").status, 0);
+    assert.equal(runSetup(project, "--check", "--channel", "all").status, 2);
+    assert.equal(runSetup(project, "--sync", "--channel", "all").status, 0);
+    assert.equal(existsSync(path.join(skills, "implement-spec")), true);
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("WSL check reports inventory drift and sync reconciles only managed links", () => {
+  const project = projectFixture();
+  try {
+    assert.equal(runSetup(project).status, 0);
+    const skills = path.join(project, ".agents", "skills");
+    unlinkSync(path.join(skills, "tdd"));
+    symlinkSync(path.join(repoRoot, "skills", "engineering", "removed"), path.join(skills, "removed"));
+    symlinkSync(tmpdir(), path.join(skills, "project-local"));
+
+    const check = runSetup(project, "--check");
+    assert.equal(check.status, 2, check.stderr);
+    assert.match(check.stdout, /Missing: .*skills\/tdd/);
+    assert.match(check.stdout, /Stale: .*skills\/removed/);
+    assert.equal(existsSync(path.join(skills, "tdd")), false);
+    assert.equal(lstatSync(path.join(skills, "removed")).isSymbolicLink(), true);
+
+    const sync = runSetup(project, "--sync");
+    assert.equal(sync.status, 0, sync.stderr);
+    assert.equal(realpathSync(path.join(skills, "tdd")), realpathSync(path.join(repoRoot, "skills", "engineering", "tdd")));
+    assert.equal(existsSync(path.join(skills, "removed")), false);
+    assert.equal(realpathSync(path.join(skills, "project-local")), realpathSync(tmpdir()));
+    assert.equal(runSetup(project, "--check").status, 0);
   } finally {
     rmSync(project, { recursive: true, force: true });
   }

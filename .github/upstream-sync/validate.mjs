@@ -67,7 +67,11 @@ function frontmatter(file) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return null;
   const field = (name) => match[1].match(new RegExp(`^${name}:\\s*["']?(.+?)["']?\\s*$`, "m"))?.[1];
-  return { name: field("name"), description: field("description") };
+  return {
+    name: field("name"),
+    description: field("description"),
+    explicit: /^disable-model-invocation:\s*true\s*$/m.test(match[1]),
+  };
 }
 
 const skillFiles = filesNamed(path.join(repoRoot, "skills"), "SKILL.md").sort();
@@ -83,6 +87,9 @@ for (const file of skillFiles) {
   if (metadata.name !== directoryName) {
     errors.push(`Frontmatter name '${metadata.name}' does not match directory '${directoryName}': ${relative}`);
   }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(metadata.name)) {
+    errors.push(`Runtime skill name is not slash-command safe: ${metadata.name}`);
+  }
   if (excludedSkillNames.has(metadata.name) || isExcludedSkillPath(relative)) {
     errors.push(`Non-runtime skill is present in the direct checkout: ${relative}`);
   }
@@ -90,6 +97,36 @@ for (const file of skillFiles) {
     errors.push(`Duplicate runtime skill '${metadata.name}': ${runtimeNames.get(metadata.name)} and ${relative}`);
   }
   runtimeNames.set(metadata.name, relative);
+
+  const codexMetadata = path.join(path.dirname(file), "agents", "openai.yaml");
+  if (existsSync(codexMetadata)) {
+    const implicitDisabled = /^\s*allow_implicit_invocation:\s*false\s*$/m.test(
+      readFileSync(codexMetadata, "utf8"),
+    );
+    if (metadata.explicit !== implicitDisabled) {
+      errors.push(`Invocation policy disagrees between SKILL.md and agents/openai.yaml: ${relative}`);
+    }
+  }
+  if (relative.startsWith("skills/in-progress/") && !metadata.explicit) {
+    errors.push(`In-progress skill must require explicit invocation: ${relative}`);
+  }
+}
+
+const rootReadme = path.join(repoRoot, "README.md");
+if (existsSync(rootReadme)) {
+  const content = readFileSync(rootReadme, "utf8");
+  const links = [...content.matchAll(/\]\((skills\/[^)#]+\/SKILL\.md)(?:#[^)]*)?\)/g)]
+    .map((match) => match[1]);
+  for (const link of links) {
+    if (!existsSync(path.join(repoRoot, link))) {
+      errors.push(`README skill link does not exist: ${link}`);
+    }
+  }
+  const documented = [...new Set(links.map((link) => path.posix.basename(path.posix.dirname(link))))].sort();
+  const runtime = [...runtimeNames.keys()].sort();
+  if (JSON.stringify(documented) !== JSON.stringify(runtime)) {
+    errors.push("README runtime skill inventory does not match the installed runtime skills");
+  }
 }
 
 const excludedReferenceSegments = [...excludedSkillNames, ...excludedSkillPathSegments];
@@ -142,6 +179,11 @@ const required = [
   ".github/workflows/sync-taiwan-terminology.yml",
   ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
+  ".github/upstream-sync/tests/local-setup-win.test.ps1",
+  "scripts/init_setup_local_repo_wsl.sh",
+  "scripts/init_setup_local_repo_win.ps1",
+  "PROJECT_SETUP.md",
+  "README.md",
 ];
 for (const relative of required) {
   if (!existsSync(path.join(repoRoot, relative))) errors.push(`Required fork file is missing: ${relative}`);

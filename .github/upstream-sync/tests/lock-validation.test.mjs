@@ -123,6 +123,10 @@ function fixture(lock) {
     ".github/workflows/sync-taiwan-terminology.yml",
     ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
+    ".github/upstream-sync/tests/local-setup-win.test.ps1",
+    "scripts/init_setup_local_repo_wsl.sh",
+    "scripts/init_setup_local_repo_win.ps1",
+    "PROJECT_SETUP.md",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
   write(root, "skills/security/security-audit/SKILL.md", "---\nname: security-audit\ndescription: Audit.\n---\n");
   write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
@@ -130,6 +134,17 @@ function fixture(lock) {
   write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: false\n");
   write(root, "skills/language/taiwan-term/SKILL.md", "---\nname: taiwan-term\ndescription: Audit Taiwan terminology.\n---\n");
   write(root, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
+  write(
+    root,
+    "README.md",
+    [
+      "[security-audit](skills/security/security-audit/SKILL.md)",
+      "[i-have-adhd](skills/productivity/i-have-adhd/SKILL.md)",
+      "[taiwan-term](skills/language/taiwan-term/SKILL.md)",
+      "[tdd](skills/engineering/tdd/SKILL.md)",
+      "",
+    ].join("\n"),
+  );
   write(root, "LICENSE", "MIT\n");
   return root;
 }
@@ -144,6 +159,23 @@ test("validator rejects a lock whose inventory does not match the composed upstr
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
     assert.match(result.stderr, /inventory does not match/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("validator rejects a README skill inventory that drifts from runtime", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  write(root, "README.md", "[tdd](skills/engineering/missing/SKILL.md)\n");
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /README skill link does not exist/);
+    assert.match(result.stderr, /README runtime skill inventory does not match/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

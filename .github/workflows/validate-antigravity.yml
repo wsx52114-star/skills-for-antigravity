@@ -26,3 +26,13 @@ jobs:
 
       - name: Validate direct Agent home layout
         run: node .github/upstream-sync/validate.mjs
+
+  validate-windows-install:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Test PowerShell project installation
+        shell: pwsh
+        run: .github/upstream-sync/tests/local-setup-win.test.ps1

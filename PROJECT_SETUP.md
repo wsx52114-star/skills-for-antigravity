@@ -10,6 +10,7 @@
 project/
 └── .agents/
     ├── CONTEXT.md
+    ├── .install-state
     ├── docs/
     │   └── adr/
     ├── skills/
@@ -21,6 +22,7 @@ project/
 
 - `CONTEXT.md` 與 `docs/adr/` 是 project-local 實體內容。
 - `skills/<skill-name>` 與 `rules` 是機器本機的共享連結，應由 Git 忽略。
+- `.install-state` 記錄安裝器管理的 mode、channel、來源與 skill inventory，也應由 Git 忽略。
 - Flat skill links 符合 Antigravity 官方 `.agents/skills/<skill-name>/SKILL.md` 結構，可使用 `/skill-name`。
 - Agent home 執行 `git pull --ff-only` 後，既有 Link Mode skills 與 rules 立即更新；新增或移除 skill 時需重跑初始化 script 以刷新 links。
 
@@ -32,6 +34,25 @@ project/
 
 ```bash
 bash ~/.agents/scripts/init_setup_local_repo_wsl.sh
+```
+
+可用動作：
+
+```bash
+# 唯讀檢查；一致時回傳 0，有 drift 時回傳 2
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
+
+# 新增缺少項目，並清理由同一 Agent home 管理的過時 links
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --sync
+
+# 只移除受管理的 skills、rules 與 install state
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --uninstall
+```
+
+預設 channel 為 `all`，以保留既有行為。若不希望暴露 `skills/in-progress/`：
+
+```bash
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --sync --channel stable
 ```
 
 Script 會從自己的位置判斷 Agent home，因此 repository 不一定要安裝在 `~/.agents`。若安裝於其他位置，改用該 repository 的實際 script 路徑即可。
@@ -55,6 +76,9 @@ Agent project initialization complete.
 powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local_repo_win.ps1" -Mode Link
 ```
 
+可用 `-Action Check|Sync|Uninstall` 與 `-Channel All|Stable`；預設分別為
+`Sync` 與 `All`。
+
 可用模式：
 
 | Mode | 行為 | 更新方式 |
@@ -64,7 +88,8 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 
 未提供 `-Mode` 時，script 會顯示互動式選單並預設選擇 Link Mode。
 
-Copy Mode 更新既有副本時不會刪除 local 額外檔案，因此上游已移除的舊檔可能仍會保留；需要清理時應先人工確認內容。
+Copy Mode 更新既有副本時不會刪除 local 額外檔案。安裝器偵測到已從 inventory
+移除的受管理 Copy 目錄時會停止並要求人工檢查，不會推測其中是否包含本機修改。
 
 ## Antigravity 規則入口
 
@@ -87,6 +112,7 @@ Skills 以 `.agents/skills/<skill-name>/SKILL.md` 的官方 flat layout 接入�
 ```gitignore
 /skills
 /rules
+/.install-state
 ```
 
 應納入專案 Git：
@@ -123,6 +149,8 @@ Agent home 使用 Git 管理時，可執行：
 ```bash
 git -C ~/.agents status --short
 git -C ~/.agents pull --ff-only
+# 以下命令需在要檢查的專案根目錄執行
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
 ```
 
 Link Mode 的既有 skill 內容更新不需要重新初始化；新增、移除或改名時需重跑。
@@ -134,7 +162,10 @@ Copy Mode 每次更新後都必須重新執行 PowerShell script。
 
 - 不建立或修改專案的 `AGENTS.md`。
 - 不覆寫既有 `CONTEXT.md` 或 ADR。
-- 不執行 recursive deletion。
+- Link Mode 不會遞迴刪除資料；Copy Mode 只會在明確解除安裝時移除安裝器管理的目錄。
 - 正確連結會保持不變。
+- `--check` 不會寫入專案；缺少或過時時回傳 2。
+- 同步只清理由目前 Agent home 擁有的 links，未知 project-local skills 保持不變。
+- 解除安裝不會移除 `CONTEXT.md`、ADR 或 `AGENTS.md`。
 - 錯誤連結或實體目錄會在寫入前被偵測。
 - 不允許從 Agent home 自己的根目錄執行專案初始化。

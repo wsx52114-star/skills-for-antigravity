@@ -42,11 +42,6 @@ jobs:
             exit 0
           fi
 
-          branch="sync/taiwan-terminology-${upstream_sha:0:12}"
-          if [[ -n "$(git ls-remote --heads origin "refs/heads/$branch")" ]]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
           invalid_entries="$(git ls-tree -r FETCH_HEAD -- README.md data/terminology | awk '$1 !~ /^100(644|755)$/ || $2 != "blob"')"
@@ -106,13 +101,22 @@ jobs:
             exit 1
           fi
           branch="${{ steps.commit.outputs.branch }}"
-          url="$(gh api --method POST \
+          head="${{ github.repository_owner }}:$branch"
+          url="$(gh api --method GET \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "repos/${{ github.repository }}/pulls" \
-            -f title="chore: sync Taiwan.md terminology ${{ steps.upstream.outputs.short_sha }}" \
-            -f head="$branch" \
-            -f base=main \
-            -f body="Normalized terminology snapshot from frank890417/taiwan-md at commit ${{ steps.upstream.outputs.sha }}. This update requires human review and will not be auto-merged." \
-            --jq .html_url)"
-          echo "Created pull request: $url"
+            -f state=open -f head="$head" --jq '.[0].html_url // empty')"
+          if [[ -z "$url" ]]; then
+            url="$(gh api --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "repos/${{ github.repository }}/pulls" \
+              -f title="chore: sync Taiwan.md terminology ${{ steps.upstream.outputs.short_sha }}" \
+              -f head="$branch" -f base=main \
+              -f body="Normalized terminology snapshot from frank890417/taiwan-md at commit ${{ steps.upstream.outputs.sha }}. This update requires human review and will not be auto-merged." \
+              --jq .html_url)"
+            echo "Created pull request: $url"
+          else
+            echo "Pull request already exists: $url"
+          fi

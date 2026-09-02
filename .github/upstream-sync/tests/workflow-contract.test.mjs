@@ -34,14 +34,18 @@ test("mattpocock synchronization opens a review-only pull request", () => {
 
 test("validation workflow uses read-only repository permissions", () => {
   assert.match(validationWorkflow, /permissions:\s*\n\s+contents: read/);
+  assert.match(validationWorkflow, /runs-on: windows-latest/);
+  assert.match(validationWorkflow, /local-setup-win\.test\.ps1/);
 });
 
 test("Cloudflare security-audit synchronization validates and opens a review-only pull request", () => {
   assert.match(securityAuditWorkflow, /https:\/\/github\.com\/cloudflare\/security-audit-skill\.git/);
   assert.match(securityAuditWorkflow, /git ls-tree -r FETCH_HEAD/);
-  assert.match(securityAuditWorkflow, /git ls-remote --heads origin/);
+  assert.doesNotMatch(securityAuditWorkflow, /git ls-remote --heads origin/);
   assert.match(securityAuditWorkflow, /security-audit-sync\/apply-upstream-snapshot\.mjs/);
   assert.match(securityAuditWorkflow, /gh api --method POST/);
+  assert.match(securityAuditWorkflow, /gh api --method GET/);
+  assert.match(securityAuditWorkflow, /Pull request already exists/);
   assert.match(securityAuditWorkflow, /repos\/\$\{\{ github\.repository \}\}\/pulls/);
   assert.doesNotMatch(securityAuditWorkflow, /gh pr create/);
   assert.match(securityAuditWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
@@ -55,8 +59,11 @@ test("Cloudflare security-audit synchronization validates and opens a review-onl
 test("i-have-adhd synchronization validates and opens a review-only pull request", () => {
   assert.match(iHaveAdhdWorkflow, /https:\/\/github\.com\/ayghri\/i-have-adhd\.git/);
   assert.match(iHaveAdhdWorkflow, /git ls-tree -r FETCH_HEAD/);
+  assert.doesNotMatch(iHaveAdhdWorkflow, /git ls-remote --heads origin/);
   assert.match(iHaveAdhdWorkflow, /i-have-adhd-sync\/apply-upstream-snapshot\.mjs/);
   assert.match(iHaveAdhdWorkflow, /gh api --method POST/);
+  assert.match(iHaveAdhdWorkflow, /gh api --method GET/);
+  assert.match(iHaveAdhdWorkflow, /Pull request already exists/);
   assert.match(iHaveAdhdWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr create/);
   assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr merge|--auto(?:\s|$)/m);
@@ -65,8 +72,11 @@ test("i-have-adhd synchronization validates and opens a review-only pull request
 test("Taiwan.md terminology synchronization pins data through a review-only pull request", () => {
   assert.match(taiwanTerminologyWorkflow, /https:\/\/github\.com\/frank890417\/taiwan-md\.git/);
   assert.match(taiwanTerminologyWorkflow, /git ls-tree -r FETCH_HEAD -- README\.md data\/terminology/);
+  assert.doesNotMatch(taiwanTerminologyWorkflow, /git ls-remote --heads origin/);
   assert.match(taiwanTerminologyWorkflow, /taiwan-terminology-sync\/apply_upstream_snapshot\.py/);
   assert.match(taiwanTerminologyWorkflow, /gh api --method POST/);
+  assert.match(taiwanTerminologyWorkflow, /gh api --method GET/);
+  assert.match(taiwanTerminologyWorkflow, /Pull request already exists/);
   assert.match(taiwanTerminologyWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
   assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr create/);
   assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr merge|--auto(?:\s|$)/m);

@@ -117,6 +117,9 @@ Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit �
 4. 建立同步 Pull Request。
 5. 等待人工審查與合併；content-only 更新也不例外。
 
+同步分支存在時，workflow 仍會更新該分支，並以 REST 查詢是否已有 open PR；只有
+open PR 存在才沿用它。已關閉 PR 留下的遠端分支不會阻止重新建立 review-only PR。
+
 上游 commit 記錄在 [`.github/upstream-sync/upstream-lock.json`](.github/upstream-sync/upstream-lock.json)。
 
 [`.github/workflows/sync-security-audit.yml`](.github/workflows/sync-security-audit.yml)

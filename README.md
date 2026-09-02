@@ -46,6 +46,9 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 project-local 的 `CONTEXT.md` 與 ADR。WSL、Linux、Raspberry Pi、
 Windows、Link／Copy Mode、Git ignore 與安全行為詳見
 [專案 Agent Skills 啟用指南](PROJECT_SETUP.md)。
+
+既有專案可用 `--check` 唯讀檢查 skill inventory，並以 `--sync` 安全收斂；
+預設安裝全部 runtime skills，也可選擇 `stable` channel 排除 `skills/in-progress/`。
 ## 更新
 
 Windows：
@@ -99,6 +102,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`to-tickets`](skills/engineering/to-tickets/SKILL.md) | 需明確指定 | 將 plan 或 spec 切成 tracer-bullet issues 並記錄 blocking edges。 |
 | [`triage`](skills/engineering/triage/SKILL.md) | 需明確指定 | 依 triage role state machine 分類、驗證 issues 與外部 PR。 |
 | [`wayfinder`](skills/engineering/wayfinder/SKILL.md) | 需明確指定 | 將跨多個 agent session 的大型工作規劃成 decision issues。 |
+| [`wizard`](skills/engineering/wizard/SKILL.md) | 可自動選用 | 產生互動式 Bash wizard，引導人工完成設定或一次性 migration。 |
 
 ### Security
 
@@ -129,14 +133,9 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`handoff`](skills/productivity/handoff/SKILL.md) | 需明確指定 | 將目前對話壓縮成可交給另一個 agent 接手的文件。 |
 | [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) | 需明確指定 | 將回覆整理成 action-first、可直接執行的 ADHD-friendly 格式。 |
 | [`teach`](skills/productivity/teach/SKILL.md) | 需明確指定 | 在目前 workspace 脈絡中教授技能或概念。 |
-| [`writing-great-skills`](skills/productivity/writing-great-skills/SKILL.md) | 需明確指定 | 提供撰寫與編修可預測、清楚 skills 的原則與詞彙。 |
-
-### Personal
-
-| 關鍵字 | 觸發方式 | 用途 |
-| --- | --- | --- |
-| [`edit-article`](skills/personal/edit-article/SKILL.md) | 需明確指定 | 重整文章段落、改善清晰度並收緊文字。 |
-| [`obsidian-vault`](skills/personal/obsidian-vault/SKILL.md) | 可自動選用 | 使用 wikilinks 與 index notes 搜尋、建立及整理 Obsidian notes。 |
+| [`to-questionnaire`](skills/productivity/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成供他人填寫的 questionnaire。 |
+| [`wait-what`](skills/productivity/wait-what/SKILL.md) | 需明確指定 | 以更簡單並補足脈絡的方式重新說明上一段內容。 |
+| [`writing-for-agents`](skills/productivity/writing-for-agents/SKILL.md) | 可自動選用 | 撰寫與編修供 agents 使用的 skills、規則及指引文件。 |
 
 ### In Progress
 
@@ -144,10 +143,10 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
+| [`implement-spec`](skills/in-progress/implement-spec/SKILL.md) | 需明確指定 | 依 task graph 以多個 worktree 實作完整 spec。 |
 | [`loop-me`](skills/in-progress/loop-me/SKILL.md) | 需明確指定 | 針對想建立的 workflows 進行規格訪談。 |
+| [`retro`](skills/in-progress/retro/SKILL.md) | 需明確指定 | 回顧 coding session 並提出 agent 環境改善候選。 |
 | [`setup-ts-deep-modules`](skills/in-progress/setup-ts-deep-modules/SKILL.md) | 需明確指定 | 為 TypeScript repository 設定 dependency-cruiser 與 deep module 邊界。 |
-| [`to-questionnaire`](skills/in-progress/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成供他人填寫的 questionnaire。 |
-| [`wizard`](skills/in-progress/wizard/SKILL.md) | 需明確指定 | 產生互動式 Bash wizard，引導人工完成設定或一次性 migration。 |
 | [`writing-beats`](skills/in-progress/writing-beats/SKILL.md) | 需明確指定 | 將原始素材組合成有先後脈絡的文章 beats。 |
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |
 | [`writing-shape`](skills/in-progress/writing-shape/SKILL.md) | 需明確指定 | 將原始素材逐段整理成文章。 |
