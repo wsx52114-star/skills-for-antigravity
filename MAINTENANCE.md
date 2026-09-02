@@ -9,7 +9,7 @@
 | [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd) | explicit-only `i-have-adhd` 與其授權 | [i-have-adhd lock](.github/i-have-adhd-sync/upstream-lock.json) | [sync-i-have-adhd.yml](.github/workflows/sync-i-have-adhd.yml) |
 | [`frank890417/taiwan-md`](https://github.com/frank890417/taiwan-md) | 正規化 Taiwan.md 用語快照 | [Taiwan.md lock](.github/taiwan-terminology-sync/upstream-lock.json) | [sync-taiwan-terminology.yml](.github/workflows/sync-taiwan-terminology.yml) |
 
-四份 lock 是目前採用版本與檔案 inventory 的權威來源；維護文件不另存固定
+四份 lock 是目前採用版本與檔案 inventory 的權威來源；本文件不另存固定
 baseline SHA。
 
 ## `mattpocock/skills` 採用政策
@@ -26,7 +26,7 @@ LICENSE
 
 Claude-only 與 deprecated skills 在匯入階段排除；分類 README 中對應的索引列也會移除。
 
-| 上游項目 | 處理方式 | 原因 |
+| 上游內容 | 處理方式 | 原因 |
 | --- | --- | --- |
 | `.agents/` | 排除 | 避免 nested `.agents`。 |
 | `.changeset/` | 排除 | 只管理上游版本與 changelog。 |
@@ -68,14 +68,14 @@ skills/security-audit/** → skills/security/security-audit/**
 
 ## Taiwan.md 詞庫同步範圍
 
-`taiwan-term` 的 skill 流程與掃描器由本專案維護。獨立同步流程只讀取
+`taiwan-term` 的 skill 流程與掃描器由本專案維護。獨立同步流程僅讀取
 Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit 的
 正規化 JSON 快照；Runtime skill 執行時不連線到上游。快照保留 Taiwan.md
 來源、版本與 CC BY-SA 4.0 授權資訊。
 
 ## 所有權
 
-[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、排除項目與 fork-owned paths。
+[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、排除規則與 fork-owned paths。
 
 以下路徑不接受 `mattpocock/skills` 更新：
 
@@ -87,7 +87,7 @@ Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit �
 - `.github/upstream-sync/**`
 - `.github/taiwan-terminology-sync/**`
 - `.github/workflows/**`
-- 根目錄文件
+- 根目錄說明文件
 
 其中 `skills/security/security-audit/**` 由
 [`.github/security-audit-sync/`](.github/security-audit-sync/) 單獨管理；

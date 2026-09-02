@@ -1,10 +1,80 @@
 # Skills for Antigravity
 
-一套集中管理、供各 Antigravity workspace 共用的工程 skills。它承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
+一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
 Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開發專案再透過 project-local 連結啟用，並保有自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的 global configuration。
 
-## 內容
+## 快速開始
+
+完整啟用分為三步：取得共享 Agent home、連結開發專案、檢查安裝。只完成
+`git clone` 還不會讓現有開發專案出現 `/skill-name`。
+
+### 1. 取得共享 Agent home
+
+WSL／Linux／Raspberry Pi：
+
+```bash
+git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
+```
+
+Windows：
+
+```powershell
+git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
+```
+
+若目標目錄已存在，請先確認或備份，勿直接覆寫。
+
+### 2. 在開發專案啟用 skills
+
+WSL／Linux／Raspberry Pi：
+
+```bash
+cd ~/path/to/your-project
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --sync
+```
+
+Windows：
+
+```powershell
+Set-Location "$HOME\path\to\your-project"
+powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local_repo_win.ps1" -Action Sync -Mode Link
+```
+
+也可以直接請具有終端機與專案寫入權限的 Agent 安裝：
+
+> 請先閱讀 `~/.agents/PROJECT_SETUP.md`，依指南將共享 Agent home 連結到目前開發
+> 專案；完成後執行安裝檢查並回報結果。
+
+Agent 若無法建立 Symlink／Junction 或寫入專案，請手動執行上方指令。
+
+安裝器會建立 `.agents/skills/<skill-name>` 與 `.agents/rules` flat links，不會將
+skills 寫入 `~/.gemini/` global scope，也不會覆寫專案的 `CONTEXT.md`、ADR 或 `AGENTS.md`。
+
+預設啟用所有 Runtime skills；若要排除仍在開發中的 skills，請使用
+`--channel stable`，Windows 則使用 `-Channel Stable`。
+
+### 3. 檢查並開始使用
+
+WSL／Linux／Raspberry Pi：
+
+```bash
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
+```
+
+Windows：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local_repo_win.ps1" -Action Check -Mode Link
+```
+
+顯示安裝狀態一致後，重新載入 Antigravity workspace，即可使用 `/tdd`、
+`/code-review` 等 flat slash commands，也可以在自然語言中點名 skill。
+
+完整的 Link／Copy Mode、解除安裝、Git ignore 與安全邊界請參考
+[專案 Agent Skills 啟用指南](PROJECT_SETUP.md)。
+
+## Repository 內容
 
 | 路徑 | 用途 |
 | --- | --- |
@@ -22,46 +92,25 @@ Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開�
 
 [`taiwan-term`](skills/language/taiwan-term/SKILL.md) 的流程與掃描器由本專案維護；詞庫快照固定於 Taiwan.md commit，更新只透過需人工審查的 Pull Request 採用。
 
-## 安裝
+## 更新 Agent home 與專案
 
-### 集中式安裝
-
-Windows：
-
-```powershell
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
-```
-
-WSL／Raspberry Pi 5：
-
-```bash
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
-```
-
-如果目標目錄已存在，先備份並確認內容。
-
-### 專案連結
-
-開發專案可透過 flat Symlink／Junction 共用 Agent home 的 skills 與 rules，同時保留
-project-local 的 `CONTEXT.md` 與 ADR。WSL、Linux、Raspberry Pi、
-Windows、Link／Copy Mode、Git ignore 與安全行為詳見
-[專案 Agent Skills 啟用指南](PROJECT_SETUP.md)。
-
-既有專案可用 `--check` 唯讀檢查 skill inventory，並以 `--sync` 安全收斂；
-預設安裝全部 runtime skills，也可選擇 `stable` channel 排除 `skills/in-progress/`。
-## 更新
-
-Windows：
-
-```powershell
-git -C "$HOME\.agents" pull --ff-only
-```
-
-WSL／Raspberry Pi 5：
+先更新共享 repository：
 
 ```bash
 git -C ~/.agents pull --ff-only
 ```
+
+Link Mode 的既有 skill 內容會立即更新。若有新增、刪除、改名或移動 skill，
+請進入各開發專案執行：
+
+```bash
+cd ~/path/to/your-project
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
+bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --sync
+```
+
+Windows Copy Mode 每次更新後都應重新執行 `-Action Sync -Mode Copy`。完整的更新
+判斷、回傳碼與多專案範例請參考 [PROJECT_SETUP.md](PROJECT_SETUP.md#完整安裝與更新生命週期)。
 
 ## 使用 skills
 
@@ -91,10 +140,10 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`diagnosing-bugs`](skills/engineering/diagnosing-bugs/SKILL.md) | 可自動選用 | 重現並縮小 bug，驗證假設、修復問題及加入回歸測試。 |
 | [`domain-modeling`](skills/engineering/domain-modeling/SKILL.md) | 可自動選用 | 建立專案術語、領域關係與必要的架構決策。 |
 | [`grill-with-docs`](skills/engineering/grill-with-docs/SKILL.md) | 需明確指定 | 透過追問釐清設計，同步 glossary 與 ADR。 |
-| [`implement`](skills/engineering/implement/SKILL.md) | 需明確指定 | 依據 spec 或 tickets 實作工作項目。 |
+| [`implement`](skills/engineering/implement/SKILL.md) | 需明確指定 | 依據 spec 或 tickets 實作工作內容。 |
 | [`improve-codebase-architecture`](skills/engineering/improve-codebase-architecture/SKILL.md) | 需明確指定 | 掃描 codebase 的 deepening 機會，產生報告並逐項釐清。 |
 | [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 建立 throwaway prototype，回答狀態、邏輯或 UI 設計問題。 |
-| [`research`](skills/engineering/research/SKILL.md) | 可自動選用 | 依高可信度 primary sources 研究問題並在 repository 保存報告。 |
+| [`research`](skills/engineering/research/SKILL.md) | 可自動選用 | 依高可信度 primary sources 研究問題，並將報告寫入 repository。 |
 | [`resolving-merge-conflicts`](skills/engineering/resolving-merge-conflicts/SKILL.md) | 可自動選用 | 解決進行中的 Git merge 或 rebase conflict。 |
 | [`setup-matt-pocock-skills`](skills/engineering/setup-matt-pocock-skills/SKILL.md) | 需明確指定 | 首次使用前設定 issue tracker、triage labels 與 domain docs。 |
 | [`tdd`](skills/engineering/tdd/SKILL.md) | 可自動選用 | 以 red-green-refactor 和整合測試開發功能或修復 bug。 |
@@ -102,7 +151,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`to-tickets`](skills/engineering/to-tickets/SKILL.md) | 需明確指定 | 將 plan 或 spec 切成 tracer-bullet issues 並記錄 blocking edges。 |
 | [`triage`](skills/engineering/triage/SKILL.md) | 需明確指定 | 依 triage role state machine 分類、驗證 issues 與外部 PR。 |
 | [`wayfinder`](skills/engineering/wayfinder/SKILL.md) | 需明確指定 | 將跨多個 agent session 的大型工作規劃成 decision issues。 |
-| [`wizard`](skills/engineering/wizard/SKILL.md) | 可自動選用 | 產生互動式 Bash wizard，引導人工完成設定或一次性 migration。 |
+| [`wizard`](skills/engineering/wizard/SKILL.md) | 可自動選用 | 產生互動式 Bash wizard，引導人工完成設定或單次 migration。 |
 
 ### Security
 
@@ -163,7 +212,7 @@ Antigravity 轉譯。
 
 ## 專案文件
 
-每個開發專案自行保存 `.agents/CONTEXT.md` 與 `.agents/docs/adr/`；共享的 skills
+每個開發專案自行保留 `.agents/CONTEXT.md` 與 `.agents/docs/adr/`；共享的 skills
 與 rules 僅以機器本機連結接入。專案若需要特殊操作規則，可自行維護根目錄
 `AGENTS.md`。完整目錄結構與 Git 管理方式見
 [PROJECT_SETUP.md](PROJECT_SETUP.md)。
