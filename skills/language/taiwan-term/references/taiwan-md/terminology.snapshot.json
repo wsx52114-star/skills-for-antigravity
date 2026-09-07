@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "3f1c1432d83d50567aa1eb9664e1c71ab8c83d90",
+    "commit": "3eed2bfdbbbe419b48466461761a94f233c5db2a",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
     "severity_a": 26,
     "severity_b": 5,
-    "terms": 2382
+    "terms": 2279
   },
   "terms": [
     {
@@ -388,17 +388,6 @@
     },
     {
       "china": [
-        "一陣風"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "三分鐘熱度.yaml",
-      "taiwan": [
-        "三分鐘熱度"
-      ]
-    },
-    {
-      "china": [
         "一風吹"
       ],
       "detection": null,
@@ -410,13 +399,13 @@
     },
     {
       "china": [
-        "丁克夫妻"
+        "丁克族"
       ],
       "detection": null,
       "fork_type": "B",
       "source_file": "頂克族.yaml",
       "taiwan": [
-        "頂克族"
+        "頂客族"
       ]
     },
     {
@@ -527,19 +516,7 @@
       "fork_type": "semantic",
       "source_file": "上崗.yaml",
       "taiwan": [
-        "就業",
-        "就職"
-      ]
-    },
-    {
-      "china": [
-        "上座率"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "上座率.yaml",
-      "taiwan": [
-        "票房紀錄"
+        "上工"
       ]
     },
     {
@@ -587,8 +564,7 @@
       "fork_type": "semantic",
       "source_file": "下崗.yaml",
       "taiwan": [
-        "離職",
-        "解職"
+        "資遣"
       ]
     },
     {
@@ -664,6 +640,31 @@
     },
     {
       "china": [
+        "不配得感"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "不配得感.yaml",
+      "taiwan": [
+        "自我價值感低",
+        "覺得自己不配",
+        "冒牌者症候群",
+        "相近概念"
+      ]
+    },
+    {
+      "china": [
+        "不間斷電源"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "不斷電系統.yaml",
+      "taiwan": [
+        "不斷電系統"
+      ]
+    },
+    {
+      "china": [
         "不限量"
       ],
       "detection": null,
@@ -722,6 +723,17 @@
         "並口"
       ],
       "detection": null,
+      "fork_type": "B",
+      "source_file": "並列埠.yaml",
+      "taiwan": [
+        "並列埠"
+      ]
+    },
+    {
+      "china": [
+        "並口"
+      ],
+      "detection": null,
       "fork_type": "semantic",
       "source_file": "並口.yaml",
       "taiwan": [
@@ -761,17 +773,6 @@
       "source_file": "並列.yaml",
       "taiwan": [
         "並列"
-      ]
-    },
-    {
-      "china": [
-        "並行端口"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "並列埠.yaml",
-      "taiwan": [
-        "並列埠"
       ]
     },
     {
@@ -1109,17 +1110,6 @@
     },
     {
       "china": [
-        "二流子"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "流氓.yaml",
-      "taiwan": [
-        "流氓"
-      ]
-    },
-    {
-      "china": [
         "二維碼"
       ],
       "detection": null,
@@ -1168,6 +1158,17 @@
       ],
       "detection": null,
       "fork_type": "B",
+      "source_file": "交互資訊.yaml",
+      "taiwan": [
+        "互資訊"
+      ]
+    },
+    {
+      "china": [
+        "互信息"
+      ],
+      "detection": null,
+      "fork_type": "B",
       "source_file": "相互資訊.yaml",
       "taiwan": [
         "相互資訊"
@@ -1207,17 +1208,6 @@
       "source_file": "線上內容提供者.yaml",
       "taiwan": [
         "線上內容提供者"
-      ]
-    },
-    {
-      "china": [
-        "互資訊"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "交互資訊.yaml",
-      "taiwan": [
-        "交互資訊"
       ]
     },
     {
@@ -1295,28 +1285,6 @@
       "source_file": "交易紀錄.yaml",
       "taiwan": [
         "交易紀錄"
-      ]
-    },
-    {
-      "china": [
-        "交通卡"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "悠遊卡.yaml",
-      "taiwan": [
-        "悠遊卡"
-      ]
-    },
-    {
-      "china": [
-        "交通樞紐"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "轉運站.yaml",
-      "taiwan": [
-        "轉運站"
       ]
     },
     {
@@ -1458,17 +1426,6 @@
     },
     {
       "china": [
-        "代用鹽"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "低鈉鹽.yaml",
-      "taiwan": [
-        "低鈉鹽"
-      ]
-    },
-    {
-      "china": [
         "代码审查"
       ],
       "detection": null,
@@ -1520,6 +1477,17 @@
       "source_file": "碼產生器.yaml",
       "taiwan": [
         "碼產生器"
+      ]
+    },
+    {
+      "china": [
+        "代表"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "議員.yaml",
+      "taiwan": [
+        "議員"
       ]
     },
     {
@@ -1689,6 +1657,17 @@
     },
     {
       "china": [
+        "企業併購"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "企業併購.yaml",
+      "taiwan": [
+        "企業併購"
+      ]
+    },
+    {
+      "china": [
         "企業移動管理"
       ],
       "detection": null,
@@ -1696,17 +1675,6 @@
       "source_file": "企業行動管理.yaml",
       "taiwan": [
         "企業行動管理"
-      ]
-    },
-    {
-      "china": [
-        "企業買賣"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "企業併購.yaml",
-      "taiwan": [
-        "企業併購"
       ]
     },
     {
@@ -1785,17 +1753,6 @@
       "taiwan": [
         "大概",
         "大約"
-      ]
-    },
-    {
-      "china": [
-        "似然"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "可能性.yaml",
-      "taiwan": [
-        "可能性"
       ]
     },
     {
@@ -1883,7 +1840,7 @@
       "fork_type": "semantic",
       "source_file": "低常兒童.yaml",
       "taiwan": [
-        "智障兒"
+        "智能障礙兒童"
       ]
     },
     {
@@ -1939,6 +1896,17 @@
       "source_file": "谷底.yaml",
       "taiwan": [
         "谷底"
+      ]
+    },
+    {
+      "china": [
+        "低鈉鹽"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "低鈉鹽.yaml",
+      "taiwan": [
+        "低鈉鹽"
       ]
     },
     {
@@ -2027,7 +1995,7 @@
       "fork_type": "B",
       "source_file": "依值型別.yaml",
       "taiwan": [
-        "依值型別"
+        "依賴型別"
       ]
     },
     {
@@ -2120,6 +2088,17 @@
     },
     {
       "china": [
+        "保健食品"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "健康食品.yaml",
+      "taiwan": [
+        "健康食品"
+      ]
+    },
+    {
+      "china": [
         "保存"
       ],
       "detection": null,
@@ -2132,17 +2111,6 @@
     },
     {
       "china": [
-        "保暖杯"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "保溫杯.yaml",
-      "taiwan": [
-        "保溫杯"
-      ]
-    },
-    {
-      "china": [
         "保職停薪"
       ],
       "detection": null,
@@ -2150,17 +2118,6 @@
       "source_file": "留職停薪.yaml",
       "taiwan": [
         "留職停薪"
-      ]
-    },
-    {
-      "china": [
-        "保育院"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "育幼院.yaml",
-      "taiwan": [
-        "育幼院"
       ]
     },
     {
@@ -2437,17 +2394,6 @@
     },
     {
       "china": [
-        "倒休"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "調班.yaml",
-      "taiwan": [
-        "調班"
-      ]
-    },
-    {
-      "china": [
         "倒排索引"
       ],
       "detection": null,
@@ -2514,17 +2460,6 @@
     },
     {
       "china": [
-        "假牌"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "仿冒品.yaml",
-      "taiwan": [
-        "仿冒品"
-      ]
-    },
-    {
-      "china": [
         "假肢"
       ],
       "detection": null,
@@ -2532,6 +2467,17 @@
       "source_file": "義肢.yaml",
       "taiwan": [
         "義肢"
+      ]
+    },
+    {
+      "china": [
+        "假貨"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "仿冒品.yaml",
+      "taiwan": [
+        "仿冒品"
       ]
     },
     {
@@ -2557,17 +2503,6 @@
         "自找麻煩",
         "自尋死路",
         "玩火自焚"
-      ]
-    },
-    {
-      "china": [
-        "做菜"
-      ],
-      "detection": null,
-      "fork_type": "A",
-      "source_file": "料理.yaml",
-      "taiwan": [
-        "料理"
       ]
     },
     {
@@ -2602,17 +2537,6 @@
       "source_file": "虛擬碼.yaml",
       "taiwan": [
         "虛擬碼"
-      ]
-    },
-    {
-      "china": [
-        "偽相關回饋"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "準相關回饋.yaml",
-      "taiwan": [
-        "準相關回饋"
       ]
     },
     {
@@ -2899,17 +2823,6 @@
     },
     {
       "china": [
-        "兒童文化宮"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "兒童活動中心.yaml",
-      "taiwan": [
-        "兒童活動中心"
-      ]
-    },
-    {
-      "china": [
         "入站行銷"
       ],
       "detection": null,
@@ -3052,17 +2965,6 @@
     },
     {
       "china": [
-        "內貿"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "內銷.yaml",
-      "taiwan": [
-        "內銷"
-      ]
-    },
-    {
-      "china": [
         "內部網絡"
       ],
       "detection": null,
@@ -3141,17 +3043,6 @@
     },
     {
       "china": [
-        "全線飄紅"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "長紅.yaml",
-      "taiwan": [
-        "長紅"
-      ]
-    },
-    {
-      "china": [
         "全角"
       ],
       "detection": null,
@@ -3174,17 +3065,6 @@
     },
     {
       "china": [
-        "全麻"
-      ],
-      "detection": null,
-      "fork_type": "A",
-      "source_file": "全身麻醉.yaml",
-      "taiwan": [
-        "全身麻醉"
-      ]
-    },
-    {
-      "china": [
         "八叉樹"
       ],
       "detection": null,
@@ -3192,17 +3072,6 @@
       "source_file": "八元樹.yaml",
       "taiwan": [
         "八元樹"
-      ]
-    },
-    {
-      "china": [
-        "八旗子弟"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "紈褲子弟.yaml",
-      "taiwan": [
-        "紈褲子弟"
       ]
     },
     {
@@ -3312,17 +3181,6 @@
     },
     {
       "china": [
-        "养老保险"
-      ],
-      "detection": null,
-      "fork_type": "A",
-      "source_file": "勞保.yaml",
-      "taiwan": [
-        "勞保"
-      ]
-    },
-    {
-      "china": [
         "兼容"
       ],
       "detection": null,
@@ -3362,7 +3220,18 @@
       "fork_type": "B",
       "source_file": "乾比亞.yaml",
       "taiwan": [
-        "乾比亞"
+        "甘比亞"
+      ]
+    },
+    {
+      "china": [
+        "冈比亚"
+      ],
+      "detection": null,
+      "fork_type": "orthographic",
+      "source_file": "甘比亞.yaml",
+      "taiwan": [
+        "甘比亞"
       ]
     },
     {
@@ -3400,17 +3269,6 @@
     },
     {
       "china": [
-        "冰毒"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "冰毒.yaml",
-      "taiwan": [
-        "安非他命"
-      ]
-    },
-    {
-      "china": [
         "冰激凌"
       ],
       "detection": null,
@@ -3431,17 +3289,6 @@
       "source_file": "冰箱.yaml",
       "taiwan": [
         "冰箱"
-      ]
-    },
-    {
-      "china": [
-        "冷背"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "冷門.yaml",
-      "taiwan": [
-        "冷門"
       ]
     },
     {
@@ -3525,17 +3372,6 @@
       "source_file": "計程車.yaml",
       "taiwan": [
         "計程車"
-      ]
-    },
-    {
-      "china": [
-        "出站行銷"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "推廣式行銷.yaml",
-      "taiwan": [
-        "推廣式行銷"
       ]
     },
     {
@@ -3683,17 +3519,6 @@
     },
     {
       "china": [
-        "分立"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "分割.yaml",
-      "taiwan": [
-        "分割"
-      ]
-    },
-    {
-      "china": [
         "分組交換"
       ],
       "detection": null,
@@ -3712,17 +3537,6 @@
       "source_file": "區塊加密法.yaml",
       "taiwan": [
         "區塊加密法"
-      ]
-    },
-    {
-      "china": [
-        "分红"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "配息.yaml",
-      "taiwan": [
-        "配息"
       ]
     },
     {
@@ -3800,17 +3614,6 @@
       "source_file": "損益表.yaml",
       "taiwan": [
         "損益表"
-      ]
-    },
-    {
-      "china": [
-        "利稅"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "營業稅.yaml",
-      "taiwan": [
-        "營業稅"
       ]
     },
     {
@@ -3993,6 +3796,17 @@
       "source_file": "剪下.yaml",
       "taiwan": [
         "剪下"
+      ]
+    },
+    {
+      "china": [
+        "剪彩"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "剪綵.yaml",
+      "taiwan": [
+        "剪綵"
       ]
     },
     {
@@ -4400,6 +4214,17 @@
     },
     {
       "china": [
+        "區塊鏈"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "塊鏈結.yaml",
+      "taiwan": [
+        "區塊鏈"
+      ]
+    },
+    {
+      "china": [
         "區塊鏈接"
       ],
       "detection": null,
@@ -4444,17 +4269,6 @@
     },
     {
       "china": [
-        "升級"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "升級.yaml",
-      "taiwan": [
-        "更新"
-      ]
-    },
-    {
-      "china": [
         "半包價式旅遊"
       ],
       "detection": null,
@@ -4462,17 +4276,6 @@
       "source_file": "半自助式旅遊.yaml",
       "taiwan": [
         "半自助式旅遊"
-      ]
-    },
-    {
-      "china": [
-        "半截美"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "半截美.yaml",
-      "taiwan": [
-        "發財車"
       ]
     },
     {
@@ -4661,13 +4464,13 @@
     },
     {
       "china": [
-        "厄瓜多"
+        "厄瓜多爾"
       ],
       "detection": null,
       "fork_type": "orthographic",
       "source_file": "厄瓜多.yaml",
       "taiwan": [
-        "厄瓜多爾"
+        "厄瓜多"
       ]
     },
     {
@@ -4716,13 +4519,13 @@
     },
     {
       "china": [
-        "反碼"
+        "反向鏈接"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "一補數.yaml",
+      "source_file": "鏈結反向.yaml",
       "taiwan": [
-        "一補數"
+        "反向連結"
       ]
     },
     {
@@ -4746,7 +4549,7 @@
       "fork_type": "B",
       "source_file": "解除規格化.yaml",
       "taiwan": [
-        "解除規格化"
+        "去正規化"
       ]
     },
     {
@@ -4828,6 +4631,17 @@
     },
     {
       "china": [
+        "取消關注"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "停止追蹤.yaml",
+      "taiwan": [
+        "取消追蹤"
+      ]
+    },
+    {
+      "china": [
         "取關"
       ],
       "detection": null,
@@ -4836,17 +4650,6 @@
       "taiwan": [
         "退追",
         "取消追蹤"
-      ]
-    },
-    {
-      "china": [
-        "受獎產品"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "得獎產品.yaml",
-      "taiwan": [
-        "得獎產品"
       ]
     },
     {
@@ -4995,17 +4798,6 @@
     },
     {
       "china": [
-        "可移動"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "抽取式.yaml",
-      "taiwan": [
-        "抽取式"
-      ]
-    },
-    {
-      "china": [
         "可移植文檔格式"
       ],
       "detection": null,
@@ -5101,17 +4893,6 @@
       "source_file": "台球.yaml",
       "taiwan": [
         "撞球"
-      ]
-    },
-    {
-      "china": [
-        "史瓦濟蘭"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "史瓦濟蘭.yaml",
-      "taiwan": [
-        "斯威士蘭"
       ]
     },
     {
@@ -5252,17 +5033,6 @@
     },
     {
       "china": [
-        "吐瓦魯"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "吐瓦魯.yaml",
-      "taiwan": [
-        "圖瓦盧"
-      ]
-    },
-    {
-      "china": [
         "向導"
       ],
       "detection": null,
@@ -5280,7 +5050,7 @@
       "fork_type": "semantic",
       "source_file": "向後兼容.yaml",
       "taiwan": [
-        "向下兼容"
+        "向下相容"
       ]
     },
     {
@@ -5306,17 +5076,6 @@
         "知識含量",
         "潛在價值",
         "內涵"
-      ]
-    },
-    {
-      "china": [
-        "吹喇叭"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "拍馬屁.yaml",
-      "taiwan": [
-        "拍馬屁"
       ]
     },
     {
@@ -5455,6 +5214,17 @@
     },
     {
       "china": [
+        "哥們兒"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "哥兒們.yaml",
+      "taiwan": [
+        "哥兒們"
+      ]
+    },
+    {
+      "china": [
         "哥斯达黎加"
       ],
       "detection": null,
@@ -5532,17 +5302,6 @@
     },
     {
       "china": [
-        "商標菜"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "招牌菜.yaml",
-      "taiwan": [
-        "招牌菜"
-      ]
-    },
-    {
-      "china": [
         "啞光"
       ],
       "detection": null,
@@ -5594,17 +5353,6 @@
       "source_file": "啟動切換.yaml",
       "taiwan": [
         "啟動切換"
-      ]
-    },
-    {
-      "china": [
-        "喇叭筒"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "喇叭筒.yaml",
-      "taiwan": [
-        "擴音器"
       ]
     },
     {
@@ -5686,6 +5434,17 @@
     },
     {
       "china": [
+        "單核"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "單核心.yaml",
+      "taiwan": [
+        "單核心"
+      ]
+    },
+    {
+      "china": [
         "單片機"
       ],
       "detection": null,
@@ -5715,28 +5474,6 @@
       "source_file": "單身狗.yaml",
       "taiwan": [
         "單身漢"
-      ]
-    },
-    {
-      "china": [
-        "單通道"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "單連結.yaml",
-      "taiwan": [
-        "單連結"
-      ]
-    },
-    {
-      "china": [
-        "單選按鈕"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "無線電鈕.yaml",
-      "taiwan": [
-        "無線電鈕"
       ]
     },
     {
@@ -5792,9 +5529,7 @@
       "fork_type": "E",
       "source_file": "噴子.yaml",
       "taiwan": [
-        "嘴砲",
-        "白目",
-        "耍嘴皮子"
+        "酸民"
       ]
     },
     {
@@ -6075,17 +5810,6 @@
     },
     {
       "china": [
-        "圖像"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "影像.yaml",
-      "taiwan": [
-        "影像"
-      ]
-    },
-    {
-      "china": [
         "圖像文件"
       ],
       "detection": null,
@@ -6164,6 +5888,17 @@
     },
     {
       "china": [
+        "圖瓦盧"
+      ],
+      "detection": null,
+      "fork_type": "semantic",
+      "source_file": "吐瓦魯.yaml",
+      "taiwan": [
+        "吐瓦魯"
+      ]
+    },
+    {
+      "china": [
         "土地爺"
       ],
       "detection": null,
@@ -6193,17 +5928,6 @@
       "source_file": "馬鈴薯.yaml",
       "taiwan": [
         "馬鈴薯"
-      ]
-    },
-    {
-      "china": [
-        "土豆條"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "薯條.yaml",
-      "taiwan": [
-        "薯條"
       ]
     },
     {
@@ -6399,17 +6123,6 @@
     },
     {
       "china": [
-        "地面廣播"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "無線廣播.yaml",
-      "taiwan": [
-        "無線廣播"
-      ]
-    },
-    {
-      "china": [
         "地面電視"
       ],
       "detection": null,
@@ -6482,7 +6195,7 @@
       "fork_type": "semantic",
       "source_file": "垃圾.yaml",
       "taiwan": [
-        "樂色"
+        "垃圾"
       ]
     },
     {
@@ -6571,17 +6284,6 @@
       "source_file": "原型程式設計.yaml",
       "taiwan": [
         "原型程式設計"
-      ]
-    },
-    {
-      "china": [
-        "基於類"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "類別為基.yaml",
-      "taiwan": [
-        "類別為基"
       ]
     },
     {
@@ -6764,6 +6466,17 @@
     },
     {
       "china": [
+        "增值稅"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "營業稅.yaml",
+      "taiwan": [
+        "營業稅"
+      ]
+    },
+    {
+      "china": [
         "增发"
       ],
       "detection": null,
@@ -6918,17 +6631,6 @@
     },
     {
       "china": [
-        "多國家公司"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "跨國公司.yaml",
-      "taiwan": [
-        "跨國公司"
-      ]
-    },
-    {
-      "china": [
         "多態"
       ],
       "detection": null,
@@ -6965,19 +6667,19 @@
         "夜宵"
       ],
       "detection": null,
-      "fork_type": "B",
-      "source_file": "宵夜.yaml",
+      "fork_type": "semantic",
+      "source_file": "夜餐.yaml",
       "taiwan": [
         "宵夜"
       ]
     },
     {
       "china": [
-        "夜餐"
+        "夜宵"
       ],
       "detection": null,
-      "fork_type": "semantic",
-      "source_file": "夜餐.yaml",
+      "fork_type": "B",
+      "source_file": "宵夜.yaml",
       "taiwan": [
         "宵夜"
       ]
@@ -7276,17 +6978,6 @@
     },
     {
       "china": [
-        "奧術魔刃"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "奧術魔刃.yaml",
-      "taiwan": [
-        "ASMR"
-      ]
-    },
-    {
-      "china": [
         "奶酪"
       ],
       "detection": null,
@@ -7321,6 +7012,17 @@
     },
     {
       "china": [
+        "娛樂圈"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "娛樂圈.yaml",
+      "taiwan": [
+        "演藝圈"
+      ]
+    },
+    {
+      "china": [
         "婚外戀"
       ],
       "detection": null,
@@ -7340,17 +7042,6 @@
       "taiwan": [
         "好膚質",
         "好看"
-      ]
-    },
-    {
-      "china": [
-        "嫩膚"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "護膚.yaml",
-      "taiwan": [
-        "護膚"
       ]
     },
     {
@@ -7622,17 +7313,6 @@
     },
     {
       "china": [
-        "安全套接層"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "安全通訊協定.yaml",
-      "taiwan": [
-        "安全通訊協定"
-      ]
-    },
-    {
-      "china": [
         "安全审计"
       ],
       "detection": null,
@@ -7718,17 +7398,6 @@
       "source_file": "宏.yaml",
       "taiwan": [
         "巨集"
-      ]
-    },
-    {
-      "china": [
-        "宏內核"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "單核心.yaml",
-      "taiwan": [
-        "單核心"
       ]
     },
     {
@@ -7854,17 +7523,6 @@
     },
     {
       "china": [
-        "宝马"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "BMW.yaml",
-      "taiwan": [
-        "BMW"
-      ]
-    },
-    {
-      "china": [
         "实习医生"
       ],
       "detection": null,
@@ -7894,17 +7552,6 @@
       "source_file": "顧客滿意.yaml",
       "taiwan": [
         "顧客滿意"
-      ]
-    },
-    {
-      "china": [
-        "客戶端"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "客戶端.yaml",
-      "taiwan": [
-        "用戶端"
       ]
     },
     {
@@ -8030,17 +7677,6 @@
       "source_file": "即時事件.yaml",
       "taiwan": [
         "即時事件"
-      ]
-    },
-    {
-      "china": [
-        "實模式"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "真實模式.yaml",
-      "taiwan": [
-        "真實模式"
       ]
     },
     {
@@ -8187,7 +7823,7 @@
       "fork_type": "semantic",
       "source_file": "尋呼.yaml",
       "taiwan": [
-        "呼叫"
+        "呼叫器"
       ]
     },
     {
@@ -8270,18 +7906,6 @@
       "source_file": "物件.yaml",
       "taiwan": [
         "物件"
-      ]
-    },
-    {
-      "china": [
-        "對齊"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "對齊.yaml",
-      "taiwan": [
-        "一致",
-        "修正"
       ]
     },
     {
@@ -8370,17 +7994,6 @@
       "source_file": "隨身聽.yaml",
       "taiwan": [
         "隨身聽"
-      ]
-    },
-    {
-      "china": [
-        "小太陽"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "小太陽.yaml",
-      "taiwan": [
-        "獨生子"
       ]
     },
     {
@@ -8485,13 +8098,13 @@
     },
     {
       "china": [
-        "尖子"
+        "少年宮"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "傑出人士.yaml",
+      "source_file": "兒童活動中心.yaml",
       "taiwan": [
-        "傑出人士"
+        "兒童活動中心"
       ]
     },
     {
@@ -8735,17 +8348,6 @@
     },
     {
       "china": [
-        "層次結構"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "階層.yaml",
-      "taiwan": [
-        "階層"
-      ]
-    },
-    {
-      "china": [
         "層次聚類"
       ],
       "detection": null,
@@ -8971,17 +8573,6 @@
     },
     {
       "china": [
-        "市場"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "市場.yaml",
-      "taiwan": [
-        "行銷"
-      ]
-    },
-    {
-      "china": [
         "市場細分"
       ],
       "detection": null,
@@ -9190,6 +8781,19 @@
       "source_file": "帶節奏.yaml",
       "taiwan": [
         "帶風向"
+      ]
+    },
+    {
+      "china": [
+        "帶貨",
+        "直播帶貨"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "帶貨.yaml",
+      "taiwan": [
+        "直播帶貨",
+        "整詞借用，無獨立台灣譯詞"
       ]
     },
     {
@@ -9508,17 +9112,6 @@
     },
     {
       "china": [
-        "廠校掛鉤"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "建教合作.yaml",
-      "taiwan": [
-        "建教合作"
-      ]
-    },
-    {
-      "china": [
         "廣告位"
       ],
       "detection": null,
@@ -9526,17 +9119,6 @@
       "source_file": "廣告區.yaml",
       "taiwan": [
         "廣告區"
-      ]
-    },
-    {
-      "china": [
-        "廣告電影"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "廣告片.yaml",
-      "taiwan": [
-        "廣告片"
       ]
     },
     {
@@ -9569,7 +9151,7 @@
       "fork_type": "B",
       "source_file": "乾普敦.yaml",
       "taiwan": [
-        "乾普敦"
+        "開普敦"
       ]
     },
     {
@@ -9761,17 +9343,6 @@
     },
     {
       "china": [
-        "影音流"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "影音串流.yaml",
-      "taiwan": [
-        "影音串流"
-      ]
-    },
-    {
-      "china": [
         "往届生"
       ],
       "detection": null,
@@ -9779,28 +9350,6 @@
       "source_file": "往屆畢業生.yaml",
       "taiwan": [
         "往屆畢業生"
-      ]
-    },
-    {
-      "china": [
-        "很好的"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "很好的.yaml",
-      "taiwan": [
-        "妥善地"
-      ]
-    },
-    {
-      "china": [
-        "後備"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "備份.yaml",
-      "taiwan": [
-        "備份"
       ]
     },
     {
@@ -10076,8 +9625,7 @@
       "fork_type": "E",
       "source_file": "快進.yaml",
       "taiwan": [
-        "快轉",
-        "跳到"
+        "快轉"
       ]
     },
     {
@@ -10089,17 +9637,6 @@
       "source_file": "速食.yaml",
       "taiwan": [
         "速食"
-      ]
-    },
-    {
-      "china": [
-        "思路"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "構想.yaml",
-      "taiwan": [
-        "構想"
       ]
     },
     {
@@ -10159,7 +9696,7 @@
     },
     {
       "china": [
-        "恢覆記錄"
+        "恢復記錄"
       ],
       "detection": null,
       "fork_type": "B",
@@ -10432,17 +9969,6 @@
     },
     {
       "china": [
-        "战略"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "策略.yaml",
-      "taiwan": [
-        "策略"
-      ]
-    },
-    {
-      "china": [
         "截屏"
       ],
       "detection": null,
@@ -10634,17 +10160,6 @@
         "社畜",
         "日源",
         "上班族"
-      ]
-    },
-    {
-      "china": [
-        "打橫泡"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "攪局.yaml",
-      "taiwan": [
-        "攪局"
       ]
     },
     {
@@ -10908,17 +10423,6 @@
     },
     {
       "china": [
-        "抓空字"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "抽空.yaml",
-      "taiwan": [
-        "抽空"
-      ]
-    },
-    {
-      "china": [
         "投保人"
       ],
       "detection": null,
@@ -10947,7 +10451,18 @@
       "fork_type": "B",
       "source_file": "看護.yaml",
       "taiwan": [
-        "看護"
+        "看護工"
+      ]
+    },
+    {
+      "china": [
+        "抽拉式"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "抽取式.yaml",
+      "taiwan": [
+        "抽取式"
       ]
     },
     {
@@ -11028,17 +10543,6 @@
       "source_file": "阻斷服務.yaml",
       "taiwan": [
         "阻斷服務"
-      ]
-    },
-    {
-      "china": [
-        "招牌"
-      ],
-      "detection": null,
-      "fork_type": "A",
-      "source_file": "看板.yaml",
-      "taiwan": [
-        "看板"
       ]
     },
     {
@@ -11216,11 +10720,7 @@
       "fork_type": "E",
       "source_file": "掉線.yaml",
       "taiwan": [
-        "斷線",
-        "分心",
-        "分神",
-        "神情恍惚",
-        "智商太低"
+        "斷線"
       ]
     },
     {
@@ -11427,6 +10927,17 @@
     },
     {
       "china": [
+        "換乘中心"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "轉運站.yaml",
+      "taiwan": [
+        "轉運站"
+      ]
+    },
+    {
+      "china": [
         "握手"
       ],
       "detection": null,
@@ -11434,17 +10945,6 @@
       "source_file": "握手.yaml",
       "taiwan": [
         "交握"
-      ]
-    },
-    {
-      "china": [
-        "揭彩"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "剪綵.yaml",
-      "taiwan": [
-        "剪綵"
       ]
     },
     {
@@ -11478,17 +10978,6 @@
       "source_file": "搜尋方塊.yaml",
       "taiwan": [
         "搜尋方塊"
-      ]
-    },
-    {
-      "china": [
-        "搜索關鍵字"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "搜尋鍵碼.yaml",
-      "taiwan": [
-        "搜尋鍵碼"
       ]
     },
     {
@@ -11651,18 +11140,6 @@
     },
     {
       "china": [
-        "撿漏"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "撿漏.yaml",
-      "taiwan": [
-        "重新利用",
-        "回收再利用"
-      ]
-    },
-    {
-      "china": [
         "操作對象"
       ],
       "detection": null,
@@ -11752,6 +11229,17 @@
       "source_file": "網路攝影機.yaml",
       "taiwan": [
         "網路攝影機"
+      ]
+    },
+    {
+      "china": [
+        "攢錢"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "攢錢.yaml",
+      "taiwan": [
+        "存錢"
       ]
     },
     {
@@ -11890,6 +11378,17 @@
     },
     {
       "china": [
+        "故障排除"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "疑難排解.yaml",
+      "taiwan": [
+        "疑難排解"
+      ]
+    },
+    {
+      "china": [
         "救命電話"
       ],
       "detection": null,
@@ -11930,17 +11429,6 @@
       "source_file": "教學年資.yaml",
       "taiwan": [
         "教學年資"
-      ]
-    },
-    {
-      "china": [
-        "散件"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "零件.yaml",
-      "taiwan": [
-        "零件"
       ]
     },
     {
@@ -12009,6 +11497,19 @@
       "source_file": "傳輸線.yaml",
       "taiwan": [
         "傳輸線"
+      ]
+    },
+    {
+      "china": [
+        "數位游民",
+        "數字游民"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "數位游民.yaml",
+      "taiwan": [
+        "數位遊牧",
+        "數位遊牧者"
       ]
     },
     {
@@ -12361,20 +11862,20 @@
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "資料探勘.yaml",
+      "source_file": "資料挖掘.yaml",
       "taiwan": [
-        "資料探勘"
+        "資料挖掘"
       ]
     },
     {
       "china": [
-        "數據捕撈"
+        "數據挖掘"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "資料挖掘.yaml",
+      "source_file": "資料探勘.yaml",
       "taiwan": [
-        "資料挖掘"
+        "資料探勘"
       ]
     },
     {
@@ -12566,19 +12067,6 @@
     },
     {
       "china": [
-        "文本"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "文本.yaml",
-      "taiwan": [
-        "文字",
-        "劇本、劇情",
-        "文案"
-      ]
-    },
-    {
-      "china": [
         "文本分類"
       ],
       "detection": null,
@@ -12718,6 +12206,17 @@
       "source_file": "斯大林.yaml",
       "taiwan": [
         "史達林"
+      ]
+    },
+    {
+      "china": [
+        "斯威士蘭"
+      ],
+      "detection": null,
+      "fork_type": "semantic",
+      "source_file": "史瓦濟蘭.yaml",
+      "taiwan": [
+        "史瓦濟蘭"
       ]
     },
     {
@@ -13308,7 +12807,7 @@
       "fork_type": "B",
       "source_file": "月付.yaml",
       "taiwan": [
-        "月付"
+        "月繳"
       ]
     },
     {
@@ -13591,7 +13090,7 @@
       "fork_type": "B",
       "source_file": "大學生.yaml",
       "taiwan": [
-        "大學生"
+        "大學部學生"
       ]
     },
     {
@@ -13664,17 +13163,6 @@
     },
     {
       "china": [
-        "東加"
-      ],
-      "detection": null,
-      "fork_type": "orthographic",
-      "source_file": "東加.yaml",
-      "taiwan": [
-        "湯加"
-      ]
-    },
-    {
-      "china": [
         "构建"
       ],
       "detection": null,
@@ -13719,13 +13207,13 @@
     },
     {
       "china": [
-        "枚舉成員"
+        "枚舉常量"
       ],
       "detection": null,
       "fork_type": "B",
       "source_file": "列舉元.yaml",
       "taiwan": [
-        "列舉元"
+        "列舉值"
       ]
     },
     {
@@ -13792,6 +13280,17 @@
       "source_file": "識別符號.yaml",
       "taiwan": [
         "識別符號"
+      ]
+    },
+    {
+      "china": [
+        "校企合作"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "建教合作.yaml",
+      "taiwan": [
+        "建教合作"
       ]
     },
     {
@@ -14174,17 +13673,6 @@
     },
     {
       "china": [
-        "模擬現實"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "模擬實境.yaml",
-      "taiwan": [
-        "模擬實境"
-      ]
-    },
-    {
-      "china": [
         "模擬電視"
       ],
       "detection": null,
@@ -14204,28 +13692,6 @@
       "taiwan": [
         "樣板",
         "範本"
-      ]
-    },
-    {
-      "china": [
-        "樣板"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "模範.yaml",
-      "taiwan": [
-        "模範"
-      ]
-    },
-    {
-      "china": [
-        "樣片"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "樣片.yaml",
-      "taiwan": [
-        "試映片"
       ]
     },
     {
@@ -14285,17 +13751,6 @@
     },
     {
       "china": [
-        "檔次"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "等級.yaml",
-      "taiwan": [
-        "等級"
-      ]
-    },
-    {
-      "china": [
         "檢驗位"
       ],
       "detection": null,
@@ -14336,17 +13791,6 @@
       "source_file": "隔日到.yaml",
       "taiwan": [
         "隔日到"
-      ]
-    },
-    {
-      "china": [
-        "歇班"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "休假.yaml",
-      "taiwan": [
-        "休假"
       ]
     },
     {
@@ -14403,6 +13847,17 @@
       "source_file": "常規表示式.yaml",
       "taiwan": [
         "常規表示式"
+      ]
+    },
+    {
+      "china": [
+        "正向鏈接"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "鏈結正向.yaml",
+      "taiwan": [
+        "正向連結"
       ]
     },
     {
@@ -14751,28 +14206,6 @@
     },
     {
       "china": [
-        "沃尔沃"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "富豪.yaml",
-      "taiwan": [
-        "富豪"
-      ]
-    },
-    {
-      "china": [
-        "沃森"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "華生.yaml",
-      "taiwan": [
-        "華生"
-      ]
-    },
-    {
-      "china": [
         "沒可能"
       ],
       "detection": null,
@@ -14848,17 +14281,6 @@
     },
     {
       "china": [
-        "沸點新聞"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "焦點新聞.yaml",
-      "taiwan": [
-        "焦點新聞"
-      ]
-    },
-    {
-      "china": [
         "油条"
       ],
       "detection": null,
@@ -14877,6 +14299,17 @@
       "source_file": "油管.yaml",
       "taiwan": [
         "YouTube"
+      ]
+    },
+    {
+      "china": [
+        "治癒"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "治癒.yaml",
+      "taiwan": [
+        "療癒"
       ]
     },
     {
@@ -14932,17 +14365,6 @@
       "source_file": "資本額.yaml",
       "taiwan": [
         "資本額"
-      ]
-    },
-    {
-      "china": [
-        "注销当前"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "登出目前.yaml",
-      "taiwan": [
-        "登出目前"
       ]
     },
     {
@@ -15059,17 +14481,6 @@
     },
     {
       "china": [
-        "活鎖"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "活結.yaml",
-      "taiwan": [
-        "活結"
-      ]
-    },
-    {
-      "china": [
         "派生"
       ],
       "detection": null,
@@ -15180,17 +14591,6 @@
     },
     {
       "china": [
-        "流程重構"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "流程再造.yaml",
-      "taiwan": [
-        "流程再造"
-      ]
-    },
-    {
-      "china": [
         "流覽"
       ],
       "detection": null,
@@ -15213,17 +14613,6 @@
         "瀏覽人次",
         "人氣",
         "聲量"
-      ]
-    },
-    {
-      "china": [
-        "浪頭"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "浪頭.yaml",
-      "taiwan": [
-        "潮流"
       ]
     },
     {
@@ -15352,17 +14741,6 @@
     },
     {
       "china": [
-        "混血車"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "拼裝車.yaml",
-      "taiwan": [
-        "拼裝車"
-      ]
-    },
-    {
-      "china": [
         "添加"
       ],
       "detection": null,
@@ -15396,17 +14774,6 @@
     },
     {
       "china": [
-        "港客"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "香港觀光客.yaml",
-      "taiwan": [
-        "香港觀光客"
-      ]
-    },
-    {
-      "china": [
         "渲染"
       ],
       "detection": null,
@@ -15418,17 +14785,6 @@
     },
     {
       "china": [
-        "渲染管線"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "渲染管線.yaml",
-      "taiwan": [
-        "彩現方式"
-      ]
-    },
-    {
-      "china": [
         "游轮"
       ],
       "detection": null,
@@ -15436,6 +14792,17 @@
       "source_file": "郵輪.yaml",
       "taiwan": [
         "郵輪"
+      ]
+    },
+    {
+      "china": [
+        "湯加"
+      ],
+      "detection": null,
+      "fork_type": "orthographic",
+      "source_file": "東加.yaml",
+      "taiwan": [
+        "東加"
       ]
     },
     {
@@ -15491,28 +14858,6 @@
       "source_file": "滑桿.yaml",
       "taiwan": [
         "滑桿"
-      ]
-    },
-    {
-      "china": [
-        "滑坡"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "下滑.yaml",
-      "taiwan": [
-        "下滑"
-      ]
-    },
-    {
-      "china": [
-        "滑塊"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "滾軸.yaml",
-      "taiwan": [
-        "滾軸"
       ]
     },
     {
@@ -15657,17 +15002,6 @@
     },
     {
       "china": [
-        "潰客"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "劊客.yaml",
-      "taiwan": [
-        "劊客"
-      ]
-    },
-    {
-      "china": [
         "激光"
       ],
       "detection": null,
@@ -15757,24 +15091,13 @@
     },
     {
       "china": [
-        "灰色影片"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "灰色影片.yaml",
-      "taiwan": [
-        "大爛片"
-      ]
-    },
-    {
-      "china": [
-        "炊事員"
+        "炒菜"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "廚師.yaml",
+      "source_file": "熱炒.yaml",
       "taiwan": [
-        "廚師"
+        "熱炒"
       ]
     },
     {
@@ -15821,17 +15144,6 @@
       "source_file": "烏賊、墨魚.yaml",
       "taiwan": [
         "花枝"
-      ]
-    },
-    {
-      "china": [
-        "热菜"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "熱炒.yaml",
-      "taiwan": [
-        "熱炒"
       ]
     },
     {
@@ -16019,6 +15331,17 @@
         "營銷"
       ],
       "detection": null,
+      "fork_type": "semantic",
+      "source_file": "市場.yaml",
+      "taiwan": [
+        "行銷"
+      ]
+    },
+    {
+      "china": [
+        "營銷"
+      ],
+      "detection": null,
       "fork_type": "B",
       "source_file": "行銷.yaml",
       "taiwan": [
@@ -16060,28 +15383,13 @@
     },
     {
       "china": [
-        "爆棚"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "爆棚.yaml",
-      "taiwan": [
-        "十足",
-        "滿分",
-        "破表",
-        "爆表"
-      ]
-    },
-    {
-      "china": [
         "爆款"
       ],
       "detection": null,
       "fork_type": "E",
       "source_file": "爆款.yaml",
       "taiwan": [
-        "人氣",
-        "熱銷"
+        "熱銷商品"
       ]
     },
     {
@@ -16151,17 +15459,6 @@
       "source_file": "物流資訊.yaml",
       "taiwan": [
         "物流資訊"
-      ]
-    },
-    {
-      "china": [
-        "物理"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "物理.yaml",
-      "taiwan": [
-        "實體"
       ]
     },
     {
@@ -16295,6 +15592,17 @@
       "source_file": "得主.yaml",
       "taiwan": [
         "得主"
+      ]
+    },
+    {
+      "china": [
+        "獲獎產品"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "得獎產品.yaml",
+      "taiwan": [
+        "得獎產品"
       ]
     },
     {
@@ -16477,17 +15785,6 @@
     },
     {
       "china": [
-        "甘比亞"
-      ],
-      "detection": null,
-      "fork_type": "orthographic",
-      "source_file": "甘比亞.yaml",
-      "taiwan": [
-        "岡比亞"
-      ]
-    },
-    {
-      "china": [
         "生成"
       ],
       "detection": null,
@@ -16616,17 +15913,6 @@
       "source_file": "使用者頁面.yaml",
       "taiwan": [
         "使用者頁面"
-      ]
-    },
-    {
-      "china": [
-        "甩賣"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "拋售.yaml",
-      "taiwan": [
-        "拋售"
       ]
     },
     {
@@ -16764,17 +16050,6 @@
     },
     {
       "china": [
-        "疑難解答"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "疑難排解.yaml",
-      "taiwan": [
-        "疑難排解"
-      ]
-    },
-    {
-      "china": [
         "疼"
       ],
       "detection": null,
@@ -16793,6 +16068,28 @@
       "source_file": "請病假.yaml",
       "taiwan": [
         "請病假"
+      ]
+    },
+    {
+      "china": [
+        "痛點"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "痛點.yaml",
+      "taiwan": [
+        "痛點"
+      ]
+    },
+    {
+      "china": [
+        "登出當前帳號"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "登出目前.yaml",
+      "taiwan": [
+        "登出目前帳號"
       ]
     },
     {
@@ -16941,17 +16238,6 @@
       "source_file": "白酒.yaml",
       "taiwan": [
         "高粱酒"
-      ]
-    },
-    {
-      "china": [
-        "的士頭"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "的士頭.yaml",
-      "taiwan": [
-        "發財車"
       ]
     },
     {
@@ -17273,17 +16559,6 @@
     },
     {
       "china": [
-        "破口"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "破口.yaml",
-      "taiwan": [
-        "漏洞"
-      ]
-    },
-    {
-      "china": [
         "破壁機"
       ],
       "detection": null,
@@ -17292,17 +16567,6 @@
       "taiwan": [
         "果汁機",
         "豆漿機"
-      ]
-    },
-    {
-      "china": [
-        "破碼器"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "解碼器.yaml",
-      "taiwan": [
-        "解碼器"
       ]
     },
     {
@@ -17525,17 +16789,6 @@
     },
     {
       "china": [
-        "确认注销"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "確認登出.yaml",
-      "taiwan": [
-        "確認登出"
-      ]
-    },
-    {
-      "china": [
         "碰瓷"
       ],
       "detection": null,
@@ -17544,6 +16797,29 @@
       "taiwan": [
         "假車禍",
         "敲竹槓"
+      ]
+    },
+    {
+      "china": [
+        "確實",
+        "使用頻率較高"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "確實.yaml",
+      "taiwan": [
+        "確實"
+      ]
+    },
+    {
+      "china": [
+        "確認退出"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "確認登出.yaml",
+      "taiwan": [
+        "確認登出"
       ]
     },
     {
@@ -17636,7 +16912,7 @@
     },
     {
       "china": [
-        "磁頭劃碰"
+        "磁頭損壞"
       ],
       "detection": null,
       "fork_type": "B",
@@ -17858,6 +17134,17 @@
     },
     {
       "china": [
+        "福利院"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "育幼院.yaml",
+      "taiwan": [
+        "育幼院"
+      ]
+    },
+    {
+      "china": [
         "私信"
       ],
       "detection": null,
@@ -17936,17 +17223,6 @@
       "source_file": "象牙海岸.yaml",
       "taiwan": [
         "象牙海岸"
-      ]
-    },
-    {
-      "china": [
-        "科研"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "研究.yaml",
-      "taiwan": [
-        "研究"
       ]
     },
     {
@@ -18240,17 +17516,6 @@
     },
     {
       "china": [
-        "移動計算機"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "行動電腦.yaml",
-      "taiwan": [
-        "行動電腦"
-      ]
-    },
-    {
-      "china": [
         "移動設備"
       ],
       "detection": null,
@@ -18295,6 +17560,17 @@
     },
     {
       "china": [
+        "移動通信"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "行動電信.yaml",
+      "taiwan": [
+        "行動電信"
+      ]
+    },
+    {
+      "china": [
         "移動運營商"
       ],
       "detection": null,
@@ -18302,17 +17578,6 @@
       "source_file": "行動業者.yaml",
       "taiwan": [
         "行動業者"
-      ]
-    },
-    {
-      "china": [
-        "移動電信"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "行動電信.yaml",
-      "taiwan": [
-        "行動電信"
       ]
     },
     {
@@ -18485,17 +17750,6 @@
     },
     {
       "china": [
-        "空調鞋"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "氣墊鞋.yaml",
-      "taiwan": [
-        "氣墊鞋"
-      ]
-    },
-    {
-      "china": [
         "空間站"
       ],
       "detection": null,
@@ -18507,13 +17761,13 @@
     },
     {
       "china": [
-        "突尼西亞"
+        "突尼斯"
       ],
       "detection": null,
       "fork_type": "orthographic",
       "source_file": "突尼西亞.yaml",
       "taiwan": [
-        "突尼斯"
+        "突尼西亞"
       ]
     },
     {
@@ -18626,8 +17880,7 @@
       "fork_type": "E",
       "source_file": "站著說話不腰疼.yaml",
       "taiwan": [
-        "風涼話",
-        "高談闊論"
+        "風涼話"
       ]
     },
     {
@@ -18721,17 +17974,6 @@
     },
     {
       "china": [
-        "第三產業"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "服務業.yaml",
-      "taiwan": [
-        "服務業"
-      ]
-    },
-    {
-      "china": [
         "第三範式"
       ],
       "detection": null,
@@ -18761,17 +18003,6 @@
       "source_file": "副業.yaml",
       "taiwan": [
         "副業"
-      ]
-    },
-    {
-      "china": [
-        "第二課堂"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "課外活動.yaml",
-      "taiwan": [
-        "課外活動"
       ]
     },
     {
@@ -18998,17 +18229,6 @@
     },
     {
       "china": [
-        "系列企業"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "關係企業.yaml",
-      "taiwan": [
-        "關係企業"
-      ]
-    },
-    {
-      "china": [
         "系統盤"
       ],
       "detection": null,
@@ -19020,17 +18240,6 @@
     },
     {
       "china": [
-        "系統資料"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "資源管理.yaml",
-      "taiwan": [
-        "資源管理"
-      ]
-    },
-    {
-      "china": [
         "系统配置"
       ],
       "detection": null,
@@ -19038,18 +18247,6 @@
       "source_file": "系統組態.yaml",
       "taiwan": [
         "系統組態"
-      ]
-    },
-    {
-      "china": [
-        "糾心"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "糾心.yaml",
-      "taiwan": [
-        "心疼",
-        "心寒"
       ]
     },
     {
@@ -19205,13 +18402,13 @@
     },
     {
       "china": [
-        "組鏈接"
+        "組裝車"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "塊鏈結.yaml",
+      "source_file": "拼裝車.yaml",
       "taiwan": [
-        "塊鏈結"
+        "拼裝車"
       ]
     },
     {
@@ -19250,17 +18447,6 @@
     },
     {
       "china": [
-        "統一意見"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "共識.yaml",
-      "taiwan": [
-        "共識"
-      ]
-    },
-    {
-      "china": [
         "統一渲染架構"
       ],
       "detection": null,
@@ -19268,17 +18454,6 @@
       "source_file": "統一著色器架構.yaml",
       "taiwan": [
         "統一著色器架構"
-      ]
-    },
-    {
-      "china": [
-        "統考"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "聯考.yaml",
-      "taiwan": [
-        "聯考"
       ]
     },
     {
@@ -19325,17 +18500,6 @@
       "source_file": "可攜式軟體.yaml",
       "taiwan": [
         "可攜式軟體"
-      ]
-    },
-    {
-      "china": [
-        "綠色食品"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "健康食品.yaml",
-      "taiwan": [
-        "健康食品"
       ]
     },
     {
@@ -19662,17 +18826,6 @@
     },
     {
       "china": [
-        "緩存溢出"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "緩衝區溢位.yaml",
-      "taiwan": [
-        "緩衝區溢位"
-      ]
-    },
-    {
-      "china": [
         "緩沖器"
       ],
       "detection": null,
@@ -19684,13 +18837,13 @@
     },
     {
       "china": [
-        "緩沖存儲器"
+        "緩衝區溢出"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "快取記憶體.yaml",
+      "source_file": "緩衝區溢位.yaml",
       "taiwan": [
-        "快取記憶體"
+        "緩衝區溢位"
       ]
     },
     {
@@ -19758,17 +18911,6 @@
       "source_file": "繃不住.yaml",
       "taiwan": [
         "忍不住"
-      ]
-    },
-    {
-      "china": [
-        "繼承列表"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "衍化列.yaml",
-      "taiwan": [
-        "衍化列"
       ]
     },
     {
@@ -20162,7 +19304,7 @@
     },
     {
       "china": [
-        "肉食鴿"
+        "肉鴿"
       ],
       "detection": null,
       "fork_type": "B",
@@ -20354,17 +19496,6 @@
     },
     {
       "china": [
-        "臉譜"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "臉書.yaml",
-      "taiwan": [
-        "臉書"
-      ]
-    },
-    {
-      "china": [
         "臨時戶口"
       ],
       "detection": null,
@@ -20544,17 +19675,6 @@
     },
     {
       "china": [
-        "色粉"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "碳粉.yaml",
-      "taiwan": [
-        "碳粉"
-      ]
-    },
-    {
-      "china": [
         "艾滋"
       ],
       "detection": null,
@@ -20607,17 +19727,6 @@
       "source_file": "晶片.yaml",
       "taiwan": [
         "晶片"
-      ]
-    },
-    {
-      "china": [
-        "花帶子，黃帶"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "花帶子，黃帶.yaml",
-      "taiwan": [
-        "A片"
       ]
     },
     {
@@ -20744,7 +19853,7 @@
     },
     {
       "china": [
-        "莫差特"
+        "莫扎特"
       ],
       "detection": null,
       "fork_type": "B",
@@ -20905,7 +20014,7 @@
       "fork_type": "B",
       "source_file": "魔力.yaml",
       "taiwan": [
-        "魔力"
+        "魔法值"
       ]
     },
     {
@@ -20943,6 +20052,17 @@
       "source_file": "薌劇.yaml",
       "taiwan": [
         "歌仔戲"
+      ]
+    },
+    {
+      "china": [
+        "薯條"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "薯條.yaml",
+      "taiwan": [
+        "薯條"
       ]
     },
     {
@@ -21053,6 +20173,17 @@
       "source_file": "虛擬機器.yaml",
       "taiwan": [
         "虛擬機器"
+      ]
+    },
+    {
+      "china": [
+        "虛擬現實"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "模擬實境.yaml",
+      "taiwan": [
+        "虛擬實境"
       ]
     },
     {
@@ -21195,17 +20326,6 @@
     },
     {
       "china": [
-        "行業病"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "職業病.yaml",
-      "taiwan": [
-        "職業病"
-      ]
-    },
-    {
-      "china": [
         "衛生巾"
       ],
       "detection": null,
@@ -21246,6 +20366,17 @@
       "source_file": "哏圖.yaml",
       "taiwan": [
         "哏圖"
+      ]
+    },
+    {
+      "china": [
+        "表情包"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "貼圖.yaml",
+      "taiwan": [
+        "貼圖"
       ]
     },
     {
@@ -21298,6 +20429,17 @@
       ],
       "detection": null,
       "fork_type": "B",
+      "source_file": "一補數.yaml",
+      "taiwan": [
+        "一補數"
+      ]
+    },
+    {
+      "china": [
+        "補碼"
+      ],
+      "detection": null,
+      "fork_type": "B",
       "source_file": "二補數.yaml",
       "taiwan": [
         "二補數"
@@ -21340,6 +20482,17 @@
     },
     {
       "china": [
+        "複選框"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "核取按鈕.yaml",
+      "taiwan": [
+        "核取按鈕"
+      ]
+    },
+    {
+      "china": [
         "複雜"
       ],
       "detection": null,
@@ -21351,6 +20504,28 @@
     },
     {
       "china": [
+        "複雜度類"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "複雜度類別.yaml",
+      "taiwan": [
+        "複雜度類別"
+      ]
+    },
+    {
+      "china": [
+        "複雜性類"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "複雜性類別.yaml",
+      "taiwan": [
+        "複雜性類別"
+      ]
+    },
+    {
+      "china": [
         "西紅柿"
       ],
       "detection": null,
@@ -21358,17 +20533,6 @@
       "source_file": "番茄.yaml",
       "taiwan": [
         "番茄"
-      ]
-    },
-    {
-      "china": [
-        "覆選按鈕"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "核取按鈕.yaml",
-      "taiwan": [
-        "核取按鈕"
       ]
     },
     {
@@ -21391,28 +20555,6 @@
       "source_file": "銅箔基板.yaml",
       "taiwan": [
         "銅箔基板"
-      ]
-    },
-    {
-      "china": [
-        "覆雜度類"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "複雜度類別.yaml",
-      "taiwan": [
-        "複雜度類別"
-      ]
-    },
-    {
-      "china": [
-        "覆雜性類"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "複雜性類別.yaml",
-      "taiwan": [
-        "複雜性類別"
       ]
     },
     {
@@ -21441,6 +20583,17 @@
       "source_file": "影片.yaml",
       "taiwan": [
         "影片"
+      ]
+    },
+    {
+      "china": [
+        "視頻串流"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "影音串流.yaml",
+      "taiwan": [
+        "影音串流"
       ]
     },
     {
@@ -21489,7 +20642,7 @@
     },
     {
       "china": [
-        "視頻文檔"
+        "視頻文件"
       ],
       "detection": null,
       "fork_type": "B",
@@ -21617,17 +20770,6 @@
       "source_file": "解除參照.yaml",
       "taiwan": [
         "解除參照"
-      ]
-    },
-    {
-      "china": [
-        "解说"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "主播.yaml",
-      "taiwan": [
-        "主播"
       ]
     },
     {
@@ -21855,17 +20997,6 @@
     },
     {
       "china": [
-        "評測系統"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "解題系統.yaml",
-      "taiwan": [
-        "解題系統"
-      ]
-    },
-    {
-      "china": [
         "評論"
       ],
       "detection": null,
@@ -21928,28 +21059,6 @@
       "source_file": "語言套件.yaml",
       "taiwan": [
         "語言套件"
-      ]
-    },
-    {
-      "china": [
-        "課時工資"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "鐘點費.yaml",
-      "taiwan": [
-        "鐘點費"
-      ]
-    },
-    {
-      "china": [
-        "調優"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "調整.yaml",
-      "taiwan": [
-        "調整"
       ]
     },
     {
@@ -22035,17 +21144,6 @@
         "調試"
       ],
       "detection": null,
-      "fork_type": "B",
-      "source_file": "除錯.yaml",
-      "taiwan": [
-        "除錯"
-      ]
-    },
-    {
-      "china": [
-        "調適"
-      ],
-      "detection": null,
       "fork_type": "semantic",
       "source_file": "調適.yaml",
       "taiwan": [
@@ -22055,13 +21153,13 @@
     },
     {
       "china": [
-        "請勿追蹤"
+        "調試"
       ],
       "detection": null,
       "fork_type": "B",
-      "source_file": "停止追蹤.yaml",
+      "source_file": "除錯.yaml",
       "taiwan": [
-        "停止追蹤"
+        "除錯"
       ]
     },
     {
@@ -22107,17 +21205,6 @@
       "source_file": "辨識.yaml",
       "taiwan": [
         "辨識"
-      ]
-    },
-    {
-      "china": [
-        "議员"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "議員.yaml",
-      "taiwan": [
-        "議員"
       ]
     },
     {
@@ -22254,17 +21341,6 @@
     },
     {
       "china": [
-        "谓语"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "動詞.yaml",
-      "taiwan": [
-        "動詞"
-      ]
-    },
-    {
-      "china": [
         "谷子（吃谷",
         "谷店）"
       ],
@@ -22397,29 +21473,7 @@
       "fork_type": "semantic",
       "source_file": "資源管理器.yaml",
       "taiwan": [
-        "資料總管"
-      ]
-    },
-    {
-      "china": [
-        "賣大戶"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "賣大戶.yaml",
-      "taiwan": [
-        "量販"
-      ]
-    },
-    {
-      "china": [
-        "賣大號"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "賣大號.yaml",
-      "taiwan": [
-        "量販"
+        "檔案總管"
       ]
     },
     {
@@ -22508,6 +21562,18 @@
     },
     {
       "china": [
+        "賽博對賬"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "賽博對賬.yaml",
+      "taiwan": [
+        "網路上核對彼此的生活經驗",
+        "對照人生"
+      ]
+    },
+    {
+      "china": [
         "贊"
       ],
       "detection": null,
@@ -22571,17 +21637,6 @@
       "source_file": "質詢.yaml",
       "taiwan": [
         "質詢"
-      ]
-    },
-    {
-      "china": [
-        "贴纸"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "貼圖.yaml",
-      "taiwan": [
-        "貼圖"
       ]
     },
     {
@@ -22733,17 +21788,6 @@
     },
     {
       "china": [
-        "跟蹤服務"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "售後服務.yaml",
-      "taiwan": [
-        "售後服務"
-      ]
-    },
-    {
-      "china": [
         "跟隨"
       ],
       "detection": null,
@@ -22751,6 +21795,17 @@
       "source_file": "跟隨.yaml",
       "taiwan": [
         "追蹤"
+      ]
+    },
+    {
+      "china": [
+        "跨國公司"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "跨國公司.yaml",
+      "taiwan": [
+        "跨國公司"
       ]
     },
     {
@@ -22819,17 +21874,6 @@
       "source_file": "踩一捧一.yaml",
       "taiwan": [
         "自抬身價"
-      ]
-    },
-    {
-      "china": [
-        "踩屎感拖鞋"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "踩屎感拖鞋.yaml",
-      "taiwan": [
-        "發泡拖鞋"
       ]
     },
     {
@@ -23293,17 +22337,6 @@
     },
     {
       "china": [
-        "适配器"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "變壓器.yaml",
-      "taiwan": [
-        "變壓器"
-      ]
-    },
-    {
-      "china": [
         "逃生"
       ],
       "detection": null,
@@ -23322,17 +22355,6 @@
       "source_file": "逆向文件頻率.yaml",
       "taiwan": [
         "逆向文件頻率"
-      ]
-    },
-    {
-      "china": [
-        "选人"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "選角.yaml",
-      "taiwan": [
-        "選角"
       ]
     },
     {
@@ -23465,7 +22487,7 @@
       "fork_type": "B",
       "source_file": "過程控制段.yaml",
       "taiwan": [
-        "過程控制段"
+        "行程控制表"
       ]
     },
     {
@@ -23568,17 +22590,6 @@
       "source_file": "過度擬合.yaml",
       "taiwan": [
         "過度擬合"
-      ]
-    },
-    {
-      "china": [
-        "過渡"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "過渡.yaml",
-      "taiwan": [
-        "轉場"
       ]
     },
     {
@@ -24053,7 +23064,7 @@
     },
     {
       "china": [
-        "重覆組"
+        "重複項"
       ],
       "detection": null,
       "fork_type": "B",
@@ -24133,17 +23144,6 @@
     },
     {
       "china": [
-        "銷價"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "售價.yaml",
-      "taiwan": [
-        "售價"
-      ]
-    },
-    {
-      "china": [
         "錄像"
       ],
       "detection": null,
@@ -24211,13 +23211,13 @@
     },
     {
       "china": [
-        "鏈接反向"
+        "鏈接"
       ],
       "detection": null,
-      "fork_type": "B",
-      "source_file": "鏈結反向.yaml",
+      "fork_type": "semantic",
+      "source_file": "鏈結.yaml",
       "taiwan": [
-        "鏈結反向"
+        "連結"
       ]
     },
     {
@@ -24228,29 +23228,7 @@
       "fork_type": "B",
       "source_file": "鏈結搜尋.yaml",
       "taiwan": [
-        "鏈結搜尋"
-      ]
-    },
-    {
-      "china": [
-        "鏈接正向"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "鏈結正向.yaml",
-      "taiwan": [
-        "鏈結正向"
-      ]
-    },
-    {
-      "china": [
-        "鏈結"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "鏈結.yaml",
-      "taiwan": [
-        "連結"
+        "連結搜尋"
       ]
     },
     {
@@ -24277,17 +23255,6 @@
     },
     {
       "china": [
-        "鐵哥們"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "哥兒們.yaml",
-      "taiwan": [
-        "哥兒們"
-      ]
-    },
-    {
-      "china": [
         "鑰匙扣"
       ],
       "detection": null,
@@ -24295,17 +23262,6 @@
       "source_file": "鑰匙圈.yaml",
       "taiwan": [
         "鑰匙圈"
-      ]
-    },
-    {
-      "china": [
-        "钩子"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "掛鉤.yaml",
-      "taiwan": [
-        "掛鉤"
       ]
     },
     {
@@ -24327,7 +23283,6 @@
       "fork_type": "E",
       "source_file": "長知識.yaml",
       "taiwan": [
-        "學到了",
         "受教了"
       ]
     },
@@ -24339,8 +23294,7 @@
       "fork_type": "E",
       "source_file": "長臉.yaml",
       "taiwan": [
-        "給面子",
-        "出風頭"
+        "爭光"
       ]
     },
     {
@@ -24411,28 +23365,6 @@
       "source_file": "新帝.yaml",
       "taiwan": [
         "新帝"
-      ]
-    },
-    {
-      "china": [
-        "開放手持設備聯盟"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "開放手機聯盟.yaml",
-      "taiwan": [
-        "開放手機聯盟"
-      ]
-    },
-    {
-      "china": [
-        "開放移動聯盟"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "開放行動聯盟.yaml",
-      "taiwan": [
-        "開放行動聯盟"
       ]
     },
     {
@@ -24523,6 +23455,17 @@
       "source_file": "關聯式資料庫.yaml",
       "taiwan": [
         "關聯式資料庫"
+      ]
+    },
+    {
+      "china": [
+        "關聯企業"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "關係企業.yaml",
+      "taiwan": [
+        "關係企業"
       ]
     },
     {
@@ -24698,8 +23641,7 @@
       "fork_type": "E",
       "source_file": "陰陽怪氣.yaml",
       "taiwan": [
-        "怪裡怪氣",
-        "假鬼假怪"
+        "酸言酸語"
       ]
     },
     {
@@ -24793,17 +23735,6 @@
     },
     {
       "china": [
-        "集成設備電路"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "整合裝置電路.yaml",
-      "taiwan": [
-        "整合裝置電路"
-      ]
-    },
-    {
-      "china": [
         "集成開發環境"
       ],
       "detection": null,
@@ -24811,6 +23742,17 @@
       "source_file": "整合式開發環境.yaml",
       "taiwan": [
         "整合式開發環境"
+      ]
+    },
+    {
+      "china": [
+        "集成電路"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "整合裝置電路.yaml",
+      "taiwan": [
+        "積體電路"
       ]
     },
     {
@@ -24844,17 +23786,6 @@
       "source_file": "貨櫃.yaml",
       "taiwan": [
         "貨櫃"
-      ]
-    },
-    {
-      "china": [
-        "集貿市場"
-      ],
-      "detection": null,
-      "fork_type": "D",
-      "source_file": "菜市場.yaml",
-      "taiwan": [
-        "菜市場"
       ]
     },
     {
@@ -25073,19 +24004,6 @@
     },
     {
       "china": [
-        "電子陽痿"
-      ],
-      "detection": null,
-      "fork_type": "E",
-      "source_file": "電子陽痿.yaml",
-      "taiwan": [
-        "失去興趣",
-        "提不起勁",
-        "沒有熱情"
-      ]
-    },
-    {
-      "china": [
         "電機"
       ],
       "detection": null,
@@ -25093,17 +24011,6 @@
       "source_file": "電機.yaml",
       "taiwan": [
         "馬達"
-      ]
-    },
-    {
-      "china": [
-        "電源保護"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "不斷電系統.yaml",
-      "taiwan": [
-        "不斷電系統"
       ]
     },
     {
@@ -25530,17 +24437,6 @@
     },
     {
       "china": [
-        "頂價"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "頂價.yaml",
-      "taiwan": [
-        "天價"
-      ]
-    },
-    {
-      "china": [
         "頂班"
       ],
       "detection": null,
@@ -25837,17 +24733,6 @@
     },
     {
       "china": [
-        "顯卡"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "顯示卡.yaml",
-      "taiwan": [
-        "顯示卡"
-      ]
-    },
-    {
-      "china": [
         "顯存"
       ],
       "detection": null,
@@ -25867,17 +24752,6 @@
       "taiwan": [
         "活寶",
         "愛搶鏡的人"
-      ]
-    },
-    {
-      "china": [
-        "顯示器"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "顯示器.yaml",
-      "taiwan": [
-        "螢幕"
       ]
     },
     {
@@ -25911,17 +24785,6 @@
       "source_file": "風投.yaml",
       "taiwan": [
         "創投"
-      ]
-    },
-    {
-      "china": [
-        "風景微縮區"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "風景微縮區.yaml",
-      "taiwan": [
-        "小人國"
       ]
     },
     {
@@ -25977,17 +24840,6 @@
       "source_file": "飛航模式.yaml",
       "taiwan": [
         "飛航模式"
-      ]
-    },
-    {
-      "china": [
-        "食堂"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "餐廳.yaml",
-      "taiwan": [
-        "餐廳"
       ]
     },
     {
@@ -26075,7 +24927,7 @@
       "fork_type": "orthographic",
       "source_file": "馬爾代夫.yaml",
       "taiwan": [
-        "馬爾蒂夫"
+        "馬爾地夫"
       ]
     },
     {
@@ -26269,17 +25121,6 @@
     },
     {
       "china": [
-        "高檔"
-      ],
-      "detection": null,
-      "fork_type": "semantic",
-      "source_file": "高檔.yaml",
-      "taiwan": [
-        "高級"
-      ]
-    },
-    {
-      "china": [
         "高清"
       ],
       "detection": {
@@ -26319,28 +25160,6 @@
     },
     {
       "china": [
-        "高清音質"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "高音質.yaml",
-      "taiwan": [
-        "高音質"
-      ]
-    },
-    {
-      "china": [
-        "高清音頻"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "高音質音訊.yaml",
-      "taiwan": [
-        "高音質音訊"
-      ]
-    },
-    {
-      "china": [
         "高玩"
       ],
       "detection": null,
@@ -26358,9 +25177,7 @@
       "fork_type": "E",
       "source_file": "高端.yaml",
       "taiwan": [
-        "高級",
-        "高階",
-        "先進"
+        "高階"
       ]
     },
     {
@@ -26435,17 +25252,6 @@
     },
     {
       "china": [
-        "高維空間"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "多維空間.yaml",
-      "taiwan": [
-        "多維空間"
-      ]
-    },
-    {
-      "china": [
         "高考"
       ],
       "detection": null,
@@ -26468,6 +25274,17 @@
     },
     {
       "china": [
+        "高考"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "聯考.yaml",
+      "taiwan": [
+        "聯考"
+      ]
+    },
+    {
+      "china": [
         "高速公路"
       ],
       "detection": null,
@@ -26475,6 +25292,17 @@
       "source_file": "國道.yaml",
       "taiwan": [
         "國道"
+      ]
+    },
+    {
+      "china": [
+        "高速緩存"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "快取記憶體.yaml",
+      "taiwan": [
+        "快取記憶體"
       ]
     },
     {
@@ -26544,7 +25372,7 @@
       "fork_type": "E",
       "source_file": "魚塘局.yaml",
       "taiwan": [
-        "新手場"
+        "新手局"
       ]
     },
     {
@@ -26613,6 +25441,17 @@
       "source_file": "黏貼.yaml",
       "taiwan": [
         "貼上"
+      ]
+    },
+    {
+      "china": [
+        "黑客"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "劊客.yaml",
+      "taiwan": [
+        "駭客"
       ]
     },
     {
@@ -26745,6 +25584,18 @@
       "source_file": "龍傲天.yaml",
       "taiwan": [
         "開掛仔"
+      ]
+    },
+    {
+      "china": [
+        "（數據）流",
+        "流媒體"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "串流.yaml",
+      "taiwan": [
+        "串流"
       ]
     },
     {
