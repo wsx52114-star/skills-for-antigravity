@@ -78,14 +78,14 @@ def main() -> int:
         "severity_b": statistics["severity_b"],
     }
     upstream_path = output.parent / "UPSTREAM.json"
-    upstream_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    upstream_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     lock = {
         **metadata,
         "syncedAt": args.synced_at or datetime.now(timezone.utc).isoformat(),
     }
     lock_path = repo_root / ".github" / "taiwan-terminology-sync" / "upstream-lock.json"
-    lock_path.write_text(json.dumps(lock, indent=2) + "\n", encoding="utf-8")
+    lock_path.write_text(json.dumps(lock, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"Applied {statistics['terms']} Taiwan.md terms from {args.sha}.")
     return 0
 

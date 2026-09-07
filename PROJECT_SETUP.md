@@ -22,7 +22,7 @@ project/
 
 - `CONTEXT.md` 與 `docs/adr/` 是 project-local 實體內容。
 - `skills/<skill-name>` 與 `rules` 是機器本機的共享連結，應由 Git 忽略。
-- `.install-state` 記錄安裝器管理的 mode、channel、來源與 skill inventory，也應由 Git 忽略。
+- `.install-state` 記錄安裝器管理的 mode、channel、來源與 skill inventory；Copy Mode 另記錄每個檔案的 SHA-256，也應由 Git 忽略。
 - Flat skill links 符合 Antigravity 官方 `.agents/skills/<skill-name>/SKILL.md` 結構，可使用 `/skill-name`。
 - Agent home 執行 `git pull --ff-only` 後，既有 Link Mode skills 與 rules 立即更新；新增或移除 skill 時需重跑 script 更新 links。
 
@@ -95,8 +95,23 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 
 未提供 `-Mode` 時，script 會顯示互動式選單並預設選擇 Link Mode。
 
-Copy Mode 不會刪除 local 額外檔案。若受管理目錄已從 inventory 移除，安裝器會
-停止並要求人工檢查，不推測其中是否有本機修改。
+Copy Mode 的 Check 會比較實際檔案、來源與上次安裝的 SHA-256；來源更新、檔案
+缺少或本機修改都會回傳 `2`。Sync 只更新未被本機修改的受管理檔案，並移除
+上游已刪除且本機未修改的檔案。額外的本機檔案會保留。
+
+Sync／Uninstall 遇到同名未受管理檔案、本機修改、Junction／SymbolicLink 或不同
+Agent home 的安裝紀錄時，會在變更前停止。解除安裝只刪除 hash 符合上次安裝紀錄
+的檔案與清空後的目錄；額外檔案及專案知識會保留。
+
+### 舊版 Copy Mode 的升級
+
+舊版 `version=1` 沒有檔案 hash，安裝器無法辨識既有內容是否被修改，因此不會
+直接覆寫或刪除。先將 `.agents/skills`、`.agents/rules` 與 `.agents/.install-state`
+保留到專案內另一個已確認的備份位置，再執行 Copy Sync，最後逐項比對並還原
+需要的 project-local skills。備份完成且差異確認前，保留原始內容。
+
+Link Mode 的 `version=1` 仍可直接使用；若是舊的整個 `.agents/skills` 目錄連結，
+先執行 Link Sync 遷移成 flat links，再解除安裝。
 
 ## Antigravity 規則入口
 
@@ -192,7 +207,7 @@ bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
 | 更新類型 | Link Mode | Copy Mode |
 | --- | --- | --- |
 | 只修改既有 skill 內容 | `git pull` 後立即生效；`--check` 應回傳 `0`。 | 重新執行 Sync。 |
-| 新增、刪除、改名或移動 skill | `--check` 回傳 `2`，執行 `--sync` 重建 links。 | 重新執行 Sync；若偵測到已移除目錄，先人工檢查。 |
+| 新增、刪除、改名或移動 skill | `--check` 回傳 `2`，執行 `--sync` 重建 links。 | Check 回傳 `2`；Sync 更新未修改的受管理檔案，遇到本機衝突則停止。 |
 
 `--sync` 可安全地重複執行，因此每次 `git pull` 後也能直接同步所有專案：
 
@@ -213,7 +228,8 @@ Windows Link Mode 使用 `-Action Check`／`-Action Sync`；Copy Mode 每次 Age
 
 - 不建立或修改專案的 `AGENTS.md`。
 - 不覆寫既有 `CONTEXT.md` 或 ADR。
-- Link Mode 不會遞迴刪除資料；Copy Mode 只會在明確解除安裝時移除安裝器管理的目錄。
+- Link Mode 只移除連結本身；Copy Mode 只移除通過 hash 檢查的受管理檔案與空目錄。
+- Sync、Check 與 Uninstall 都會檢查 `.agents` 的目錄邊界；解除安裝拒絕連到其他位置的 skills 容器。
 - 正確連結會保持不變。
 - `--check` 不會寫入專案；缺少或過時時回傳 2。
 - 同步只清理由目前 Agent home 擁有的 links，並保留未知的 project-local skills。

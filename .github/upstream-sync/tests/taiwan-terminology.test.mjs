@@ -24,6 +24,7 @@ const composer = path.join(
   "apply_upstream_snapshot.py",
 );
 const commit = "d".repeat(40);
+const python = process.env.PYTHON ?? (process.platform === "win32" ? "python" : "python3");
 
 function sourceFixture(root) {
   const source = path.join(root, "source");
@@ -46,7 +47,14 @@ function sourceFixture(root) {
 }
 
 function runPython(script, args, cwd) {
-  return spawnSync("python3", [script, ...args], { cwd, encoding: "utf8" });
+  const result = spawnSync(python, [script, ...args], {
+    cwd, encoding: "utf8",
+    env: { ...process.env, PYTHONUTF8: "1", PYTHONDONTWRITEBYTECODE: "1" },
+  });
+  if (result.error) {
+    throw new Error(`Cannot start Python (${python}): ${result.error.message}. Install Python 3.10+ or set PYTHON to its executable path.`);
+  }
+  return result;
 }
 
 test("snapshot and scanner preserve conservative and full review modes", () => {
@@ -126,6 +134,8 @@ test("composer records a reproducible snapshot and lock", () => {
     assert.equal(lock.terms, 2);
     assert.equal(lock.severity_b, 1);
     assert.equal(lock.snapshot_sha256, metadata.snapshot_sha256);
+    const snapshotBytes = readFileSync(path.join(fixtureSkill, "references", "taiwan-md", "terminology.snapshot.json"));
+    assert.equal(snapshotBytes.includes(Buffer.from("\r\n")), false, "Snapshot generation must use LF on every OS");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

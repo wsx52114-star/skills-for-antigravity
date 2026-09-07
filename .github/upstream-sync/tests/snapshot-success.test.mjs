@@ -55,7 +55,7 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     writeFileSync(path.join(snapshot, "skills", "in-progress", "README.md"), "- [claude-handoff](./claude-handoff/SKILL.md)\n- [wizard](./wizard/SKILL.md)\n");
     writeFileSync(path.join(snapshot, "LICENSE"), "MIT\n");
 
-    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "abc123"], { encoding: "utf8" });
+    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "a".repeat(40)], { encoding: "utf8" });
     assert.equal(result.status, 0, result.stderr);
     assert.equal(readFileSync(path.join(repo, "README.md"), "utf8"), "fork readme\n");
     assert.equal(readFileSync(path.join(repo, "docs", "NEW.md"), "utf8"), "new file\n");
@@ -95,7 +95,7 @@ test("upstream adapter path collisions are rejected", () => {
     git(repo, "add", ".");
     git(repo, "commit", "-m", "before");
 
-    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "collision"], { encoding: "utf8" });
+    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "b".repeat(40)], { encoding: "utf8" });
     assert.equal(result.status, 2);
     assert.match(result.stderr, /collides with fork-owned paths/);
     assert.equal(readFileSync(path.join(repo, "KEEP.md"), "utf8"), "keep me\n");
@@ -118,7 +118,7 @@ test("empty or invalid upstream snapshots are rejected without deleting files", 
     git(repo, "add", ".");
     git(repo, "commit", "-m", "before");
 
-    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "missing"], { encoding: "utf8" });
+    const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "c".repeat(40)], { encoding: "utf8" });
     assert.equal(result.status, 2);
     assert.match(result.stderr, /Invalid upstream snapshot/);
     assert.equal(readFileSync(path.join(repo, "KEEP.md"), "utf8"), "keep me\n");

@@ -138,14 +138,26 @@ render_install_state() {
 ensure_line() {
   local path="$1"
   local line="$2"
-  grep -Fqx -- "$line" "$path" || printf '%s\n' "$line" >> "$path"
+  has_ignore_line "$path" "$line" || printf '%s\n' "$line" >> "$path"
+}
+
+has_ignore_line() {
+  [[ -f "$1" ]] && awk -v rule="$2" '
+    $0 == rule { positive = NR }
+    /^[[:space:]]*!/ { negative = NR }
+    END { exit !(positive > negative) }
+  ' "$1"
 }
 
 [[ -d "$SKILLS_REPO/skills" ]] || fail "Skills directory not found: $SKILLS_REPO/skills"
 [[ -f "$SKILLS_REPO/rules/skills.md" ]] || fail "Rules file not found: $SKILLS_REPO/rules/skills.md"
 [[ "$PROJECT_ROOT" != "$SKILLS_REPO" ]] || fail "Run this script from a development project, not from the Agent home."
 
+check_directory_slot "$AGENTS_DIR"
+check_file_slot "$INSTALL_STATE"
+
 if [[ "$ACTION" == "--uninstall" ]]; then
+  check_directory_slot "$SKILLS_DIR"
   if [[ -d "$SKILLS_DIR" ]]; then
     while IFS= read -r -d '' destination; do
       if is_managed_skill_link "$destination"; then
@@ -169,6 +181,7 @@ check_directory_slot "$AGENTS_DIR/docs"
 check_directory_slot "$AGENTS_DIR/docs/adr"
 check_file_slot "$AGENTS_DIR/CONTEXT.md"
 check_file_slot "$AGENTS_DIR/.gitignore"
+check_file_slot "$INSTALL_STATE.tmp"
 check_link_slot "$SKILLS_REPO/rules" "$AGENTS_DIR/rules"
 
 legacy_skills_link=false
@@ -202,7 +215,7 @@ else
 fi
 
 for required_ignore in /skills /rules /.install-state; do
-  if [[ ! -f "$AGENTS_DIR/.gitignore" ]] || ! grep -Fqx -- "$required_ignore" "$AGENTS_DIR/.gitignore"; then
+  if ! has_ignore_line "$AGENTS_DIR/.gitignore" "$required_ignore"; then
     printf 'Missing: %s entry %s\n' "$AGENTS_DIR/.gitignore" "$required_ignore"
     drift=true
   fi

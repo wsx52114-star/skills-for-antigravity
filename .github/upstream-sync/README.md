@@ -10,6 +10,9 @@ project-local links or copies; this is not Antigravity's native global scope.
 
 ## Local checks
 
+See [MAINTENANCE.md](../../MAINTENANCE.md#驗證) for runtime prerequisites,
+Windows/WSL coverage, and the PowerShell regression suites.
+
 ```sh
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs

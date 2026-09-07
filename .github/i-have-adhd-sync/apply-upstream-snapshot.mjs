@@ -8,13 +8,13 @@ import {
   lstatSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 
 const upstreamRepository = "https://github.com/ayghri/i-have-adhd";
 
@@ -34,9 +34,7 @@ function parseArgs(argv) {
   if (!options.repoRoot || !options.snapshotRoot || !options.sha) {
     throw new Error("--repo-root, --snapshot-root, and --sha are required");
   }
-  if (!/^[0-9a-f]{40}$/.test(options.sha)) {
-    throw new Error("--sha must be a full lowercase commit SHA");
-  }
+  requireCommitSha(options.sha);
   options.repoRoot = path.resolve(options.repoRoot);
   options.snapshotRoot = path.resolve(options.snapshotRoot);
   return options;
@@ -44,20 +42,6 @@ function parseArgs(argv) {
 
 function normalize(relativePath) {
   return relativePath.split(path.sep).join("/");
-}
-
-function listRegularFiles(root, directory = root, result = []) {
-  if (!existsSync(directory)) return result;
-  for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isSymbolicLink()) {
-      throw new Error(`Upstream skill contains a forbidden symlink: ${normalize(path.relative(root, fullPath))}`);
-    }
-    if (entry.isDirectory()) listRegularFiles(root, fullPath, result);
-    else if (entry.isFile()) result.push(normalize(path.relative(root, fullPath)));
-    else throw new Error(`Upstream skill contains an unsupported file type: ${entry.name}`);
-  }
-  return result.sort();
 }
 
 function requireExplicitInvocation(content) {
@@ -103,9 +87,9 @@ function main() {
   );
   const tracked = execFileSync(
     "git",
-    ["-C", options.repoRoot, "ls-files", "--", "skills/productivity/i-have-adhd"],
+    ["-C", options.repoRoot, "ls-files", "-z", "--", "skills/productivity/i-have-adhd"],
     { encoding: "utf8" },
-  ).split(/\r?\n/).filter(Boolean);
+  ).split("\0").filter(Boolean);
 
   for (const relativePath of tracked) {
     if (!expectedLocal.has(normalize(relativePath))) {

@@ -156,9 +156,39 @@ Cloudflare commit 與檔案 inventory 記錄在
 
 ## 驗證
 
-維護者需要 Node.js 22+：
+維護者需要 Node.js 22+、Git 與 Python 3.10+。Linux／WSL 安裝器測試另需要
+Bash 4+、GNU coreutils、find、grep 與 awk。Windows 的 PowerShell 測試支援
+Windows PowerShell 5.1 與 PowerShell 7。
 
 ```bash
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs
 ```
+
+Windows 的 Node 測試會明確略過 POSIX 安裝器案例；這些案例必須在 Linux／WSL
+執行，不能用 Windows 的通過結果代替。Windows 另執行：
+
+```powershell
+powershell -NoProfile -File .github/upstream-sync/tests/local-setup-win.test.ps1
+powershell -NoProfile -File .github/upstream-sync/tests/local-setup-win-safety.test.ps1
+pwsh -NoProfile -File .github/upstream-sync/tests/local-setup-win.test.ps1
+pwsh -NoProfile -File .github/upstream-sync/tests/local-setup-win-safety.test.ps1
+```
+
+Python 測試預設在 Windows 呼叫 `python`，在 Linux 呼叫 `python3`。若執行檔不在
+PATH，可將 `PYTHON` 環境變數設為完整執行檔路徑；測試會使用 UTF-8 輸出，避免
+Windows 主控台編碼影響中文案例。CI 在 Ubuntu 執行完整 POSIX 測試，在 Windows
+執行 Node 測試、repository validation 與兩個 PowerShell 版本的安裝測試。
+
+`.gitattributes` 固定 Bash scripts 與詞庫快照使用 LF，快照產生器也固定輸出 LF。
+既有 checkout 若尚未套用換行政策，先確認沒有本機內容修改，再只將上述檔案
+轉為 LF；不要為了通過驗證改寫 lock 的 hash。
+
+三個 JavaScript snapshot adapters 共用 regular-file 與完整 commit SHA 驗證，
+在寫入前拒絕 symlink 與不支援的檔案型別。Taiwan.md 的 Python adapter 保持
+詞庫專用的來源驗證。更新共用契約時，執行 `snapshot-input.test.mjs` 與既有
+各 adapter 的成功／失敗案例。
+
+Skill 的實際觸發與停止行為，依 [skill 情境驗證](.github/skill-evals/README.md)
+在 Antigravity 執行。這項驗證與 CI 的文字契約檢查分開記錄；沒有執行紀錄時，
+結果就是「未驗證」。

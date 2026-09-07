@@ -1,0 +1,3 @@
+# These files are consumed as exact bytes or executed by Bash on every platform.
+*.sh text eol=lf
+/skills/language/taiwan-term/references/taiwan-md/terminology.snapshot.json text eol=lf

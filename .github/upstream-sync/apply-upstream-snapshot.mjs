@@ -3,10 +3,8 @@
 import {
   chmodSync,
   copyFileSync,
-  existsSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -16,6 +14,7 @@ import process from "node:process";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { loadPolicy, matchesAny } from "./lib/policy.mjs";
+import { listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
 
 function parseArgs(argv) {
   const options = { repoRoot: null, snapshotRoot: null, sha: null };
@@ -33,24 +32,10 @@ function parseArgs(argv) {
   if (!options.repoRoot || !options.snapshotRoot || !options.sha) {
     throw new Error("--repo-root, --snapshot-root, and --sha are required");
   }
+  requireCommitSha(options.sha);
   options.repoRoot = path.resolve(options.repoRoot);
   options.snapshotRoot = path.resolve(options.snapshotRoot);
   return options;
-}
-
-function normalize(relativePath) {
-  return relativePath.split(path.sep).join("/");
-}
-
-function listFiles(root, directory = root, result = []) {
-  if (!existsSync(directory)) return result;
-  for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    if (entry.name === ".git") continue;
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) listFiles(root, fullPath, result);
-    else if (entry.isFile()) result.push(normalize(path.relative(root, fullPath)));
-  }
-  return result.sort();
 }
 
 function withoutExcludedSkillReferences(content, excludedSegments) {
@@ -76,7 +61,7 @@ function main() {
       (segment) => excludedSkillNames.has(segment) || excludedSkillPathSegments.has(segment),
     );
   };
-  const snapshotFiles = listFiles(options.snapshotRoot);
+  const snapshotFiles = listRegularFiles(options.snapshotRoot);
   const blockedCollisions = snapshotFiles.filter((item) => matchesAny(item, ownership.blockedUpstreamPaths));
   if (blockedCollisions.length) {
     throw new Error(`Upstream snapshot collides with fork-owned paths: ${blockedCollisions.join(", ")}`);
@@ -89,8 +74,8 @@ function main() {
   }
   const installable = allowedFiles.filter((item) => !isForkOwned(item));
   const installableSet = new Set(installable);
-  const tracked = execFileSync("git", ["-C", options.repoRoot, "ls-files"], { encoding: "utf8" })
-    .split(/\r?\n/)
+  const tracked = execFileSync("git", ["-C", options.repoRoot, "ls-files", "-z"], { encoding: "utf8" })
+    .split("\0")
     .filter(Boolean);
 
   for (const relativePath of tracked) {

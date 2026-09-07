@@ -201,6 +201,7 @@ def main() -> int:
     args.output.write_text(
         json.dumps(snapshot, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     stats = snapshot["statistics"]
     print(

@@ -14,21 +14,26 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import test from "node:test";
+import nodeTest from "node:test";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const setupScript = path.join(repoRoot, "scripts", "init_setup_local_repo_wsl.sh");
+const test = process.platform === "win32"
+  ? (name, run) => nodeTest(name, { skip: "Run POSIX installer tests inside WSL/Linux; Windows has its own PowerShell suite." }, run)
+  : nodeTest;
 
 function projectFixture() {
   return mkdtempSync(path.join(tmpdir(), "antigravity-project-"));
 }
 
 function runSetup(project, ...args) {
-  return spawnSync("bash", [setupScript, ...args], {
+  const result = spawnSync("bash", [setupScript, ...args], {
     cwd: project,
     encoding: "utf8",
   });
+  if (result.error) throw new Error(`Cannot start Bash: ${result.error.message}. Install Bash 4+ and GNU coreutils.`);
+  return result;
 }
 
 test("WSL setup creates project-local context and flat skill links", () => {
@@ -192,4 +197,39 @@ test("WSL setup refuses to initialize the Agent home itself", () => {
   const result = runSetup(repoRoot);
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /not from the Agent home/);
+});
+
+for (const boundary of [".agents", ".agents/skills"]) {
+  test(`WSL uninstall rejects a linked ${boundary} without changing another project`, () => {
+    const project = projectFixture();
+    const other = projectFixture();
+    try {
+      assert.equal(runSetup(other).status, 0);
+      if (boundary !== ".agents") mkdirSync(path.join(project, ".agents"));
+      symlinkSync(path.join(other, boundary), path.join(project, boundary), "dir");
+      const result = runSetup(project, "--uninstall");
+      assert.equal(result.status, 1, result.stderr);
+      assert.match(result.stderr, /project-local directory.*symlink/);
+      assert.equal(existsSync(path.join(other, ".agents", "skills", "tdd", "SKILL.md")), true);
+      assert.equal(existsSync(path.join(other, ".agents", ".install-state")), true);
+    } finally {
+      rmSync(project, { recursive: true, force: true });
+      rmSync(other, { recursive: true, force: true });
+    }
+  });
+}
+
+test("WSL sync repairs commented and negated Git ignore rules", () => {
+  const project = projectFixture();
+  try {
+    assert.equal(runSetup(project).status, 0);
+    writeFileSync(path.join(project, ".agents", ".gitignore"), "# /skills\n/rules-other\n# /.install-state\n!/skills\n!/rules\n!/.install-state\n");
+    assert.equal(runSetup(project, "--check").status, 2);
+    assert.equal(runSetup(project, "--sync").status, 0);
+    assert.equal(runSetup(project, "--check").status, 0);
+    assert.equal(spawnSync("git", ["-C", project, "init", "--quiet"]).status, 0);
+    for (const relative of [".agents/skills/tdd", ".agents/rules", ".agents/.install-state"]) {
+      assert.equal(spawnSync("git", ["-C", project, "check-ignore", "--quiet", "--", relative]).status, 0, relative);
+    }
+  } finally { rmSync(project, { recursive: true, force: true }); }
 });

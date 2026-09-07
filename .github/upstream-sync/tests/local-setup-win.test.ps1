@@ -1,3 +1,5 @@
+param ([string]$PowerShell = (Get-Process -Id $PID).Path)
+
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..\..\..")).Path
@@ -13,7 +15,7 @@ function Invoke-Setup {
     param ([string[]]$Arguments)
     Push-Location $Project
     try {
-        $null = & pwsh -NoProfile -File $SetupScript @Arguments
+        $null = & $PowerShell -NoProfile -File $SetupScript @Arguments
         return $LASTEXITCODE
     } finally {
         Pop-Location
@@ -31,7 +33,7 @@ try {
     Assert-True ((Get-Content -LiteralPath (Join-Path $Agents ".install-state") -Raw) -match "(?m)^channel=stable$") "Install state did not record Stable channel"
     Assert-True ((Invoke-Setup @("-Action", "Check", "-Mode", "Link", "-Channel", "Stable")) -eq 0) "Current installation was reported as drifted"
 
-    Remove-Item -LiteralPath (Join-Path $Skills "tdd") -Force
+    [System.IO.Directory]::Delete((Join-Path $Skills "tdd"))
     Assert-True ((Invoke-Setup @("-Action", "Check", "-Mode", "Link", "-Channel", "Stable")) -eq 2) "Missing skill did not report drift"
     Assert-True ((Invoke-Setup @("-Action", "Sync", "-Mode", "Link", "-Channel", "Stable")) -eq 0) "Missing skill was not restored"
 
@@ -42,5 +44,17 @@ try {
     Assert-True (Test-Path -LiteralPath (Join-Path $Skills "project-local\SKILL.md")) "Project-local skill was removed"
     Assert-True (Test-Path -LiteralPath (Join-Path $Agents "CONTEXT.md")) "Project context was removed"
 } finally {
+    $temp = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath())
+    if (-not [System.IO.Path]::GetFullPath($Project).StartsWith($temp, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Unsafe test cleanup path: $Project"
+    }
+    $links = @()
+    if (Test-Path -LiteralPath "$Project/.agents/skills") {
+        $links += @(Get-ChildItem -LiteralPath "$Project/.agents/skills" -Force | Where-Object { $_.LinkType -in @("Junction", "SymbolicLink") })
+    }
+    if (Test-Path -LiteralPath "$Project/.agents/rules") {
+        $links += @(Get-Item -LiteralPath "$Project/.agents/rules" -Force | Where-Object { $_.LinkType -in @("Junction", "SymbolicLink") })
+    }
+    foreach ($link in $links) { [System.IO.Directory]::Delete($link.FullName) }
     Remove-Item -LiteralPath $Project -Recurse -Force -ErrorAction SilentlyContinue
 }
