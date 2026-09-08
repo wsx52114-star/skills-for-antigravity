@@ -16,7 +16,9 @@ function Invoke-Setup {
     Push-Location $Project
     try {
         $null = & $PowerShell -NoProfile -File $SetupScript @Arguments
-        return $LASTEXITCODE
+        $code = $LASTEXITCODE
+        $global:LASTEXITCODE = 0
+        return $code
     } finally {
         Pop-Location
     }
@@ -58,3 +60,5 @@ try {
     foreach ($link in $links) { [System.IO.Directory]::Delete($link.FullName) }
     Remove-Item -LiteralPath $Project -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+$global:LASTEXITCODE = 0

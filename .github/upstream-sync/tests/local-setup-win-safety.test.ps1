@@ -17,7 +17,9 @@ function Invoke-Setup {
     try {
         $ErrorActionPreference = "Continue"
         $output = & $PowerShell -NoProfile -File $Installer -Action $Action -Mode $Mode -Channel $Channel 2>&1
-        return [PSCustomObject]@{ Code = $LASTEXITCODE; Output = ($output -join "`n") }
+        $code = $LASTEXITCODE
+        $global:LASTEXITCODE = 0
+        return [PSCustomObject]@{ Code = $code; Output = ($output -join "`n") }
     } finally { Pop-Location }
 }
 
@@ -164,7 +166,7 @@ Test-Scenario "Uninstall rejects a linked skills container" {
     param ($project, $source, $installer)
     Assert-True ((Invoke-Setup $project $installer).Code -eq 0) "Initial copy failed"
     $other = Join-Path (Split-Path $project) "other"
-    New-Item -ItemType Directory -Path "$other/.agents" | Out-Null
+    New-Item -ItemType Directory -Force -Path "$other/.agents" | Out-Null
     New-Item -ItemType Junction -Path "$other/.agents/skills" -Target "$project/.agents/skills" | Out-Null
     try {
         Assert-True ((Invoke-Setup $other $installer "Uninstall").Code -ne 0) "Uninstall accepted a linked skills container"
@@ -184,3 +186,5 @@ Test-Scenario "Copy detects a file blocking a new parent directory before any up
     Assert-True ((Get-Content -LiteralPath "$project/.agents/rules/skills.md" -Raw).Trim() -eq "rule-v1") "Sync changed files before preflight finished"
     Assert-True ((Get-Content -LiteralPath "$project/.agents/skills/demo/nested" -Raw).Trim() -eq "local") "Sync changed the blocking local file"
 }
+
+$global:LASTEXITCODE = 0

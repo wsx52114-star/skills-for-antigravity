@@ -115,6 +115,9 @@ Link Mode 的 `version=1` 仍可直接使用；若是舊的整個 `.agents/skill
 
 ## Antigravity 規則入口
 
+本節說明原生 Agent 的接入方式。Codex 擴充的 skills 與 rules 載入須另外確認，
+不能以擴充的測試結果代替原生 Agent 的驗證。
+
 Antigravity 會自動載入 workspace 的 `.agents/rules/*.md`。本架構將
 `.agents/rules` 連結到 Agent home，並由 `rules/skills.md` 的 `always_on` rule
 負責 skills 觸發、`CONTEXT.md` 與 ADR 的讀取規則，因此不需要另外建立

@@ -23,13 +23,21 @@ function Get-NormalizedPath {
 
 function Test-PathExists {
     param ([string]$Path)
-    return Test-Path -LiteralPath $Path
+    return (Test-Path -LiteralPath $Path) -or ($null -ne (Get-PathEntry $Path))
 }
 
 function Get-PathEntry {
     param ([string]$Path)
     try { return Get-Item -LiteralPath $Path -Force -ErrorAction Stop }
-    catch [System.Management.Automation.ItemNotFoundException] { return $null }
+    catch {
+        $parent = Split-Path -Parent $Path
+        $leaf = Split-Path -Leaf $Path
+        if (-not [string]::IsNullOrEmpty($parent) -and (Test-Path -LiteralPath $parent -PathType Container)) {
+            $child = Get-ChildItem -LiteralPath $parent -Force | Where-Object { $_.Name -ieq $leaf } | Select-Object -First 1
+            if ($null -ne $child) { return $child }
+        }
+        return $null
+    }
 }
 
 function Get-LinkTargetPath {

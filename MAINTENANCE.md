@@ -189,6 +189,8 @@ Windows 主控台編碼影響中文案例。CI 在 Ubuntu 執行完整 POSIX 測
 詞庫專用的來源驗證。更新共用契約時，執行 `snapshot-input.test.mjs` 與既有
 各 adapter 的成功／失敗案例。
 
-Skill 的實際觸發與停止行為，依 [skill 情境驗證](.github/skill-evals/README.md)
-在 Antigravity 執行。這項驗證與 CI 的文字契約檢查分開記錄；沒有執行紀錄時，
-結果就是「未驗證」。
+Skill 行為實測與 CI 的靜態契約檢查分開判定，Codex 擴充與 Antigravity 原生 Agent
+的結果也不能互相替代。未執行或略過的案例不代表通過。
+
+2026-09-08：Codex 擴充 E01、E02 通過，E03 僅主專案變體通過；標準 E03、
+E04～E06 與原生 Agent 測試依維護者決定略過，已移除本次情境測試文件。

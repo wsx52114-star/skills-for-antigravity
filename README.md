@@ -2,7 +2,7 @@
 
 一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
-Repository 建議集中存放於 `~/.agents`，作為共享 Agent home；各開發專案再透過 project-local 連結啟用，並保有自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的 global configuration。
+建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home；各開發專案透過本機連結啟用，並保留自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的全域設定。
 
 ## 快速開始
 
@@ -41,18 +41,11 @@ Set-Location "$HOME\path\to\your-project"
 powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local_repo_win.ps1" -Action Sync -Mode Link
 ```
 
-也可以直接請具有終端機與專案寫入權限的 Agent 安裝：
-
-> 請先閱讀 `~/.agents/PROJECT_SETUP.md`，依指南將共享 Agent home 連結到目前開發
-> 專案；完成後執行安裝檢查並回報結果。
-
-Agent 若無法建立 Symlink／Junction 或寫入專案，請手動執行上方指令。
-
-安裝器會建立 `.agents/skills/<skill-name>` 與 `.agents/rules` flat links，不會將
-skills 寫入 `~/.gemini/` global scope，也不會覆寫專案的 `CONTEXT.md`、ADR 或 `AGENTS.md`。
+安裝器會建立 `.agents/skills/<skill-name>` 與 `.agents/rules` 連結，
+不會覆寫專案的 `CONTEXT.md`、ADR 或 `AGENTS.md`。
 
 預設啟用所有 Runtime skills；若要排除仍在開發中的 skills，請使用
-`--channel stable`，Windows 則使用 `-Channel Stable`。
+`--channel stable`，Windows 則使用 `-Channel Stable`；後續檢查也須帶相同參數。
 
 ### 3. 檢查並開始使用
 
@@ -82,9 +75,9 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 | [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯規則。 |
 | [`docs/`](docs/) | 各 skills 的使用與開發參考。 |
 | [`.github/upstream-sync/`](.github/upstream-sync/) | `mattpocock/skills` 上游快照、所有權 policy、驗證與測試。 |
-| [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的獨立同步 control plane。 |
-| [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的 explicit-only 同步 control plane。 |
-| [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) | Taiwan.md 固定詞庫快照的獨立同步 control plane。 |
+| [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的同步維護工具。 |
+| [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的同步維護工具，保留明確指定才執行的限制。 |
+| [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) | Taiwan.md 固定詞庫快照的同步維護工具。 |
 | [`PROJECT_SETUP.md`](PROJECT_SETUP.md) | 開發專案連結 Agent home 的完整設定指南。 |
 | [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
 
@@ -94,23 +87,9 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 
 ## 更新 Agent home 與專案
 
-先更新共享 repository：
-
-```bash
-git -C ~/.agents pull --ff-only
-```
-
-Link Mode 的既有 skill 內容會立即更新。若有新增、刪除、改名或移動 skill，
-請進入各開發專案執行：
-
-```bash
-cd ~/path/to/your-project
-bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --check
-bash ~/.agents/scripts/init_setup_local_repo_wsl.sh --sync
-```
-
-Windows Copy Mode 每次更新後都應重新執行 `-Action Sync -Mode Copy`。完整的更新
-判斷、回傳碼與多專案範例請參考 [PROJECT_SETUP.md](PROJECT_SETUP.md#完整安裝與更新生命週期)。
+先確認 Agent home 沒有未提交變更，再以 `git pull --ff-only` 更新。
+Link Mode 會立即取得既有 skill 的新內容；skill 清單變更或使用 Copy Mode 時須重新同步。
+操作指令與判斷方式見 [更新生命週期](PROJECT_SETUP.md#完整安裝與更新生命週期)。
 
 ## 使用 skills
 
@@ -140,10 +119,10 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`diagnosing-bugs`](skills/engineering/diagnosing-bugs/SKILL.md) | 可自動選用 | 重現並縮小 bug，驗證假設、修復問題及加入回歸測試。 |
 | [`domain-modeling`](skills/engineering/domain-modeling/SKILL.md) | 可自動選用 | 建立專案術語、領域關係與必要的架構決策。 |
 | [`grill-with-docs`](skills/engineering/grill-with-docs/SKILL.md) | 需明確指定 | 透過追問釐清設計，同步 glossary 與 ADR。 |
-| [`implement`](skills/engineering/implement/SKILL.md) | 需明確指定 | 依據 spec 或 tickets 實作工作內容。 |
+| [`implement`](skills/engineering/implement/SKILL.md) | 需明確指定 | 依據 spec 或 issues 實作工作內容。 |
 | [`improve-codebase-architecture`](skills/engineering/improve-codebase-architecture/SKILL.md) | 需明確指定 | 掃描 codebase 的 deepening 機會，產生報告並逐項釐清。 |
-| [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 建立 throwaway prototype，回答狀態、邏輯或 UI 設計問題。 |
-| [`research`](skills/engineering/research/SKILL.md) | 可自動選用 | 依高可信度 primary sources 研究問題，並將報告寫入 repository。 |
+| [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 建立驗證用原型，回答狀態、邏輯或 UI 設計問題。 |
+| [`research`](skills/engineering/research/SKILL.md) | 可自動選用 | 依高可信度的第一手資料研究問題，並將報告寫入儲存庫。 |
 | [`resolving-merge-conflicts`](skills/engineering/resolving-merge-conflicts/SKILL.md) | 可自動選用 | 解決進行中的 Git merge 或 rebase conflict。 |
 | [`setup-matt-pocock-skills`](skills/engineering/setup-matt-pocock-skills/SKILL.md) | 需明確指定 | 首次使用前設定 issue tracker、triage labels 與 domain docs。 |
 | [`tdd`](skills/engineering/tdd/SKILL.md) | 可自動選用 | 以 red-green-refactor 和整合測試開發功能或修復 bug。 |
@@ -182,7 +161,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`handoff`](skills/productivity/handoff/SKILL.md) | 需明確指定 | 將目前對話壓縮成可交給另一個 agent 接手的文件。 |
 | [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) | 需明確指定 | 將回覆整理成 action-first、可直接執行的 ADHD-friendly 格式。 |
 | [`teach`](skills/productivity/teach/SKILL.md) | 需明確指定 | 在目前 workspace 脈絡中教授技能或概念。 |
-| [`to-questionnaire`](skills/productivity/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成供他人填寫的 questionnaire。 |
+| [`to-questionnaire`](skills/productivity/to-questionnaire/SKILL.md) | 需明確指定 | 將無法自行回答的決策整理成供他人填寫的問卷。 |
 | [`wait-what`](skills/productivity/wait-what/SKILL.md) | 需明確指定 | 以更簡單並補足脈絡的方式重新說明上一段內容。 |
 | [`writing-for-agents`](skills/productivity/writing-for-agents/SKILL.md) | 可自動選用 | 撰寫與編修供 agents 使用的 skills、規則及指引文件。 |
 
