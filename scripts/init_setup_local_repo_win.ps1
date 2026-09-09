@@ -60,7 +60,7 @@ function Assert-DirectorySlot {
     param ([string]$Path)
     $item = Get-PathEntry $Path
     if ($null -eq $item) { return }
-    if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+    if ($item.LinkType -in @("Junction", "SymbolicLink")) {
         throw "Expected a project-local directory but found a link: $Path"
     }
     if (-not $item.PSIsContainer) {
@@ -72,7 +72,7 @@ function Assert-FileSlot {
     param ([string]$Path)
     $item = Get-PathEntry $Path
     if ($null -eq $item) { return }
-    if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+    if ($item.LinkType -in @("SymbolicLink", "HardLink")) {
         throw "Expected a project-local file but found a link: $Path"
     }
     if ($item.PSIsContainer) {
