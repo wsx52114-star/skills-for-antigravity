@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/cloudflare/security-audit-skill",
-  "commit": "d24bc269171a9171fac58493e0ffba511d571a4a",
-  "syncedAt": "2026-09-14T05:17:22.022Z",
+  "commit": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+  "syncedAt": "2026-09-15T05:09:03.666Z",
   "files": [
     "LICENSE",
     "skills/security-audit/AI-AND-LLM.md",
