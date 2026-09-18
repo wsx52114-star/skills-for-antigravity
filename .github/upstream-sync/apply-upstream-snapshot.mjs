@@ -61,7 +61,7 @@ function main() {
       (segment) => excludedSkillNames.has(segment) || excludedSkillPathSegments.has(segment),
     );
   };
-  const snapshotFiles = listRegularFiles(options.snapshotRoot);
+  const snapshotFiles = listRegularFiles(options.snapshotRoot, options.snapshotRoot, [], (item) => !isAllowed(item));
   const blockedCollisions = snapshotFiles.filter((item) => matchesAny(item, ownership.blockedUpstreamPaths));
   if (blockedCollisions.length) {
     throw new Error(`Upstream snapshot collides with fork-owned paths: ${blockedCollisions.join(", ")}`);

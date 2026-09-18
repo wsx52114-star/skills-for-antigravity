@@ -16,7 +16,8 @@
   ],
   "excludedSkillNames": [
     "claude-handoff",
-    "git-guardrails-claude-code"
+    "git-guardrails-claude-code",
+    "pr"
   ],
   "excludedSkillPathSegments": [
     "deprecated"

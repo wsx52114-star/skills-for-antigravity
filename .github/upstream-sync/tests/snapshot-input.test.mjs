@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { listRegularFiles } from "../lib/snapshot.mjs";
 
 const github = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const adapters = [
@@ -12,6 +13,15 @@ const adapters = [
   ["security-audit-sync", "skills/security-audit"],
   ["i-have-adhd-sync", "skills/i-have-adhd"],
 ];
+
+test("upstream ignores root symlinks outside its allowlist", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "antigravity-root-link-"));
+  try {
+    symlinkSync("CLAUDE.md", path.join(root, "AGENTS.md"));
+    assert.deepEqual(listRegularFiles(root, root, [], (item) => item === "AGENTS.md"), []);
+    assert.throws(() => listRegularFiles(root), /forbidden symlink/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
 
 for (const [adapter, skill] of adapters) {
   for (const invalid of ["short SHA", "linked directory"]) {

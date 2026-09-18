@@ -7,7 +7,7 @@ export function requireCommitSha(sha) {
   }
 }
 
-export function listRegularFiles(root, directory = root, result = []) {
+export function listRegularFiles(root, directory = root, result = [], ignoreSymlink = () => false) {
   if (!existsSync(directory)) return result;
   if (lstatSync(directory).isSymbolicLink()) {
     throw new Error(`Upstream snapshot contains a forbidden symlink: ${directory}`);
@@ -16,9 +16,10 @@ export function listRegularFiles(root, directory = root, result = []) {
     if (entry.name === ".git") continue;
     const fullPath = path.join(directory, entry.name);
     if (entry.isSymbolicLink()) {
+      if (ignoreSymlink(path.relative(root, fullPath).split(path.sep).join("/"))) continue;
       throw new Error(`Upstream snapshot contains a forbidden symlink: ${fullPath}`);
     }
-    if (entry.isDirectory()) listRegularFiles(root, fullPath, result);
+    if (entry.isDirectory()) listRegularFiles(root, fullPath, result, ignoreSymlink);
     else if (entry.isFile()) result.push(path.relative(root, fullPath).split(path.sep).join("/"));
     else throw new Error(`Upstream snapshot contains an unsupported file type: ${fullPath}`);
   }
