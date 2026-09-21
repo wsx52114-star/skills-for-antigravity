@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "b5aed6f8799621e8da85c27065c4d519c77f1f88",
+    "commit": "0ae1a661b8b35e6ae6585ce5c457ba8d4335e17b",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
@@ -14676,7 +14676,7 @@
         "消息"
       ],
       "detection": null,
-      "fork_type": "B",
+      "fork_type": "F",
       "source_file": "訊息.yaml",
       "taiwan": [
         "訊息"
