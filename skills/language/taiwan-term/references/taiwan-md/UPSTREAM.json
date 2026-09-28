@@ -1,12 +1,12 @@
 {
   "repository": "https://github.com/frank890417/taiwan-md",
-  "commit": "0ae1a661b8b35e6ae6585ce5c457ba8d4335e17b",
+  "commit": "0a749046b2a9af1c5c25a501103c90514ddac1b5",
   "source_paths": [
     "README.md",
     "data/terminology/*.yaml"
   ],
   "snapshot": "terminology.snapshot.json",
-  "snapshot_sha256": "a907f89cedb79c6948c5d1239897d346c2400b0adeea347fd4f7b19f32d6365a",
+  "snapshot_sha256": "beb4c40b64db75f2d62d3d20f352d4b3d2ff8db55edf10b1f8c0c1df082cd311",
   "terms": 2279,
   "severity_a": 26,
   "severity_b": 5
