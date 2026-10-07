@@ -31,9 +31,21 @@ try {
     $Agents = Join-Path $Project ".agents"
     $Skills = Join-Path $Agents "skills"
     Assert-True (Test-Path -LiteralPath (Join-Path $Skills "tdd")) "Stable skill was not linked"
-    Assert-True (-not (Test-Path -LiteralPath (Join-Path $Skills "implement-spec"))) "In-progress skill was linked in Stable channel"
+    $RuntimeSkills = @(Get-ChildItem -LiteralPath (Join-Path $RepoRoot "skills") -Filter "SKILL.md" -File -Recurse)
+    $InProgressRoot = Join-Path $RepoRoot "skills\in-progress"
+    $StableNames = @($RuntimeSkills | Where-Object { $_.Directory.FullName -notlike "$InProgressRoot\*" } | ForEach-Object { $_.Directory.Name } | Sort-Object)
+    $InstalledNames = @(Get-ChildItem -LiteralPath $Skills | ForEach-Object { $_.Name } | Sort-Object)
+    Assert-True (@(Compare-Object -ReferenceObject $StableNames -DifferenceObject $InstalledNames).Count -eq 0) "Stable channel skill inventory did not match source categories"
     Assert-True ((Get-Content -LiteralPath (Join-Path $Agents ".install-state") -Raw) -match "(?m)^channel=stable$") "Install state did not record Stable channel"
     Assert-True ((Invoke-Setup @("-Action", "Check", "-Mode", "Link", "-Channel", "Stable")) -eq 0) "Current installation was reported as drifted"
+    Assert-True ((Invoke-Setup @("-Action", "Check", "-Mode", "Link", "-Channel", "All")) -eq 2) "Channel change did not report drift"
+    Assert-True ((Invoke-Setup @("-Action", "Sync", "-Mode", "Link", "-Channel", "All")) -eq 0) "All channel sync failed"
+    $AllNames = @($RuntimeSkills | ForEach-Object { $_.Directory.Name } | Sort-Object)
+    $InstalledNames = @(Get-ChildItem -LiteralPath $Skills | ForEach-Object { $_.Name } | Sort-Object)
+    Assert-True (@(Compare-Object -ReferenceObject $AllNames -DifferenceObject $InstalledNames).Count -eq 0) "All channel skill inventory did not match source categories"
+    Assert-True ((Invoke-Setup @("-Action", "Sync", "-Mode", "Link", "-Channel", "Stable")) -eq 0) "Returning to Stable channel failed"
+    $InstalledNames = @(Get-ChildItem -LiteralPath $Skills | ForEach-Object { $_.Name } | Sort-Object)
+    Assert-True (@(Compare-Object -ReferenceObject $StableNames -DifferenceObject $InstalledNames).Count -eq 0) "Returning to Stable channel left in-progress skills installed"
 
     [System.IO.Directory]::Delete((Join-Path $Skills "tdd"))
     Assert-True ((Invoke-Setup @("-Action", "Check", "-Mode", "Link", "-Channel", "Stable")) -eq 2) "Missing skill did not report drift"

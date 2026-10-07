@@ -120,10 +120,11 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`domain-modeling`](skills/engineering/domain-modeling/SKILL.md) | 可自動選用 | 建立專案術語、領域關係與必要的架構決策。 |
 | [`grill-with-docs`](skills/engineering/grill-with-docs/SKILL.md) | 需明確指定 | 透過追問釐清設計，同步 glossary 與 ADR。 |
 | [`implement`](skills/engineering/implement/SKILL.md) | 需明確指定 | 依據 spec 或 issues 實作工作內容。 |
+| [`implement-spec`](skills/engineering/implement-spec/SKILL.md) | 需明確指定 | 依 task graph 以多個 worktree 實作完整 spec。 |
 | [`improve-codebase-architecture`](skills/engineering/improve-codebase-architecture/SKILL.md) | 需明確指定 | 掃描 codebase 的 deepening 機會，產生報告並逐項釐清。 |
 | [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 建立驗證用原型，回答狀態、邏輯或 UI 設計問題。 |
 | [`research`](skills/engineering/research/SKILL.md) | 可自動選用 | 依高可信度的第一手資料研究問題，並將報告寫入儲存庫。 |
-| [`resolving-merge-conflicts`](skills/engineering/resolving-merge-conflicts/SKILL.md) | 可自動選用 | 解決進行中的 Git merge 或 rebase conflict。 |
+| [`retro`](skills/engineering/retro/SKILL.md) | 需明確指定 | 回顧 coding session 並提出 agent 環境改善候選。 |
 | [`setup-matt-pocock-skills`](skills/engineering/setup-matt-pocock-skills/SKILL.md) | 需明確指定 | 首次使用前設定 issue tracker、triage labels 與 domain docs。 |
 | [`tdd`](skills/engineering/tdd/SKILL.md) | 可自動選用 | 以 red-green-refactor 和整合測試開發功能或修復 bug。 |
 | [`to-spec`](skills/engineering/to-spec/SKILL.md) | 需明確指定 | 將已確認的對話整理成 spec 並發布到專案 issue tracker。 |
@@ -171,9 +172,8 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
-| [`implement-spec`](skills/in-progress/implement-spec/SKILL.md) | 需明確指定 | 依 task graph 以多個 worktree 實作完整 spec。 |
+| [`chief-of-staff`](skills/in-progress/chief-of-staff/SKILL.md) | 需明確指定 | 協調子 agents 與排程，在單一 session 中推進長期目標。 |
 | [`loop-me`](skills/in-progress/loop-me/SKILL.md) | 需明確指定 | 針對想建立的 workflows 進行規格訪談。 |
-| [`retro`](skills/in-progress/retro/SKILL.md) | 需明確指定 | 回顧 coding session 並提出 agent 環境改善候選。 |
 | [`setup-ts-deep-modules`](skills/in-progress/setup-ts-deep-modules/SKILL.md) | 需明確指定 | 為 TypeScript repository 設定 dependency-cruiser 與 deep module 邊界。 |
 | [`writing-beats`](skills/in-progress/writing-beats/SKILL.md) | 需明確指定 | 將原始素材組合成有先後脈絡的文章 beats。 |
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |

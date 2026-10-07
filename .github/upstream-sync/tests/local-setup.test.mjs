@@ -6,6 +6,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
   realpathSync,
   rmSync,
   symlinkSync,
@@ -98,17 +99,33 @@ test("WSL uninstall removes only managed runtime entries and preserves project k
 test("WSL setup supports an explicit stable channel without in-progress skills", () => {
   const project = projectFixture();
   try {
+    const skillRoot = path.join(repoRoot, "skills");
+    const inventory = readdirSync(skillRoot, { recursive: true })
+      .filter((file) => path.basename(file) === "SKILL.md")
+      .map((file) => ({
+        name: path.basename(path.dirname(file)),
+        source: path.dirname(path.join(skillRoot, file)),
+        inProgress: file.split(path.sep)[0] === "in-progress",
+      }));
+    const stableInventory = inventory.filter((skill) => !skill.inProgress);
     const stable = runSetup(project, "--sync", "--channel", "stable");
     assert.equal(stable.status, 0, stable.stderr);
     const skills = path.join(project, ".agents", "skills");
-    assert.equal(existsSync(path.join(skills, "tdd")), true);
-    assert.equal(existsSync(path.join(skills, "implement-spec")), false);
-    assert.equal(existsSync(path.join(skills, "retro")), false);
+    assert.deepEqual(readdirSync(skills).sort(), stableInventory.map((skill) => skill.name).sort());
+    for (const skill of stableInventory) {
+      assert.equal(realpathSync(path.join(skills, skill.name)), realpathSync(skill.source));
+    }
     assert.match(readFileSync(path.join(project, ".agents", ".install-state"), "utf8"), /^channel=stable$/m);
     assert.equal(runSetup(project, "--check", "--channel", "stable").status, 0);
     assert.equal(runSetup(project, "--check", "--channel", "all").status, 2);
     assert.equal(runSetup(project, "--sync", "--channel", "all").status, 0);
-    assert.equal(existsSync(path.join(skills, "implement-spec")), true);
+    assert.deepEqual(readdirSync(skills).sort(), inventory.map((skill) => skill.name).sort());
+    for (const skill of inventory) {
+      assert.equal(realpathSync(path.join(skills, skill.name)), realpathSync(skill.source));
+    }
+    assert.equal(runSetup(project, "--sync", "--channel", "stable").status, 0);
+    assert.deepEqual(readdirSync(skills).sort(), stableInventory.map((skill) => skill.name).sort());
+    assert.equal(runSetup(project, "--check", "--channel", "stable").status, 0);
   } finally {
     rmSync(project, { recursive: true, force: true });
   }
