@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/emilkowalski/skills",
+  "commit": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
+  "syncedAt": "2026-10-08T01:46:41.023Z",
+  "files": [
+    "LICENSE",
+    "skills/animate-expo/RECIPES.md",
+    "skills/animate-expo/SKILL.md",
+    "skills/animate/RECIPES.md",
+    "skills/animate/SKILL.md",
+    "skills/animation-vocabulary/SKILL.md",
+    "skills/apple-design/SKILL.md",
+    "skills/ask-sonner/API.md",
+    "skills/ask-sonner/SKILL.md",
+    "skills/break-ui/CATALOG.md",
+    "skills/break-ui/SKILL.md",
+    "skills/emil-design-eng/SKILL.md",
+    "skills/find-animation-opportunities/SKILL.md",
+    "skills/improve-animations/AUDIT.md",
+    "skills/improve-animations/PLAN-TEMPLATE.md",
+    "skills/improve-animations/SKILL.md",
+    "skills/mobile-native/SKILL.md",
+    "skills/pick-ui-library/SKILL.md",
+    "skills/prototype/PICKER.md",
+    "skills/prototype/SKILL.md",
+    "skills/review-animations/SKILL.md",
+    "skills/review-animations/STANDARDS.md",
+    "skills/write-swift/SKILL.md"
+  ]
+}

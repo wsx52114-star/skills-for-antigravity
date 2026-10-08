@@ -22,7 +22,9 @@ function fixture(lock) {
     upstreamAllowlist: ["skills/", "docs/", "LICENSE"],
     blockedUpstreamPaths: [
       ".github/taiwan-terminology-sync/",
+      ".github/emil-skills-sync/",
       "skills/language/",
+      "skills/design/",
       "skills/security/",
       "skills/productivity/i-have-adhd/",
     ],
@@ -30,7 +32,9 @@ function fixture(lock) {
     excludedSkillPathSegments: ["deprecated"],
     forkOwned: [
       ".github/taiwan-terminology-sync/",
+      ".github/emil-skills-sync/",
       "skills/language/",
+      "skills/design/",
       "skills/security/",
       "skills/productivity/i-have-adhd/",
     ],
@@ -60,6 +64,13 @@ function fixture(lock) {
     })}\n`,
   );
   const terminologyCommit = "d".repeat(40);
+  write(root, ".github/emil-skills-sync/upstream-lock.json", `${JSON.stringify({
+    repository: "https://github.com/emilkowalski/skills",
+    commit: "e".repeat(40),
+    files: ["LICENSE", "skills/animate/SKILL.md"],
+  })}\n`);
+  write(root, "skills/design/animate/SKILL.md", "---\nname: animate\ndescription: Animate UI.\n---\n");
+  write(root, "skills/design/animate/LICENSE", "MIT\n");
   const terminologySnapshot = `${JSON.stringify({
     schema_version: 1,
     source: {
@@ -104,13 +115,20 @@ function fixture(lock) {
     terminologySnapshot,
   );
   for (const required of [
+    ".github/skill-sync/sources.json",
+    ".github/skill-sync/sync.mjs",
+    ".github/workflows/sync-skills.yml",
+    ".github/workflows/sync-source.yml",
     ".github/upstream-sync/apply-upstream-snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/security-audit-sync/apply-upstream-snapshot.mjs",
     ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
+    ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
+    ".github/emil-skills-sync/lib.mjs",
     ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
     "rules/skills.md",
     "skills/security/README.md",
+    "skills/design/README.md",
     "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
     "skills/language/taiwan-term/agents/openai.yaml",
@@ -118,10 +136,6 @@ function fixture(lock) {
     "skills/language/taiwan-term/scripts/build_snapshot.py",
     "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
     "MAINTENANCE.md",
-    ".github/workflows/sync-security-audit.yml",
-    ".github/workflows/sync-i-have-adhd.yml",
-    ".github/workflows/sync-taiwan-terminology.yml",
-    ".github/workflows/sync-upstream.yml",
     ".github/workflows/validate-antigravity.yml",
     ".github/upstream-sync/tests/local-setup-win.test.ps1",
     "scripts/init_setup_local_repo_wsl.sh",
@@ -141,6 +155,7 @@ function fixture(lock) {
       "[security-audit](skills/security/security-audit/SKILL.md)",
       "[i-have-adhd](skills/productivity/i-have-adhd/SKILL.md)",
       "[taiwan-term](skills/language/taiwan-term/SKILL.md)",
+      "[animate](skills/design/animate/SKILL.md)",
       "[tdd](skills/engineering/tdd/SKILL.md)",
       "",
     ].join("\n"),
@@ -196,6 +211,38 @@ test("validator rejects invalid lock metadata and ordering", () => {
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("validator rejects an Emil lock whose inventory does not match installed design skills", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  write(root, ".github/emil-skills-sync/upstream-lock.json", `${JSON.stringify({
+    repository: "https://github.com/emilkowalski/skills",
+    commit: "e".repeat(40),
+    files: ["LICENSE"],
+  })}\n`);
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Emil lock inventory does not match/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test("validator requires the Emil license beside every installed design skill", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+  });
+  rmSync(path.join(root, "skills/design/animate/LICENSE"));
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Emil runtime skill license is missing: animate/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
 test("validator rejects a Cloudflare lock whose inventory does not match the installed skill", () => {

@@ -1,83 +1,65 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { selectSources, sourceById } from "../../skill-sync/sync.mjs";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
-const syncWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "sync-upstream.yml"), "utf8");
-const securityAuditWorkflow = readFileSync(
-  path.join(repoRoot, ".github", "workflows", "sync-security-audit.yml"),
-  "utf8",
-);
-const iHaveAdhdWorkflow = readFileSync(
-  path.join(repoRoot, ".github", "workflows", "sync-i-have-adhd.yml"),
-  "utf8",
-);
-const taiwanTerminologyWorkflow = readFileSync(
-  path.join(repoRoot, ".github", "workflows", "sync-taiwan-terminology.yml"),
-  "utf8",
-);
-const validationWorkflow = readFileSync(path.join(repoRoot, ".github", "workflows", "validate-antigravity.yml"), "utf8");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const workflowRoot = path.join(repoRoot, ".github/workflows");
+const shared = readFileSync(path.join(workflowRoot, "sync-source.yml"), "utf8");
+const unified = readFileSync(path.join(workflowRoot, "sync-skills.yml"), "utf8");
+const validation = readFileSync(path.join(workflowRoot, "validate-antigravity.yml"), "utf8");
 
-test("mattpocock synchronization opens a review-only pull request", () => {
-  assert.match(syncWorkflow, /gh api --method POST/);
-  assert.match(syncWorkflow, /repos\/\$\{\{ github\.repository \}\}\/pulls/);
-  assert.doesNotMatch(syncWorkflow, /gh pr create/);
-  assert.match(syncWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
-  assert.doesNotMatch(syncWorkflow, /GH_TOKEN:\s*\$\{\{\s*github\.token\s*\}\}/);
-  assert.match(syncWorkflow, /Required repository secret SYNC_PR_TOKEN is not configured/);
-  assert.doesNotMatch(syncWorkflow, /pull-requests:\s*write/);
-  assert.doesNotMatch(syncWorkflow, /gh pr merge/);
-  assert.doesNotMatch(syncWorkflow, /--auto(?:\s|$)/m);
+test("one scheduled entry point selects independent source jobs", () => {
+  const scheduled = readdirSync(workflowRoot).filter((file) => /^sync-.*\.yml$/.test(file) && /\n  schedule:/.test(readFileSync(path.join(workflowRoot, file), "utf8")));
+  assert.deepEqual(scheduled, ["sync-skills.yml"]);
+  assert.match(unified, /cron: "0 0 \* \* 1"/);
+  assert.match(unified, /fail-fast: false/);
+  assert.match(unified, /fromJSON\(needs\.select-sources\.outputs\.sources\)/);
+  assert.match(unified, /uses: \.\/\.github\/workflows\/sync-source\.yml/);
+  assert.match(unified, /SYNC_PR_TOKEN: \$\{\{ secrets\.SYNC_PR_TOKEN \}\}/);
+  for (const source of selectSources()) assert.match(unified, new RegExp(source));
+});
+
+test("the unified workflow is the only manual synchronization entry point", () => {
+  const syncWorkflows = readdirSync(workflowRoot).filter((file) => /^sync-.*\.yml$/.test(file));
+  assert.deepEqual(syncWorkflows.sort(), ["sync-skills.yml", "sync-source.yml"]);
+  assert.match(unified, /workflow_dispatch:/);
+  assert.match(unified, /type: choice/);
+  assert.match(unified, /default: all/);
+  assert.match(unified, /SOURCE: \$\{\{ inputs\.source \|\| 'all' \}\}/);
+  assert.match(unified, /matrix --source "\$SOURCE"/);
+  assert.doesNotMatch(shared, /workflow_dispatch:|schedule:/);
+  for (const source of selectSources()) {
+    const config = sourceById(source);
+    const lock = JSON.parse(readFileSync(path.join(repoRoot, config.lock), "utf8"));
+    assert.equal(lock.repository, config.repository);
+    assert.equal(typeof readFileSync(path.join(repoRoot, config.adapter), "utf8"), "string");
+  }
+});
+
+test("shared synchronization keeps skip, concurrency, token, and review contracts", () => {
+  assert.match(shared, /workflow_call:/);
+  assert.match(shared, /sync-skills-\$\{\{ inputs\.source \}\}/);
+  assert.match(shared, /cancel-in-progress: false/);
+  assert.match(shared, /node --test/);
+  assert.match(shared, /upstream-sync\/validate\.mjs/);
+  assert.match(shared, /steps\.upstream\.outputs\.changed == 'true'/);
+  assert.match(shared, /steps\.commit\.outputs\.blocked == 'false'/);
+  assert.match(shared, /gh api --method GET/);
+  assert.match(shared, /gh api --method POST/);
+  assert.match(shared, /Pull request already exists/);
+  assert.match(shared, /repos\/\$GITHUB_REPOSITORY\/pulls/);
+  assert.match(shared, /GH_TOKEN:\s*\$\{\{ secrets\.SYNC_PR_TOKEN \}\}/);
+  assert.match(shared, /Required repository secret SYNC_PR_TOKEN is not configured/);
+  assert.doesNotMatch(shared, /pull-requests:\s*write|gh pr create|gh pr merge|--auto(?:\s|$)/m);
+  assert.equal((shared.match(/^          GH_TOKEN:/gm) ?? []).length, 1);
+  assert.ok(shared.indexOf("GH_TOKEN:") > shared.indexOf("name: Create or update pull request"));
 });
 
 test("validation workflow uses read-only repository permissions", () => {
-  assert.match(validationWorkflow, /permissions:\s*\n\s+contents: read/);
-  assert.match(validationWorkflow, /runs-on: windows-latest/);
-  assert.match(validationWorkflow, /local-setup-win\.test\.ps1/);
-});
-
-test("Cloudflare security-audit synchronization validates and opens a review-only pull request", () => {
-  assert.match(securityAuditWorkflow, /https:\/\/github\.com\/cloudflare\/security-audit-skill\.git/);
-  assert.match(securityAuditWorkflow, /git ls-tree -r FETCH_HEAD/);
-  assert.doesNotMatch(securityAuditWorkflow, /git ls-remote --heads origin/);
-  assert.match(securityAuditWorkflow, /security-audit-sync\/apply-upstream-snapshot\.mjs/);
-  assert.match(securityAuditWorkflow, /gh api --method POST/);
-  assert.match(securityAuditWorkflow, /gh api --method GET/);
-  assert.match(securityAuditWorkflow, /Pull request already exists/);
-  assert.match(securityAuditWorkflow, /repos\/\$\{\{ github\.repository \}\}\/pulls/);
-  assert.doesNotMatch(securityAuditWorkflow, /gh pr create/);
-  assert.match(securityAuditWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
-  assert.doesNotMatch(securityAuditWorkflow, /GH_TOKEN:\s*\$\{\{\s*github\.token\s*\}\}/);
-  assert.match(securityAuditWorkflow, /Required repository secret SYNC_PR_TOKEN is not configured/);
-  assert.doesNotMatch(securityAuditWorkflow, /pull-requests:\s*write/);
-  assert.doesNotMatch(securityAuditWorkflow, /gh pr merge/);
-  assert.doesNotMatch(securityAuditWorkflow, /--auto(?:\s|$)/m);
-});
-
-test("i-have-adhd synchronization validates and opens a review-only pull request", () => {
-  assert.match(iHaveAdhdWorkflow, /https:\/\/github\.com\/ayghri\/i-have-adhd\.git/);
-  assert.match(iHaveAdhdWorkflow, /git ls-tree -r FETCH_HEAD/);
-  assert.doesNotMatch(iHaveAdhdWorkflow, /git ls-remote --heads origin/);
-  assert.match(iHaveAdhdWorkflow, /i-have-adhd-sync\/apply-upstream-snapshot\.mjs/);
-  assert.match(iHaveAdhdWorkflow, /gh api --method POST/);
-  assert.match(iHaveAdhdWorkflow, /gh api --method GET/);
-  assert.match(iHaveAdhdWorkflow, /Pull request already exists/);
-  assert.match(iHaveAdhdWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
-  assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr create/);
-  assert.doesNotMatch(iHaveAdhdWorkflow, /gh pr merge|--auto(?:\s|$)/m);
-});
-
-test("Taiwan.md terminology synchronization pins data through a review-only pull request", () => {
-  assert.match(taiwanTerminologyWorkflow, /https:\/\/github\.com\/frank890417\/taiwan-md\.git/);
-  assert.match(taiwanTerminologyWorkflow, /git ls-tree -r FETCH_HEAD -- README\.md data\/terminology/);
-  assert.doesNotMatch(taiwanTerminologyWorkflow, /git ls-remote --heads origin/);
-  assert.match(taiwanTerminologyWorkflow, /taiwan-terminology-sync\/apply_upstream_snapshot\.py/);
-  assert.match(taiwanTerminologyWorkflow, /gh api --method POST/);
-  assert.match(taiwanTerminologyWorkflow, /gh api --method GET/);
-  assert.match(taiwanTerminologyWorkflow, /Pull request already exists/);
-  assert.match(taiwanTerminologyWorkflow, /GH_TOKEN:\s*\$\{\{\s*secrets\.SYNC_PR_TOKEN\s*\}\}/);
-  assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr create/);
-  assert.doesNotMatch(taiwanTerminologyWorkflow, /gh pr merge|--auto(?:\s|$)/m);
+  assert.match(validation, /permissions:\s*\n\s+contents: read/);
+  assert.match(validation, /runs-on: windows-latest/);
+  assert.match(validation, /local-setup-win\.test\.ps1/);
 });

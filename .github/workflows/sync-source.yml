@@ -1,0 +1,88 @@
+name: Skill Update Worker
+
+on:
+  workflow_call:
+    inputs:
+      source:
+        required: true
+        type: string
+    secrets:
+      SYNC_PR_TOKEN:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: sync-skills-${{ inputs.source }}
+      cancel-in-progress: false
+    env:
+      SOURCE: ${{ inputs.source }}
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+      - name: Fetch and validate latest source
+        id: upstream
+        run: node .github/skill-sync/sync.mjs fetch --source "$SOURCE" --snapshot-root "$RUNNER_TEMP/skills-snapshot"
+      - name: Apply source snapshot
+        if: steps.upstream.outputs.changed == 'true'
+        env:
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+        run: node .github/skill-sync/sync.mjs apply --source "$SOURCE" --snapshot-root "$RUNNER_TEMP/skills-snapshot" --sha "$UPSTREAM_SHA"
+      - name: Test and validate composed repository
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          node --test .github/upstream-sync/tests/*.test.mjs
+          node .github/upstream-sync/validate.mjs
+      - name: Commit snapshot and classify change
+        if: steps.upstream.outputs.changed == 'true'
+        id: commit
+        run: node .github/skill-sync/sync.mjs commit --source "$SOURCE"
+      - name: Push synchronization branch
+        if: steps.upstream.outputs.changed == 'true' && steps.commit.outputs.blocked == 'false'
+        env:
+          SYNC_BRANCH: ${{ steps.commit.outputs.branch }}
+        run: git push --force-with-lease origin "HEAD:$SYNC_BRANCH"
+      - name: Create or update pull request
+        if: steps.upstream.outputs.changed == 'true' && steps.commit.outputs.blocked == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PR_TOKEN }}
+          SYNC_BRANCH: ${{ steps.commit.outputs.branch }}
+          SYNC_TITLE: ${{ steps.commit.outputs.title }}
+          STRUCTURAL: ${{ steps.commit.outputs.structural }}
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+          UPSTREAM_REPOSITORY: ${{ steps.upstream.outputs.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${GH_TOKEN:-}" ]]; then
+            echo "::error::Required repository secret SYNC_PR_TOKEN is not configured."
+            exit 1
+          fi
+          head="$GITHUB_REPOSITORY_OWNER:$SYNC_BRANCH"
+          url="$(gh api --method GET \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "repos/$GITHUB_REPOSITORY/pulls" \
+            -f state=open -f head="$head" --jq '.[0].html_url // empty')"
+          if [[ -z "$url" ]]; then
+            body="Automated snapshot from $UPSTREAM_REPOSITORY at commit $UPSTREAM_SHA. Structural change: $STRUCTURAL. Human review is required; this update will not be auto-merged."
+            url="$(gh api --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "repos/$GITHUB_REPOSITORY/pulls" \
+              -f title="$SYNC_TITLE" -f head="$SYNC_BRANCH" -f base=main \
+              -f body="$body" --jq .html_url)"
+            echo "Created pull request: $url"
+          else
+            echo "Pull request already exists: $url"
+          fi

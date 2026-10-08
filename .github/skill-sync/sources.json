@@ -1,0 +1,95 @@
+{
+  "upstream": {
+    "name": "Upstream Snapshot",
+    "repository": "https://github.com/mattpocock/skills",
+    "branch": "main",
+    "lock": ".github/upstream-sync/upstream-lock.json",
+    "adapter": ".github/upstream-sync/apply-upstream-snapshot.mjs",
+    "runtime": "node",
+    "paths": [],
+    "validationPaths": [
+      "LICENSE",
+      "skills",
+      "docs"
+    ],
+    "requiredPaths": [
+      "LICENSE",
+      "skills"
+    ],
+    "branchPrefix": "sync/upstream-",
+    "title": "chore: sync upstream snapshot",
+    "classify": true
+  },
+  "security-audit": {
+    "name": "Cloudflare Security Audit",
+    "repository": "https://github.com/cloudflare/security-audit-skill",
+    "branch": "main",
+    "lock": ".github/security-audit-sync/upstream-lock.json",
+    "adapter": ".github/security-audit-sync/apply-upstream-snapshot.mjs",
+    "runtime": "node",
+    "paths": [
+      "LICENSE",
+      "skills/security-audit"
+    ],
+    "requiredPaths": [
+      "LICENSE",
+      "skills/security-audit/SKILL.md"
+    ],
+    "branchPrefix": "sync/security-audit-",
+    "title": "chore: sync Cloudflare security audit"
+  },
+  "i-have-adhd": {
+    "name": "i-have-adhd",
+    "repository": "https://github.com/ayghri/i-have-adhd",
+    "branch": "main",
+    "lock": ".github/i-have-adhd-sync/upstream-lock.json",
+    "adapter": ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
+    "runtime": "node",
+    "paths": [
+      "LICENSE",
+      "skills/i-have-adhd"
+    ],
+    "requiredPaths": [
+      "LICENSE",
+      "skills/i-have-adhd/SKILL.md"
+    ],
+    "branchPrefix": "sync/i-have-adhd-",
+    "title": "chore: sync i-have-adhd"
+  },
+  "taiwan-terminology": {
+    "name": "Taiwan.md Terminology",
+    "repository": "https://github.com/frank890417/taiwan-md",
+    "branch": "main",
+    "lock": ".github/taiwan-terminology-sync/upstream-lock.json",
+    "adapter": ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
+    "runtime": "python",
+    "paths": [
+      "README.md",
+      "data/terminology"
+    ],
+    "requiredPaths": [
+      "README.md",
+      "data/terminology/README.md"
+    ],
+    "branchPrefix": "sync/taiwan-terminology-",
+    "title": "chore: sync Taiwan.md terminology"
+  },
+  "emil-skills": {
+    "name": "Emil Design Skills",
+    "repository": "https://github.com/emilkowalski/skills",
+    "branch": "main",
+    "lock": ".github/emil-skills-sync/upstream-lock.json",
+    "adapter": ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
+    "runtime": "node",
+    "paths": [
+      "LICENSE",
+      "skills"
+    ],
+    "requiredPaths": [
+      "LICENSE",
+      "skills"
+    ],
+    "branchPrefix": "sync/emil-skills-",
+    "title": "chore: sync emil-skills"
+  }
+}

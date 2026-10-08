@@ -6,10 +6,13 @@
     "LICENSE"
   ],
   "blockedUpstreamPaths": [
+    ".github/skill-sync/",
     ".github/upstream-sync/",
     ".github/taiwan-terminology-sync/",
+    ".github/emil-skills-sync/",
     "rules/",
     "skills/language/",
+    "skills/design/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/"
@@ -23,10 +26,13 @@
     "deprecated"
   ],
   "forkOwned": [
+    ".github/skill-sync/",
     ".github/upstream-sync/",
     ".github/taiwan-terminology-sync/",
+    ".github/emil-skills-sync/",
     "rules/",
     "skills/language/",
+    "skills/design/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/",

@@ -64,6 +64,7 @@ Do not force the full chain onto small fixes, routine maintenance, documentation
 - When a skill refers to Claude hooks, implement the closest Antigravity rule or approval control. State clearly when no equivalent enforcement exists.
 - Use available sub-agents only when the skill requires independent work or parallel review. Preserve the required separation between reviewers.
 - Keep platform translation outside upstream `SKILL.md` files so future snapshots remain directly comparable with upstream.
+- In skills sourced from `emilkowalski/skills`, resolve references to the skill `prototype` as `ui-prototype`. The engineering `prototype` retains its existing name and workflow.
 
 ## Technology Adaptation
 

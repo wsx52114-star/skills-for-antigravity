@@ -4,6 +4,10 @@ This directory is owned by the Antigravity fork and is not part of the Agent
 runtime interface. It keeps the repository synchronized with the selected
 parts of `mattpocock/skills`.
 
+Automatic checks and manual runs use [Sync All Skills](../workflows/sync-skills.yml).
+Select `upstream` to check only this source. Shared orchestration lives in
+[`.github/skill-sync/`](../skill-sync/README.md).
+
 The repository is stored at `~/.agents` as a shared Agent home. Initialized
 workspaces consume the root `skills/` and `rules/` directories through
 project-local links or copies; this is not Antigravity's native global scope.

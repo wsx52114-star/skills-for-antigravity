@@ -1,6 +1,6 @@
 # Skills for Antigravity
 
-一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
+一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 [`emilkowalski/skills`](https://github.com/emilkowalski/skills) 的設計與介面技能、Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
 建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home；各開發專案透過本機連結啟用，並保留自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的全域設定。
 
@@ -71,19 +71,28 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 
 | 路徑 | 用途 |
 | --- | --- |
-| [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、生產力、語言、工具與安全 skills。 |
+| [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、設計、生產力、語言、工具與安全 skills。 |
 | [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯規則。 |
 | [`docs/`](docs/) | 各 skills 的使用與開發參考。 |
 | [`.github/upstream-sync/`](.github/upstream-sync/) | `mattpocock/skills` 上游快照、所有權 policy、驗證與測試。 |
+| [`.github/skill-sync/`](.github/skill-sync/) | 所有來源的統一掃描入口、來源清單與共用同步流程。 |
 | [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的同步維護工具。 |
 | [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的同步維護工具，保留明確指定才執行的限制。 |
+| [`.github/emil-skills-sync/`](.github/emil-skills-sync/) | Emil 設計與介面 skills 的固定快照與獨立同步維護工具。 |
 | [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) | Taiwan.md 固定詞庫快照的同步維護工具。 |
 | [`PROJECT_SETUP.md`](PROJECT_SETUP.md) | 開發專案連結 Agent home 的完整設定指南。 |
 | [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
 
-上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。[`security-audit`](skills/security/security-audit/SKILL.md) 與 [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) 分別由獨立 Action 同步自 [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) 與 [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)，所有更新均須經 Pull Request 人工審查。
+上游的 Claude-only、deprecated 與發布工具不會進入可用 skills。[`security-audit`](skills/security/security-audit/SKILL.md) 與 [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) 分別透過專屬 adapter 同步自 [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) 與 [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)，所有更新均須經 Pull Request 人工審查。
 
 [`taiwan-term`](skills/language/taiwan-term/SKILL.md) 的流程與掃描器由本專案維護；詞庫快照固定於 Taiwan.md commit，更新只透過需人工審查的 Pull Request 採用。
+
+Design 類別透過專屬 adapter 同步自 `emilkowalski/skills`，保留上游觸發設定、參考文件與 MIT 授權。其 `prototype` 在本專案命名為 `ui-prototype`，可與 Engineering 的 `prototype` 一起使用。
+
+所有來源共用 [`Sync All Skills`](.github/workflows/sync-skills.yml) 排程與同步流程：
+每週一台灣時間 08:00 檢查全部五個來源；沒有新 commit
+就跳過後續處理。可在 Actions 手動選擇單一來源或全部來源，更新各自建立需
+人工審查的 PR。
 
 ## 更新 Agent home 與專案
 
@@ -102,6 +111,8 @@ Link Mode 會立即取得既有 skill 的新內容；skill 清單變更或使用
 - 「先做 domain modeling，把術語釐清。」
 - 「用 grill-with-docs 挑戰這個設計。」
 - 「對這個 repository 做 security audit。」
+- 「用 animate 幫這個選單加上開合動畫。」
+- 「用 ui-prototype 做三種卡片介面，讓我挑選。」
 
 ## Skills 關鍵字與用途
 
@@ -132,6 +143,25 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`triage`](skills/engineering/triage/SKILL.md) | 需明確指定 | 依 triage role state machine 分類、驗證 issues 與外部 PR。 |
 | [`wayfinder`](skills/engineering/wayfinder/SKILL.md) | 需明確指定 | 將跨多個 agent session 的大型工作規劃成 decision issues。 |
 | [`wizard`](skills/engineering/wizard/SKILL.md) | 可自動選用 | 產生互動式 Bash wizard，引導人工完成設定或單次 migration。 |
+
+### Design
+
+| 關鍵字 | 觸發方式 | 用途 |
+| --- | --- | --- |
+| [`animate`](skills/design/animate/SKILL.md) | 可自動選用 | 建立網頁動畫，選擇動態目的、工具、屬性、曲線與時間。 |
+| [`animate-expo`](skills/design/animate-expo/SKILL.md) | 可自動選用 | 建立 React Native／Expo 動畫、手勢、轉場與觸覺回饋。 |
+| [`animation-vocabulary`](skills/design/animation-vocabulary/SKILL.md) | 可自動選用 | 將動畫效果描述轉成精確名稱，方便溝通設計需求。 |
+| [`apple-design`](skills/design/apple-design/SKILL.md) | 可自動選用 | 將 Apple 的介面與動態設計原則應用到網頁。 |
+| [`ask-sonner`](skills/design/ask-sonner/SKILL.md) | 可自動選用 | 設定、客製化與排查 Sonner toast 通知。 |
+| [`break-ui`](skills/design/break-ui/SKILL.md) | 可自動選用 | 以極端資料檢查介面，提供一般與極端資料切換及修正建議。 |
+| [`emil-design-eng`](skills/design/emil-design-eng/SKILL.md) | 可自動選用 | 改善 UI 細節、元件設計、動畫決策與使用質感。 |
+| [`find-animation-opportunities`](skills/design/find-animation-opportunities/SKILL.md) | 可自動選用 | 找出值得加入動畫的介面位置，提出具體建議。 |
+| [`improve-animations`](skills/design/improve-animations/SKILL.md) | 可自動選用 | 稽核整體動態設計，產生依優先順序排列的實作計畫。 |
+| [`mobile-native`](skills/design/mobile-native/SKILL.md) | 可自動選用 | 改善手機網頁的觸控、視窗高度、安全區域與互動體驗。 |
+| [`pick-ui-library`](skills/design/pick-ui-library/SKILL.md) | 需明確指定 | 依前端需求從上游作者整理的清單挑選 UI 函式庫。 |
+| [`review-animations`](skills/design/review-animations/SKILL.md) | 需明確指定 | 依設計工程準則審查既有動畫與動態程式碼。 |
+| [`ui-prototype`](skills/design/ui-prototype/SKILL.md) | 需明確指定 | 建立多種 UI 原型與切換器，等待使用者選定後再整合。 |
+| [`write-swift`](skills/design/write-swift/SKILL.md) | 可自動選用 | 撰寫與審查現代 Swift、並行模型、效能及測試。 |
 
 ### Security
 

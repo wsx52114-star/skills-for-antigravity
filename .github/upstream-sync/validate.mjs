@@ -11,6 +11,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { loadPolicy, matchesAny } from "./lib/policy.mjs";
+import { destinationPrefix as emilDestinationPrefix, runtimeSkillName, upstreamSkillName, upstreamRepository as emilRepository } from "../emil-skills-sync/lib.mjs";
 
 const repoRoot = path.resolve(
   process.argv[2] ?? path.join(path.dirname(fileURLToPath(import.meta.url)), "..", ".."),
@@ -24,6 +25,7 @@ const iHaveAdhdControlPlaneRoot = path.join(repoRoot, ".github", "i-have-adhd-sy
 const iHaveAdhdRepository = "https://github.com/ayghri/i-have-adhd";
 const iHaveAdhdDestinationPrefix = "skills/productivity/i-have-adhd/";
 const taiwanTerminologyControlPlaneRoot = path.join(repoRoot, ".github", "taiwan-terminology-sync");
+const emilControlPlaneRoot = path.join(repoRoot, ".github", "emil-skills-sync");
 const taiwanTerminologyRepository = "https://github.com/frank890417/taiwan-md";
 const taiwanTerminologyRoot = path.join(repoRoot, "skills", "language", "taiwan-term");
 const policy = loadPolicy(controlPlaneRoot);
@@ -149,6 +151,10 @@ for (const relative of repositoryFiles.filter(isExcludedSkillPath)) {
 }
 
 const required = [
+  ".github/skill-sync/sources.json",
+  ".github/skill-sync/sync.mjs",
+  ".github/workflows/sync-skills.yml",
+  ".github/workflows/sync-source.yml",
   ".github/upstream-sync/apply-upstream-snapshot.mjs",
   ".github/upstream-sync/lib/policy.mjs",
   ".github/upstream-sync/ownership.json",
@@ -156,10 +162,14 @@ const required = [
   ".github/security-audit-sync/upstream-lock.json",
   ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
   ".github/i-have-adhd-sync/upstream-lock.json",
+  ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
+  ".github/emil-skills-sync/lib.mjs",
+  ".github/emil-skills-sync/upstream-lock.json",
   ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
   ".github/taiwan-terminology-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
+  "skills/design/README.md",
   "skills/security/security-audit/LICENSE",
   "skills/security/security-audit/SKILL.md",
   "skills/security/security-audit/report-schema.json",
@@ -174,10 +184,6 @@ const required = [
   "skills/language/taiwan-term/references/taiwan-md/UPSTREAM.json",
   "skills/language/taiwan-term/references/taiwan-md/terminology.snapshot.json",
   "MAINTENANCE.md",
-  ".github/workflows/sync-security-audit.yml",
-  ".github/workflows/sync-i-have-adhd.yml",
-  ".github/workflows/sync-taiwan-terminology.yml",
-  ".github/workflows/sync-upstream.yml",
   ".github/workflows/validate-antigravity.yml",
   ".github/upstream-sync/tests/local-setup-win.test.ps1",
   "scripts/init_setup_local_repo_wsl.sh",
@@ -303,6 +309,41 @@ try {
   }
 } catch (error) {
   errors.push(`Invalid i-have-adhd lock: ${error.message}`);
+}
+
+try {
+  const lock = JSON.parse(readFileSync(path.join(emilControlPlaneRoot, "upstream-lock.json"), "utf8"));
+  if (lock.repository !== emilRepository) errors.push("Emil lock repository does not match upstream");
+  if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "")) errors.push("Emil lock commit must be a full lowercase commit SHA");
+  if (!Array.isArray(lock.files) || lock.files.some((file) => typeof file !== "string")) {
+    errors.push("Emil lock files must be an array of paths");
+  } else {
+    const sortedUnique = [...new Set(lock.files)].sort();
+    if (JSON.stringify(lock.files) !== JSON.stringify(sortedUnique)) errors.push("Emil lock files must be sorted and unique");
+    const actual = [...new Set(repositoryFiles
+      .filter((file) => file.startsWith(emilDestinationPrefix) && file !== `${emilDestinationPrefix}README.md`)
+      .map((file) => {
+        const [name, ...segments] = file.slice(emilDestinationPrefix.length).split("/");
+        const relative = segments.join("/");
+        return relative === "LICENSE" ? "LICENSE" : `skills/${upstreamSkillName(name)}/${relative}`;
+      }))].sort();
+    if (JSON.stringify(sortedUnique) !== JSON.stringify(actual)) errors.push("Emil lock inventory does not match the installed files");
+    const sourceSkills = lock.files.filter((file) => /^skills\/[^/]+\/SKILL\.md$/.test(file));
+    if (!sourceSkills.length || !lock.files.includes("LICENSE")) errors.push("Emil lock must include skills and the upstream license");
+    for (const file of lock.files) {
+      if (file !== "LICENSE" && !/^skills\/[a-z0-9]+(?:-[a-z0-9]+)*\/.+/.test(file)) {
+        errors.push(`Emil lock contains an out-of-scope file: ${file}`);
+      }
+    }
+    for (const file of sourceSkills) {
+      const name = runtimeSkillName(file.split("/")[1]);
+      const localRoot = `${emilDestinationPrefix}${name}/`;
+      if (runtimeNames.get(name) !== `${localRoot}SKILL.md`) errors.push(`Emil runtime skill is missing or moved: ${name}`);
+      if (!existsSync(path.join(repoRoot, localRoot, "LICENSE"))) errors.push(`Emil runtime skill license is missing: ${name}`);
+    }
+  }
+} catch (error) {
+  errors.push(`Invalid Emil lock: ${error.message}`);
 }
 
 try {

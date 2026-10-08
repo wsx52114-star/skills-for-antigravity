@@ -12,6 +12,7 @@ const adapters = [
   ["upstream-sync", "skills/engineering/demo"],
   ["security-audit-sync", "skills/security-audit"],
   ["i-have-adhd-sync", "skills/i-have-adhd"],
+  ["emil-skills-sync", "skills/demo"],
 ];
 
 test("upstream ignores root symlinks outside its allowlist", () => {
