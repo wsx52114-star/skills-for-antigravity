@@ -1,13 +1,14 @@
 {
   "repository": "https://github.com/emilkowalski/skills",
-  "commit": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
-  "syncedAt": "2026-10-08T01:46:41.023Z",
+  "commit": "2d228630ba1446365f614a108cb8252f1feda202",
+  "syncedAt": "2026-10-12T01:55:39.067Z",
   "files": [
     "LICENSE",
     "skills/animate-expo/RECIPES.md",
     "skills/animate-expo/SKILL.md",
     "skills/animate/RECIPES.md",
     "skills/animate/SKILL.md",
+    "skills/animation-performance/SKILL.md",
     "skills/animation-vocabulary/SKILL.md",
     "skills/apple-design/SKILL.md",
     "skills/ask-sonner/API.md",

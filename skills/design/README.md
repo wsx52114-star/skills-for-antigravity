@@ -7,6 +7,7 @@ Each skill includes its upstream MIT license and supporting references.
 
 - [animate](./animate/SKILL.md): Build web animations with deliberate motion, timing, easing, and interruption behavior.
 - [animate-expo](./animate-expo/SKILL.md): Build React Native and Expo motion, gestures, transitions, and haptics.
+- [animation-performance](./animation-performance/SKILL.md): Keep web animations inside the frame budget — animate composite-only properties, keep motion off the main thread when the page is busy, and find the cause when an animation drops frames.
 - [animation-vocabulary](./animation-vocabulary/SKILL.md): Find precise names for animation effects.
 - [apple-design](./apple-design/SKILL.md): Apply Apple interface and motion principles to web UI.
 - [ask-sonner](./ask-sonner/SKILL.md): Set up, style, and troubleshoot Sonner toasts.
