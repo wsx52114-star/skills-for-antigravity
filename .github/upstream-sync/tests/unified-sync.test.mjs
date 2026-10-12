@@ -47,6 +47,7 @@ function fixture(id = "emil-skills") {
   for (const relative of new Set([
     source.adapter,
     ".github/emil-skills-sync/lib.mjs",
+    ".github/emil-skills-sync/indexes.mjs",
     ".github/upstream-sync/lib/snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/upstream-sync/ownership.json",

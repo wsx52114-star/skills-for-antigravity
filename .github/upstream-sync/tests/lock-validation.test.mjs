@@ -125,6 +125,7 @@ function fixture(lock) {
     ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
     ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
     ".github/emil-skills-sync/lib.mjs",
+    ".github/emil-skills-sync/indexes.mjs",
     ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
     "rules/skills.md",
     "skills/security/README.md",

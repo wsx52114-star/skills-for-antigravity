@@ -84,8 +84,10 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 原 Engineering `prototype` 保留。`rules/skills.md` 將這套來源文件中的技能
 `prototype` 參照解析為 `ui-prototype`。其餘技能內容與觸發設定維持上游原文。
 
-`skills/design/README.md` 由本專案維護，adapter 不覆寫。
-新增、移除技能時須同步調整根目錄 README，再通過 inventory validation。
+`skills/design/README.md` 由本專案維護。Emil adapter 會依來源技能更新
+根目錄 README 的 Design 表格與分類索引，同步新增、移除、別名與觸發方式；
+既有用途說明與其他專案文件保持原樣。新技能的用途預設採用上游 description
+的第一句，再由 PR 審查時確認。索引與技能必須一起通過 inventory validation。
 
 ## 所有權
 

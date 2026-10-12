@@ -10,14 +10,20 @@ compatibility rule resolves references to that source skill. All other skill
 text and invocation settings are preserved.
 
 `upstream-lock.json` records the exact upstream commit and source inventory.
-The category README belongs to this project and is preserved by the adapter.
+The category README belongs to this project. Before writing any files, the
+adapter prepares matching root Design table rows and category index entries
+from the incoming skill definitions. It adds and removes links, keeps the
+`ui-prototype` alias and invocation groups current, and preserves existing
+summaries and surrounding project documentation. New entries use the first
+sentence of the upstream description. Missing index files are allowed for
+standalone adapter use; existing indexes must have the expected structure.
 The primary `mattpocock/skills` sync cannot replace the design category.
 
 The shared [Sync All Skills](../workflows/sync-skills.yml) workflow checks weekly
 and proposes updates using the existing `SYNC_PR_TOKEN`. Manual runs can select
-`emil-skills` to check only this source. Every update requires human review. New or removed
-skills require a corresponding root README inventory update before validation
-can pass.
+`emil-skills` to check only this source. Every update, including additions and
+removals together with their index changes, requires human review. Repository
+validation still checks that the installed skill inventory matches the README.
 
 ```sh
 node .github/emil-skills-sync/apply-upstream-snapshot.mjs \

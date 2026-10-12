@@ -164,6 +164,7 @@ const required = [
   ".github/i-have-adhd-sync/upstream-lock.json",
   ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
   ".github/emil-skills-sync/lib.mjs",
+  ".github/emil-skills-sync/indexes.mjs",
   ".github/emil-skills-sync/upstream-lock.json",
   ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
   ".github/taiwan-terminology-sync/upstream-lock.json",

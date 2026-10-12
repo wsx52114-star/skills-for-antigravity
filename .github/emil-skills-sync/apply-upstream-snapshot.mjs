@@ -6,6 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 import { adaptSkill, destinationPrefix, runtimeSkillName, upstreamRepository } from "./lib.mjs";
+import { planSkillIndexes } from "./indexes.mjs";
 
 function parseArgs(argv) {
   const options = {};
@@ -40,6 +41,7 @@ function main() {
   // Validate every skill and prepare its bytes before removing or writing anything.
   const planned = new Map();
   const localNames = new Set();
+  const definitions = [];
   for (const name of skillNames) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name) || !files.includes(`${name}/SKILL.md`)) {
       throw new Error(`Invalid Emil skill directory: ${name}`);
@@ -48,6 +50,7 @@ function main() {
     if (localNames.has(localName)) throw new Error(`Duplicate Emil runtime skill: ${localName}`);
     localNames.add(localName);
     const skillContent = adaptSkill(readFileSync(path.join(sourceRoot, name, "SKILL.md"), "utf8"), name);
+    definitions.push({ name: localName, content: skillContent });
     const localRoot = `${destinationPrefix}${localName}/`;
     planned.set(`${localRoot}LICENSE`, { bytes: license, mode: statSync(licensePath).mode });
     for (const file of files.filter((file) => file.startsWith(`${name}/`))) {
@@ -60,6 +63,8 @@ function main() {
       });
     }
   }
+
+  for (const [file, entry] of planSkillIndexes(options.repoRoot, definitions)) planned.set(file, entry);
 
   const tracked = execFileSync("git", ["-C", options.repoRoot, "ls-files", "-z", "--", destinationPrefix], { encoding: "utf8" })
     .split("\0").filter(Boolean);
