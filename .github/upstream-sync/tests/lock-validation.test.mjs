@@ -117,6 +117,7 @@ function fixture(lock) {
   for (const required of [
     ".github/skill-sync/sources.json",
     ".github/skill-sync/sync.mjs",
+    ".github/skill-sync/indexes.mjs",
     ".github/workflows/sync-skills.yml",
     ".github/workflows/sync-source.yml",
     ".github/upstream-sync/apply-upstream-snapshot.mjs",
@@ -125,7 +126,6 @@ function fixture(lock) {
     ".github/i-have-adhd-sync/apply-upstream-snapshot.mjs",
     ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
     ".github/emil-skills-sync/lib.mjs",
-    ".github/emil-skills-sync/indexes.mjs",
     ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
     "rules/skills.md",
     "skills/security/README.md",
@@ -192,6 +192,8 @@ test("validator rejects a README skill inventory that drifts from runtime", () =
     assert.equal(result.status, 1);
     assert.match(result.stderr, /README skill link does not exist/);
     assert.match(result.stderr, /README runtime skill inventory does not match/);
+    assert.match(result.stderr, /missing: animate, i-have-adhd, security-audit, taiwan-term, tdd/);
+    assert.match(result.stderr, /extra: missing/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

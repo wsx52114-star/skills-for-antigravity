@@ -47,7 +47,7 @@ function fixture(id = "emil-skills") {
   for (const relative of new Set([
     source.adapter,
     ".github/emil-skills-sync/lib.mjs",
-    ".github/emil-skills-sync/indexes.mjs",
+    ".github/skill-sync/indexes.mjs",
     ".github/upstream-sync/lib/snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/upstream-sync/ownership.json",
@@ -166,5 +166,64 @@ test("primary source commits a lock-only update without creating a content commi
     assert.equal(git(item.repo, "rev-list", "--count", `${before}..HEAD`), "1");
     assert.equal(git(item.repo, "diff", "--name-only", before, "HEAD"), item.source.lock);
     assert.equal(git(item.repo, "status", "--porcelain"), "");
+  } finally { rmSync(item.root, { recursive: true, force: true }); }
+});
+
+const engineeringIndex = "# Project setup\n\nKeep local setup instructions.\n\n### Engineering\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 保留中文用途。 |\n\n## Maintenance\n\nKeep local maintenance instructions.\n";
+
+for (const change of ["addition", "rename", "invocation"]) {
+  test(`primary real adapter keeps the root inventory and classification consistent after ${change}`, () => {
+    const item = fixture("upstream");
+    try {
+      write(item.repo, "README.md", engineeringIndex);
+      write(item.repo, "LICENSE", "MIT\n");
+      commit(item.repo);
+      const before = git(item.repo, "rev-parse", "HEAD");
+      write(item.snapshot, "LICENSE", "MIT\n");
+      const name = change === "rename" ? "renamed" : "prototype";
+      write(item.snapshot, `skills/engineering/${name}/SKILL.md`, `---\nname: ${name}\ndescription: Updated skill.\n${change === "invocation" ? "disable-model-invocation: true\n" : ""}---\n`);
+      if (change === "addition") write(item.snapshot, "skills/engineering/added/SKILL.md", "---\nname: added\ndescription: New skill. More detail.\n---\n");
+      applySnapshot(item.repo, item.source, item.snapshot, item.sha);
+      const readme = readFileSync(path.join(item.repo, "README.md"), "utf8");
+      assert.match(readme, /Keep local setup instructions/);
+      assert.match(readme, /Keep local maintenance instructions/);
+      if (change === "addition") assert.match(readme, /skills\/engineering\/added\/SKILL\.md\) \| 可自動選用 \| New skill\. \|/);
+      if (change === "rename") {
+        assert.doesNotMatch(readme, /skills\/engineering\/prototype\//);
+        assert.match(readme, /skills\/engineering\/renamed\/SKILL\.md/);
+      } else assert.match(readme, /保留中文用途。/);
+      if (change === "invocation") assert.match(readme, /prototype\/SKILL\.md\) \| 需明確指定/);
+      const result = commitSnapshot(item.repo, item.source);
+      assert.equal(result.blocked, "false");
+      assert.equal(result.structural, String(change !== "invocation"));
+      assert.equal(git(item.repo, "rev-list", "--count", `${before}..HEAD`), "1");
+      assert.equal(git(item.repo, "status", "--porcelain"), "");
+    } finally { rmSync(item.root, { recursive: true, force: true }); }
+  });
+}
+
+test("primary commit rejects unrelated README edits instead of exempting the whole file", () => {
+  const item = fixture("upstream");
+  try {
+    write(item.repo, "README.md", engineeringIndex);
+    commit(item.repo);
+    write(item.repo, item.source.lock, `${JSON.stringify({ commit: item.sha })}\n`);
+    write(item.repo, "README.md", engineeringIndex.replace("Keep local setup instructions.", "Unexpected replacement."));
+    assert.throws(() => commitSnapshot(item.repo, item.source), /README.*generated skill index/);
+  } finally { rmSync(item.root, { recursive: true, force: true }); }
+});
+
+test("shared apply rejects a malformed root table before the real adapter replaces skills", () => {
+  const item = fixture("upstream");
+  try {
+    const malformed = engineeringIndex.replace("| --- | --- | --- |", "invalid divider");
+    write(item.repo, "README.md", malformed);
+    commit(item.repo);
+    write(item.snapshot, "LICENSE", "MIT\n");
+    write(item.snapshot, "skills/engineering/added/SKILL.md", "---\nname: added\ndescription: New skill.\n---\n");
+    assert.throws(() => applySnapshot(item.repo, item.source, item.snapshot, item.sha), /missing the engineering table header/);
+    assert.equal(git(item.repo, "status", "--porcelain"), "");
+    assert.equal(existsSync(path.join(item.repo, "skills/engineering/prototype/SKILL.md")), true);
+    assert.equal(existsSync(path.join(item.repo, "skills/engineering/added/SKILL.md")), false);
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });

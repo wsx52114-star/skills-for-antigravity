@@ -84,7 +84,7 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 原 Engineering `prototype` 保留。`rules/skills.md` 將這套來源文件中的技能
 `prototype` 參照解析為 `ui-prototype`。其餘技能內容與觸發設定維持上游原文。
 
-`skills/design/README.md` 由本專案維護。Emil adapter 會依來源技能更新
+`skills/design/README.md` 由本專案維護。Emil adapter 使用共用索引工具依來源技能更新
 根目錄 README 的 Design 表格與分類索引，同步新增、移除、別名與觸發方式；
 既有用途說明與其他專案文件保持原樣。新技能的用途預設採用上游 description
 的第一句，再由 PR 審查時確認。索引與技能必須一起通過 inventory validation。
@@ -137,8 +137,15 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 1. 每週排程檢查全部來源；手動執行可選單一來源或全部來源。
 2. 以 matrix 呼叫共用的 [`sync-source.yml`](.github/workflows/sync-source.yml)。
 3. 各 job 比對來源最新 commit 與自己的 lock；相同時跳過後續處理。
-4. 有更新時驗證快照、呼叫該來源 adapter、執行完整測試與 repository validation。
+4. 有更新時驗證快照、呼叫該來源 adapter，依安裝後的技能清單更新根目錄 README 索引，再執行完整測試與 repository validation。
 5. 推送各來源的同步分支，建立或沿用 review-only PR，等待人工審查與合併。
+
+所有來源共用 [索引工具](.github/skill-sync/indexes.mjs)，同步處理技能新增、
+移除、改名、分類移動與觸發方式變更。既有中文用途與索引以外的專案說明
+保留，新技能預設採用 description 的第一句；新增分類會建立對應表格。
+主上游的 commit 步驟會再次核對 README 變更是否符合產生結果，拒絕夾帶
+其他 README 修改，再將索引與 lock 納入同一筆 commit。
+Inventory 驗證仍會阻擋不一致，並列出缺少與多出的技能名稱。
 
 不同來源可並行，`fail-fast: false` 讓單一來源失敗不取消其他來源；同一來源
 使用共用 concurrency group，排程與手動執行會排隊。每個 job 的 summary

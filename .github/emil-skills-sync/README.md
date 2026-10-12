@@ -11,7 +11,8 @@ text and invocation settings are preserved.
 
 `upstream-lock.json` records the exact upstream commit and source inventory.
 The category README belongs to this project. Before writing any files, the
-adapter prepares matching root Design table rows and category index entries
+adapter uses the shared `../skill-sync/indexes.mjs` helper to prepare matching
+root Design table rows and category index entries
 from the incoming skill definitions. It adds and removes links, keeps the
 `ui-prototype` alias and invocation groups current, and preserves existing
 summaries and surrounding project documentation. New entries use the first

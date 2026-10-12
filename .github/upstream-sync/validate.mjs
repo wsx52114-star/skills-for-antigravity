@@ -127,7 +127,9 @@ if (existsSync(rootReadme)) {
   const documented = [...new Set(links.map((link) => path.posix.basename(path.posix.dirname(link))))].sort();
   const runtime = [...runtimeNames.keys()].sort();
   if (JSON.stringify(documented) !== JSON.stringify(runtime)) {
-    errors.push("README runtime skill inventory does not match the installed runtime skills");
+    const missing = runtime.filter((name) => !documented.includes(name));
+    const extra = documented.filter((name) => !runtimeNames.has(name));
+    errors.push(`README runtime skill inventory does not match the installed runtime skills (missing: ${missing.join(", ") || "none"}; extra: ${extra.join(", ") || "none"})`);
   }
 }
 
@@ -153,6 +155,7 @@ for (const relative of repositoryFiles.filter(isExcludedSkillPath)) {
 const required = [
   ".github/skill-sync/sources.json",
   ".github/skill-sync/sync.mjs",
+  ".github/skill-sync/indexes.mjs",
   ".github/workflows/sync-skills.yml",
   ".github/workflows/sync-source.yml",
   ".github/upstream-sync/apply-upstream-snapshot.mjs",
@@ -164,7 +167,6 @@ const required = [
   ".github/i-have-adhd-sync/upstream-lock.json",
   ".github/emil-skills-sync/apply-upstream-snapshot.mjs",
   ".github/emil-skills-sync/lib.mjs",
-  ".github/emil-skills-sync/indexes.mjs",
   ".github/emil-skills-sync/upstream-lock.json",
   ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
   ".github/taiwan-terminology-sync/upstream-lock.json",
