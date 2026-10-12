@@ -150,6 +150,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | --- | --- | --- |
 | [`animate`](skills/design/animate/SKILL.md) | 可自動選用 | 建立網頁動畫，選擇動態目的、工具、屬性、曲線與時間。 |
 | [`animate-expo`](skills/design/animate-expo/SKILL.md) | 可自動選用 | 建立 React Native／Expo 動畫、手勢、轉場與觸覺回饋。 |
+| [`animation-performance`](skills/design/animation-performance/SKILL.md) | 可自動選用 | Keep web animations inside the frame budget — animate composite-only properties, keep motion off the main thread when the page is busy, and find the cause when an animation drops frames. |
 | [`animation-vocabulary`](skills/design/animation-vocabulary/SKILL.md) | 可自動選用 | 將動畫效果描述轉成精確名稱，方便溝通設計需求。 |
 | [`apple-design`](skills/design/apple-design/SKILL.md) | 可自動選用 | 將 Apple 的介面與動態設計原則應用到網頁。 |
 | [`ask-sonner`](skills/design/ask-sonner/SKILL.md) | 可自動選用 | 設定、客製化與排查 Sonner toast 通知。 |
