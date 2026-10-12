@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/mattpocock/skills",
-  "commit": "f3fc5632f401156837ee3872f14fe33ccf1024ea",
-  "syncedAt": "2026-10-08T01:34:52.606Z",
+  "commit": "49dd158d1076134a641b33efb035946536778336",
+  "syncedAt": "2026-10-12T01:55:38.613Z",
   "files": [
     "LICENSE",
     "docs/agents/triage-labels.md",
