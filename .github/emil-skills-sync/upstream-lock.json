@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/emilkowalski/skills",
-  "commit": "2d228630ba1446365f614a108cb8252f1feda202",
-  "syncedAt": "2026-10-12T01:55:39.067Z",
+  "commit": "a81dbca07f2217b7103e510c0f13f8d5b017afc9",
+  "syncedAt": "2026-11-02T05:25:14.029Z",
   "files": [
     "LICENSE",
     "skills/animate-expo/RECIPES.md",
@@ -24,6 +24,7 @@
     "skills/pick-ui-library/SKILL.md",
     "skills/prototype/PICKER.md",
     "skills/prototype/SKILL.md",
+    "skills/remove-animations/SKILL.md",
     "skills/review-animations/SKILL.md",
     "skills/review-animations/STANDARDS.md",
     "skills/write-swift/SKILL.md"

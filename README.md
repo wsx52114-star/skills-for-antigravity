@@ -160,6 +160,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`improve-animations`](skills/design/improve-animations/SKILL.md) | 可自動選用 | 稽核整體動態設計，產生依優先順序排列的實作計畫。 |
 | [`mobile-native`](skills/design/mobile-native/SKILL.md) | 可自動選用 | 改善手機網頁的觸控、視窗高度、安全區域與互動體驗。 |
 | [`pick-ui-library`](skills/design/pick-ui-library/SKILL.md) | 需明確指定 | 依前端需求從上游作者整理的清單挑選 UI 函式庫。 |
+| [`remove-animations`](skills/design/remove-animations/SKILL.md) | 可自動選用 | Find the animations an interface doesn't need and remove them — motion on keyboard actions, high-frequency surfaces, functional data, and decoration with no purpose — then clean up what they leave behind. |
 | [`review-animations`](skills/design/review-animations/SKILL.md) | 需明確指定 | 依設計工程準則審查既有動畫與動態程式碼。 |
 | [`ui-prototype`](skills/design/ui-prototype/SKILL.md) | 需明確指定 | 建立多種 UI 原型與切換器，等待使用者選定後再整合。 |
 | [`write-swift`](skills/design/write-swift/SKILL.md) | 可自動選用 | 撰寫與審查現代 Swift、並行模型、效能及測試。 |

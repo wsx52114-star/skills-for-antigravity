@@ -16,6 +16,7 @@ Each skill includes its upstream MIT license and supporting references.
 - [find-animation-opportunities](./find-animation-opportunities/SKILL.md): Propose useful motion opportunities without editing source code.
 - [improve-animations](./improve-animations/SKILL.md): Audit motion and prepare prioritized implementation plans.
 - [mobile-native](./mobile-native/SKILL.md): Make mobile web interactions feel native.
+- [remove-animations](./remove-animations/SKILL.md): Find the animations an interface doesn't need and remove them — motion on keyboard actions, high-frequency surfaces, functional data, and decoration with no purpose — then clean up what they leave behind.
 - [write-swift](./write-swift/SKILL.md): Write and review modern Swift, concurrency, and tests.
 
 ## User-invoked
