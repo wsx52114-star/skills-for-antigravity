@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "d5471854c156c83e78c0b40096c6271d9fa7af19",
+    "commit": "7443ed180d26dc2f1c097697c2a038da6f6cc56e",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
     "severity_a": 26,
     "severity_b": 5,
-    "terms": 2279
+    "terms": 2286
   },
   "terms": [
     {
@@ -521,6 +521,17 @@
     },
     {
       "china": [
+        "上新"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "上新.yaml",
+      "taiwan": [
+        "最新"
+      ]
+    },
+    {
+      "china": [
         "上網本"
       ],
       "detection": null,
@@ -995,6 +1006,18 @@
       "source_file": "烏茲別克.yaml",
       "taiwan": [
         "烏茲別克"
+      ]
+    },
+    {
+      "china": [
+        "乘務員"
+      ],
+      "detection": null,
+      "fork_type": "A",
+      "source_file": "乘務員.yaml",
+      "taiwan": [
+        "空服員",
+        "車勤服務員"
       ]
     },
     {
@@ -3326,14 +3349,14 @@
     },
     {
       "china": [
-        "出圈"
+        "出圈",
+        "破圈"
       ],
       "detection": null,
       "fork_type": "E",
       "source_file": "出圈.yaml",
       "taiwan": [
         "爆紅",
-        "破圈",
         "打入主流"
       ]
     },
@@ -5044,13 +5067,17 @@
     },
     {
       "china": [
-        "向後兼容"
+        "向後兼容",
+        "向下兼容",
+        "回溯兼容"
       ],
       "detection": null,
       "fork_type": "semantic",
       "source_file": "向後兼容.yaml",
       "taiwan": [
-        "向下相容"
+        "向後相容",
+        "向下相容",
+        "回溯相容"
       ]
     },
     {
@@ -9641,6 +9668,17 @@
     },
     {
       "china": [
+        "忽悠"
+      ],
+      "detection": null,
+      "fork_type": "A",
+      "source_file": "忽悠.yaml",
+      "taiwan": [
+        "唬弄"
+      ]
+    },
+    {
+      "china": [
         "急診"
       ],
       "detection": null,
@@ -12695,6 +12733,17 @@
     },
     {
       "china": [
+        "智能體"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "智能體.yaml",
+      "taiwan": [
+        "AI 代理"
+      ]
+    },
+    {
+      "china": [
         "暈碳"
       ],
       "detection": null,
@@ -14202,6 +14251,17 @@
       "source_file": "客運站.yaml",
       "taiwan": [
         "客運站"
+      ]
+    },
+    {
+      "china": [
+        "沒事"
+      ],
+      "detection": null,
+      "fork_type": "semantic",
+      "source_file": "沒事.yaml",
+      "taiwan": [
+        "沒關係"
       ]
     },
     {
@@ -21387,6 +21447,19 @@
     },
     {
       "china": [
+        "貓條"
+      ],
+      "detection": null,
+      "fork_type": "C",
+      "source_file": "貓條.yaml",
+      "taiwan": [
+        "肉泥",
+        "貓肉泥",
+        "肉泥條"
+      ]
+    },
+    {
+      "china": [
         "貓膩"
       ],
       "detection": null,
@@ -21897,6 +21970,17 @@
       "source_file": "高空彈跳.yaml",
       "taiwan": [
         "高空彈跳"
+      ]
+    },
+    {
+      "china": [
+        "蹦迪"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "蹦迪.yaml",
+      "taiwan": [
+        "去夜店"
       ]
     },
     {
