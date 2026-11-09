@@ -12,10 +12,13 @@ Each skill includes its upstream MIT license and supporting references.
 - [apple-design](./apple-design/SKILL.md): Apply Apple interface and motion principles to web UI.
 - [ask-sonner](./ask-sonner/SKILL.md): Set up, style, and troubleshoot Sonner toasts.
 - [break-ui](./break-ui/SKILL.md): Stress-test interfaces with realistic worst-case data.
+- [choreograph](./choreograph/SKILL.md): Coordinate several elements that animate together — decide what moves, in what order, how much they overlap, and what stays still — so a group reads as one intentional motion instead of a pile of separate animations.
 - [emil-design-eng](./emil-design-eng/SKILL.md): Apply Emil Kowalski's UI polish and design engineering guidance.
 - [find-animation-opportunities](./find-animation-opportunities/SKILL.md): Propose useful motion opportunities without editing source code.
+- [gestures](./gestures/SKILL.md): Build drag, swipe, and sheet interactions that track the finger 1:1 and stay interruptible.
 - [improve-animations](./improve-animations/SKILL.md): Audit motion and prepare prioritized implementation plans.
 - [mobile-native](./mobile-native/SKILL.md): Make mobile web interactions feel native.
+- [remove-animations](./remove-animations/SKILL.md): Find the animations an interface doesn't need and remove them — motion on keyboard actions, high-frequency surfaces, functional data, and decoration with no purpose — then clean up what they leave behind.
 - [write-swift](./write-swift/SKILL.md): Write and review modern Swift, concurrency, and tests.
 
 ## User-invoked
