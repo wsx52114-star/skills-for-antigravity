@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/mattpocock/skills",
-  "commit": "49dd158d1076134a641b33efb035946536778336",
-  "syncedAt": "2026-10-12T01:55:38.613Z",
+  "commit": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+  "syncedAt": "2026-11-09T05:39:34.832Z",
   "files": [
     "LICENSE",
     "docs/agents/triage-labels.md",
@@ -99,6 +99,12 @@
     "skills/in-progress/setup-ts-deep-modules/SKILL.md",
     "skills/in-progress/setup-ts-deep-modules/agents/openai.yaml",
     "skills/in-progress/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+    "skills/in-progress/software-factory/EXAMPLE-TASKS.md",
+    "skills/in-progress/software-factory/GIT-HOSTS.md",
+    "skills/in-progress/software-factory/OBSERVABILITY-PLATFORMS.md",
+    "skills/in-progress/software-factory/RUNNERS.md",
+    "skills/in-progress/software-factory/SKILL.md",
+    "skills/in-progress/software-factory/TICKET-TRACKERS.md",
     "skills/in-progress/writing-beats/SKILL.md",
     "skills/in-progress/writing-beats/agents/openai.yaml",
     "skills/in-progress/writing-fragments/SKILL.md",
