@@ -206,6 +206,7 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`chief-of-staff`](skills/in-progress/chief-of-staff/SKILL.md) | 需明確指定 | 協調子 agents 與排程，在單一 session 中推進長期目標。 |
 | [`loop-me`](skills/in-progress/loop-me/SKILL.md) | 需明確指定 | 針對想建立的 workflows 進行規格訪談。 |
 | [`setup-ts-deep-modules`](skills/in-progress/setup-ts-deep-modules/SKILL.md) | 需明確指定 | 為 TypeScript repository 設定 dependency-cruiser 與 deep module 邊界。 |
+| [`software-factory`](skills/in-progress/software-factory/SKILL.md) | 需明確指定 | Shared language for designing a software factory: the tasks it runs and the services it plugs into. |
 | [`writing-beats`](skills/in-progress/writing-beats/SKILL.md) | 需明確指定 | 將原始素材組合成有先後脈絡的文章 beats。 |
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |
 | [`writing-shape`](skills/in-progress/writing-shape/SKILL.md) | 需明確指定 | 將原始素材逐段整理成文章。 |
