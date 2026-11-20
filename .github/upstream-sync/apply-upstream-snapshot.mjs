@@ -14,7 +14,7 @@ import process from "node:process";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { loadPolicy, matchesAny } from "./lib/policy.mjs";
-import { listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
+import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
 
 function parseArgs(argv) {
   const options = { repoRoot: null, snapshotRoot: null, sha: null };
@@ -43,6 +43,7 @@ function withoutExcludedSkillReferences(content, excludedSegments) {
   return content
     .split(/\r?\n/)
     .filter((line) => !excludedSegments.some((segment) => line.includes(`./${segment}/`)))
+    .map((line) => line.replace(" (Claude Code: `disable-model-invocation: true`; Codex: `policy.allow_implicit_invocation: false` in `agents/openai.yaml`)", " (`disable-model-invocation: true`)"))
     .join(newline);
 }
 
@@ -66,7 +67,8 @@ function main() {
   if (blockedCollisions.length) {
     throw new Error(`Upstream snapshot collides with fork-owned paths: ${blockedCollisions.join(", ")}`);
   }
-  const allowedFiles = snapshotFiles.filter((item) => isAllowed(item) && !isExcludedSkill(item));
+  const allowedFiles = snapshotFiles.filter((item) => isAllowed(item) && !isExcludedSkill(item) &&
+    (!item.startsWith("skills/") || isAntigravitySkillFile(item)));
   const hasLicense = allowedFiles.includes("LICENSE");
   const skillDefinitions = allowedFiles.filter((item) => item.startsWith("skills/") && item.endsWith("/SKILL.md"));
   if (!hasLicense || skillDefinitions.length === 0) {

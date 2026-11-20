@@ -13,7 +13,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
+import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 
 const upstreamRepository = "https://github.com/cloudflare/security-audit-skill";
 
@@ -57,7 +57,7 @@ function main() {
     throw new Error("Invalid Cloudflare snapshot: skills/security-audit/SKILL.md is required");
   }
 
-  const skillFiles = listRegularFiles(upstreamSkillRoot);
+  const skillFiles = listRegularFiles(upstreamSkillRoot).filter(isAntigravitySkillFile);
   const upstreamFiles = ["LICENSE", ...skillFiles.map((file) => `skills/security-audit/${file}`)].sort();
   const destinationFiles = new Map([
     ["LICENSE", upstreamLicense],

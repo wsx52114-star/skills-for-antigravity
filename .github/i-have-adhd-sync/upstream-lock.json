@@ -4,8 +4,6 @@
   "syncedAt": "2026-10-12T01:55:38.371Z",
   "files": [
     "LICENSE",
-    "skills/i-have-adhd/SKILL.md",
-    "skills/i-have-adhd/agents/gemini.toml",
-    "skills/i-have-adhd/agents/openai.yaml"
+    "skills/i-have-adhd/SKILL.md"
   ]
 }

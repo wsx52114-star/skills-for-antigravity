@@ -14,7 +14,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
+import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 
 const upstreamRepository = "https://github.com/ayghri/i-have-adhd";
 
@@ -56,16 +56,6 @@ function requireExplicitInvocation(content) {
   return `---\n${frontmatter}\n---${content.slice(match[0].length)}`;
 }
 
-function requireExplicitCodexInvocation(content) {
-  if (!/^\s*allow_implicit_invocation:/m.test(content)) {
-    throw new Error("Invalid i-have-adhd agents/openai.yaml: invocation policy is required");
-  }
-  return content.replace(
-    /^(\s*allow_implicit_invocation:)\s*.*$/m,
-    "$1 false",
-  );
-}
-
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const upstreamLicense = path.join(options.snapshotRoot, "LICENSE");
@@ -80,7 +70,7 @@ function main() {
     throw new Error("Invalid i-have-adhd snapshot: skills/i-have-adhd/SKILL.md is required");
   }
 
-  const skillFiles = listRegularFiles(upstreamSkillRoot);
+  const skillFiles = listRegularFiles(upstreamSkillRoot).filter(isAntigravitySkillFile);
   const upstreamFiles = ["LICENSE", ...skillFiles.map((file) => `skills/i-have-adhd/${file}`)].sort();
   const expectedLocal = new Set(
     ["LICENSE", ...skillFiles].map((file) => normalize(path.join("skills/productivity/i-have-adhd", file))),
@@ -105,8 +95,6 @@ function main() {
     mkdirSync(path.dirname(destination), { recursive: true });
     if (relativePath === "SKILL.md") {
       writeFileSync(destination, requireExplicitInvocation(readFileSync(source, "utf8")));
-    } else if (relativePath === "agents/openai.yaml") {
-      writeFileSync(destination, requireExplicitCodexInvocation(readFileSync(source, "utf8")));
     } else {
       copyFileSync(source, destination);
     }

@@ -42,7 +42,8 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     git(repo, "commit", "-m", "before");
 
     mkdirSync(path.join(snapshot, "docs"), { recursive: true });
-    mkdirSync(path.join(snapshot, "skills", "engineering", "tdd"), { recursive: true });
+    mkdirSync(path.join(snapshot, "skills", "engineering", "tdd", "agents"), { recursive: true });
+    writeFileSync(path.join(snapshot, "skills", "engineering", "tdd", "agents", "openai.yaml"), "interface: {}\n");
     mkdirSync(path.join(snapshot, "skills", "deprecated", "old-skill"), { recursive: true });
     mkdirSync(path.join(snapshot, "skills", "in-progress", "claude-handoff"), { recursive: true });
     writeFileSync(path.join(snapshot, "README.md"), "upstream readme\n");
@@ -61,6 +62,7 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     assert.equal(readFileSync(path.join(repo, "docs", "NEW.md"), "utf8"), "new file\n");
     assert.equal(readFileSync(path.join(repo, "docs", "README.md"), "utf8"), "Keep ./deprecated/example in developer docs.\n");
     assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "SKILL.md")), true);
+    assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "agents", "openai.yaml")), false);
     assert.equal(readFileSync(path.join(repo, "skills", "engineering", "tdd", "README.md"), "utf8"), "Keep ./deprecated/example in skill docs.\n");
     assert.equal(existsSync(path.join(repo, "skills", "in-progress", "claude-handoff", "SKILL.md")), false);
     assert.equal(readFileSync(path.join(repo, "skills", "in-progress", "README.md"), "utf8"), "- [wizard](./wizard/SKILL.md)\n");

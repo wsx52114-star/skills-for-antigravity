@@ -46,8 +46,9 @@ Claude-only 與 deprecated skills 在匯入階段排除；分類 README 中對�
 | `package-lock.json` | 排除 | 只鎖定上游 Changesets 工具。 |
 | `package.json` | 排除 | 只供上游 Changesets 與發版流程。 |
 
-適用的上游 `SKILL.md` 與 skill 內容保持原文；分類 README 只移除被排除
-skill 的索引列。`docs/**` 除 `docs/security/**` 外保持上游內容。
+各 skill 同步流程排除非 Antigravity 專用的 `agents/` 設定檔。適用的上游
+`SKILL.md` 與其餘 skill 內容保持原文。分類 README 會移除排除項目的索引列與
+其他工具的呼叫設定說明。`docs/**` 除 `docs/security/**` 外保持上游內容。
 
 ## Cloudflare `security-audit` 同步範圍
 
@@ -64,8 +65,8 @@ skills/security-audit/** → skills/security/security-audit/**
 
 `LICENSE` 與 `skills/i-have-adhd/**` 會同步到
 `skills/productivity/i-have-adhd/`。Adapter 固定加入
-`disable-model-invocation: true` 並將 Codex policy 設為
-`allow_implicit_invocation: false`；其餘內容維持 upstream snapshot。
+`disable-model-invocation: true`，並排除非 Antigravity 的 `agents/` 設定檔；
+其餘內容維持 upstream snapshot。
 
 ## Taiwan.md 詞庫同步範圍
 
@@ -96,6 +97,7 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 以下路徑不接受 `mattpocock/skills` 更新：
 
 - `rules/**`
+- `skills/hardware/**`
 - `skills/language/**`
 - `skills/design/**`
 - `skills/security/**`
@@ -215,8 +217,4 @@ Windows 主控台編碼影響中文案例。CI 在 Ubuntu 執行完整 POSIX 測
 詞庫專用的來源驗證。更新共用契約時，執行 `snapshot-input.test.mjs` 與既有
 各 adapter 的成功／失敗案例。
 
-Skill 行為實測與 CI 的靜態契約檢查分開判定，Codex 擴充與 Antigravity 原生 Agent
-的結果也不能互相替代。未執行或略過的案例不代表通過。
-
-2026-09-08：Codex 擴充 E01、E02 通過，E03 僅主專案變體通過；標準 E03、
-E04～E06 與原生 Agent 測試依維護者決定略過，已移除本次情境測試文件。
+Skill 行為實測與 CI 的靜態契約檢查分開判定；未執行或略過的案例不代表通過。

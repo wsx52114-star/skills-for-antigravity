@@ -37,6 +37,7 @@ test("i-have-adhd composition installs an explicitly invoked skill and records i
     mkdirSync(path.join(repo, ".github", "i-have-adhd-sync"), { recursive: true });
     mkdirSync(destination, { recursive: true });
     mkdirSync(path.join(upstreamSkill, "agents"), { recursive: true });
+    writeFileSync(path.join(upstreamSkill, "agents", "gemini.toml"), "# Gemini settings\n");
     writeFileSync(path.join(destination, "STALE.md"), "remove me\n");
     writeFileSync(path.join(snapshot, "LICENSE"), "MIT\n");
     writeFileSync(
@@ -66,10 +67,8 @@ test("i-have-adhd composition installs an explicitly invoked skill and records i
       readFileSync(path.join(destination, "SKILL.md"), "utf8"),
       /^---\nname: i-have-adhd\ndescription: Action-first output\.\ndisable-model-invocation: true\n---/,
     );
-    assert.match(
-      readFileSync(path.join(destination, "agents", "openai.yaml"), "utf8"),
-      /allow_implicit_invocation: false/,
-    );
+    assert.equal(existsSync(path.join(destination, "agents", "openai.yaml")), false);
+    assert.equal(existsSync(path.join(destination, "agents", "gemini.toml")), false);
 
     const lock = JSON.parse(
       readFileSync(path.join(repo, ".github", "i-have-adhd-sync", "upstream-lock.json"), "utf8"),
@@ -79,7 +78,6 @@ test("i-have-adhd composition installs an explicitly invoked skill and records i
     assert.deepEqual(lock.files, [
       "LICENSE",
       "skills/i-have-adhd/SKILL.md",
-      "skills/i-have-adhd/agents/openai.yaml",
     ]);
   } finally {
     rmSync(root, { recursive: true, force: true });

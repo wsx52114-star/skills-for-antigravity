@@ -1,6 +1,10 @@
 import { existsSync, lstatSync, readdirSync } from "node:fs";
 import path from "node:path";
 
+export function isAntigravitySkillFile(relativePath) {
+  return !/(^|\/)agents\//.test(relativePath);
+}
+
 export function requireCommitSha(sha) {
   if (!/^[0-9a-f]{40}$/.test(sha ?? "")) {
     throw new Error("--sha must be a full lowercase commit SHA");

@@ -1,0 +1,43 @@
+---
+name: kicad-pcb
+description: Plan a new KiCad board from a schematic, including board outline, thickness, layer count, via spans and placement. Configure .kicad_pro/.kicad_dru rules, review routing and copper zones, and plan four-layer power layouts or layer-reduction prototypes.
+---
+
+# KiCad PCB Layout, Routing, and Layer Reduction
+
+For a **new board from a schematic**, follow [new-board planning](references/new-board-planning.md) before setting layout rules. Use the schematic's assigned footprints and opening constraints to propose a dimensioned floorplan and a manufacturable stackup. Obtain explicit user approval for each stage and for any change to an approved decision before applying it.
+
+With the approved plan and ERC-clean schematic, set design rules, lock mechanics, route power and critical loops, route general signals, then refill zones and run DRC. For revisions, start from the confirmed project baseline.
+
+## 1. Design Rules and Sync Verification
+
+- Read the project's design notes first. Use the project's approved routing values and use the defaults below for unspecified values. Record project-specific width targets and minima, power and HV nets, ground topology, fixed parts and connectors, and verification commands in those notes. Set preferred widths in Netclasses and enforce applicable minima with board constraints or scoped DRC rules.
+- Before editing an existing board, keep a restorable baseline in durable storage, for example a dated project copy or archive. Git is optional. If the project already uses Git, a commit can serve as the baseline for the files it captures. Include any additional files needed for restoration in the backup.
+- Work in a copy inside the project. For scripted saves, use a distinct working basename in its own directory. Keep the matching schematic and project settings available under the working basename for DRC and parity checks.
+- **Land rules in project files:** Write track widths, via defaults, and Netclasses into `.kicad_pro`, and write layer-specific, high-voltage creepage, or controlled-impedance custom rules into `.kicad_dru`. Treat fab minimums as manufacturing floors; size widths, vias, and clearances for thermal rise, voltage drop, and production margin. Assign explicit values to every power path.
+- **Verify sync diffs and revision identity:** Before importing schematic updates, follow `kicad-schematic` to audit reference designators, footprints, pad nets, mechanical vs. electrical mounting pads, and intentional quirks (reversed headers, split grounds, DNP, jumpers). Keep prototype copies clearly labeled beside production boards so exports always target the confirmed revision.
+
+## 2. Eight PCB Layout, Routing, and Copper Rules
+
+| Rule | What Layout Review Must Verify |
+| --- | --- |
+| **Lock mechanics before loops** | Fix outline, mounting holes, connectors, switches, and keepouts first. Obtain user approval before changing the outline or moving a mounting hole, external connector, or project-designated fixed part. Check courtyards, cable exits, and mating/assembly clearance. Place decoupling caps tight to power pins and bootstrap caps tight to driver pins to minimize loop area. |
+| **Use 45° bends and prefer perpendicular pad entry** | Keep tracks short and direct. From any side of a pad, aim the final segment at the pad center. Prefer to enter at 90° to the pad edge, through the midpoint of the chosen side. Use a 45° entry only when perpendicular entry is impractical, still aiming for the pad center. Use 45° bends elsewhere and allow 90° T-junctions. Verify return paths at every layer transition. |
+| **Size width by function; hold consistency** | Use schematic current requirements, copper weight, allowable temperature rise, voltage drop, and impedance to select each net’s width. Unless the project specifies other widths, start at 0.25 mm in 0.05 mm increments (0.25, 0.30, 0.35 mm, …). Keep each run at its selected width. Limit signal neck-downs to congested areas, document them, and resume the selected width on exit. Obtain user approval before going below the applicable project minimum and stay within fab capability. On revisions, preserve existing power and high-current return widths and compare their narrowest points, including pad entries, reliefs and vias, with the baseline. |
+| **Match standard vias to the routed width** | Prefer a suitable same-layer route. Where a via is needed, select a standard fab hole/pad diameter pair that accommodates the routed width, clearance, annular ring, and fab tolerances. Check finished hole size, current capacity and thermal relief. Preserve parallel vias that share load current and return vias at critical layer transitions. |
+| **Isolate sensitive lines and return loops** | Minimize high-di/dt switching loop area. Keep analog, clock, and sense traces away from high-di/dt loops, switch nodes, and phase copper in parallel runs or adjacent layers. Route shunt Kelvin sense lines independently from the designated sense pads, separate from the power current entry. |
+| **Connect grounds per circuit intent** | Refill GND zones and check DRC for unconnected items. Where the pour connects same-net GND pads and provides the required return path, omit redundant point-to-point tracks. Complete missing connections and preserve wide high-current returns even when the pour alone provides continuity. Follow the schematic for split-ground connections, including any designated net tie or bridging part. When the schematic specifies **star grounding (星狀接地)**, bring the ground branches together only at the designated star point. Inspect islands, zone priority, thermal reliefs, and return bottlenecks, and verify continuous return paths for signals crossing zones. |
+| **Enforce HV clearance and creepage** | Verify clearance and creepage against working voltage, pollution degree, and safety standards across all copper layers, vias, pads, and board edges. Preserve or increase existing HV-to-LV spacing on revisions. Report any location below the required spacing, including deficiencies in the baseline. Check HV switching copper coupling to adjacent sensitive layers and isolation of external test interfaces. |
+| **Re-place or re-route at bottlenecks** | Adjust placement, orientation, and fanout of movable components first, then re-route the crossing branches as a group while preserving widths and routing angles. Consider a jumper only if both approaches fail. Obtain user approval before a layout change affects the schematic or BOM (e.g., adding a 0 Ω jumper or replacing a footprint), then synchronize the schematic, PCB, and BOM. |
+
+## 3. Architecture-Specific Rules
+
+- **Four-layer power boards:** Read [`references/power-4layer.md`](references/power-4layer.md) before routing to assign copper layer roles, reference planes, power/sense priority, and revision-to-revision copper comparisons.
+- **Size-preserving layer reduction (e.g., 4-layer to 2-layer):** Read [`references/layer-reduction.md`](references/layer-reduction.md) first; preserve the confirmed original, branch a prototype copy, map inner-layer replacements, compare full-board DRC per group, and back-annotate approved `0 Ω` jumpers via `kicad-schematic`.
+- **Front-panel mechanics and cable egress:** Verify cable exit and mating space against physical connector orientation and user-facing sides first; ensure dimensions, thickness, copper weight, and routing match mechanical drawings and fab notes.
+
+## 4. Agent Boundary and Sign-Off Handoff
+
+- For track or via removal, follow the before-and-after DRC procedure in `kicad-release`. Before writing a revision back, compare width distributions, via counts, per-net routed lengths, segment orientations (including departures from the 45° routing grid), and pad-entry centering and angle. Identify affected nets or pads and report regressions and trade-offs before applying the revision.
+- **Agent vs. KiCad GUI boundary:** The agent may inspect/edit `.kicad_pro` Netclasses and `.kicad_dru` custom rules, parse `.kicad_pcb` stackup/widths/zones/nets, and analyze DRC coordinate reports. Interactive component placement and 45° copper routing cannot be performed via `kicad-cli`; output coordinate-level recommendations and stop for the user to execute in KiCad GUI.
+- **Verification and release handoff:** Hand off to `kicad-release` to run KiCad 10 CLI DRC (`--all-track-errors --schematic-parity --refill-zones`) and working-copy dangling object cleanup. Require **0 DRC errors, 0 unconnected items, 0 schematic-parity mismatches, and zero residual dangling tracks/vias** alongside passing the eight geometry checks before manufacturing release.

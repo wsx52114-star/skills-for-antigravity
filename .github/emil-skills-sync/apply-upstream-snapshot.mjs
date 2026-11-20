@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
+import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 import { adaptSkill, destinationPrefix, runtimeSkillName, upstreamRepository } from "./lib.mjs";
 import { planSkillIndexes } from "../skill-sync/indexes.mjs";
 
@@ -34,7 +34,7 @@ function main() {
   }
   const license = readFileSync(licensePath);
   const sourceRoot = path.join(options.snapshotRoot, "skills");
-  const files = listRegularFiles(sourceRoot);
+  const files = listRegularFiles(sourceRoot).filter(isAntigravitySkillFile);
   const skillNames = [...new Set(files.map((file) => file.split("/")[0]))].sort();
   if (!skillNames.length) throw new Error("Invalid Emil snapshot: skills are required");
 

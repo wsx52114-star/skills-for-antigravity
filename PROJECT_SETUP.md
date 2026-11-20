@@ -8,11 +8,15 @@
 
 ```text
 project/
+├── AGENTS.md                 # （選用）專案特定的建置、測試與操作規則
+├── CODING_STANDARDS.md       # （選用）供 code-review 審查的非機械性程式規範
+├── DESIGN.md                 # （選用）由 learn-taste 維護的前端介面與動態設計規則
+├── .scratch/                 # （選用）本地 Markdown Issue tracker（Spec 與 Tickets）
 └── .agents/
-    ├── CONTEXT.md
+    ├── CONTEXT.md            # 專案領域詞彙表（Glossary-only）
     ├── .install-state
     ├── docs/
-    │   └── adr/
+    │   └── adr/              # 專案架構決策紀錄（0001-slug.md ...）
     ├── skills/
     │   ├── tdd -> <Agent home>/skills/engineering/tdd
     │   ├── i-have-adhd -> <Agent home>/skills/productivity/i-have-adhd
@@ -20,7 +24,7 @@ project/
     └── rules  -> <Agent home>/rules
 ```
 
-- `CONTEXT.md` 與 `docs/adr/` 是 project-local 實體內容。
+- `CONTEXT.md` 與 `docs/adr/` 是 project-local 實體內容；根目錄 `AGENTS.md`、`CODING_STANDARDS.md`、`DESIGN.md` 與 `.scratch/` 依專案領域按需建立。
 - `skills/<skill-name>` 與 `rules` 是機器本機的共享連結，應由 Git 忽略。
 - `.install-state` 記錄安裝器管理的 mode、channel、來源與 skill inventory；Copy Mode 另記錄每個檔案的 SHA-256，也應由 Git 忽略。
 - Flat skill links 符合 Antigravity 官方 `.agents/skills/<skill-name>/SKILL.md` 結構，可使用 `/skill-name`。
@@ -115,8 +119,7 @@ Link Mode 的 `version=1` 仍可直接使用；若是舊的整個 `.agents/skill
 
 ## Antigravity 規則入口
 
-本節說明原生 Agent 的接入方式。Codex 擴充的 skills 與 rules 載入須另外確認，
-不能以擴充的測試結果代替原生 Agent 的驗證。
+本節說明 Antigravity 原生 Agent 的接入方式。
 
 Antigravity 會自動載入 workspace 的 `.agents/rules/*.md`。本架構將
 `.agents/rules` 連結到 Agent home，並由 `rules/skills.md` 的 `always_on` rule
@@ -129,6 +132,17 @@ Skills 以 `.agents/skills/<skill-name>/SKILL.md` 的官方 flat layout 接入�
 若專案有特殊的 build、test 或修改限制，可由該專案自行維護根目錄
 `AGENTS.md`。這些操作規則不應寫入 glossary-only 的 `.agents/CONTEXT.md`，
 初始化 script 也不會建立或修改它。
+
+### 跨領域專案知識分流與載入時機
+
+為了防止把所有規範全部塞入 `AGENTS.md` 或 `.agents/CONTEXT.md` 造成每次對話的 Context 膨脹，各領域知識應按職責分流存放：
+
+- **`.agents/CONTEXT.md`（領域詞彙表）**：所有領域共用（包含 `domain-modeling`、`to-spec`、`taiwan-term`），僅存放專案名詞定義與禁用同義詞（`_Avoid_`），在涉及領域語意時讀取。
+- **`.agents/docs/adr/`（架構決策紀錄）**：僅存放同時滿足「難以逆轉、無脈絡會令人驚訝、真實取捨」三項門檻的決策，於修改受影響區域前按需讀取；**不可將每次功能版更當作流水帳寫入 ADR**。
+- **`AGENTS.md`（常駐導航指標與操作限制）**：會進入每個 Session 的 Context，應保持極簡（僅放建置／測試指令與指向其他文件的導航指標）。前端專案若由 `learn-taste` 建立了 `DESIGN.md`，建議在 `AGENTS.md` 加入一行：`Before building or changing UI, read DESIGN.md.`。
+- **`CODING_STANDARDS.md`（程式碼審查規範）**：主要由 `code-review` 的 Standards Subagent 在審查階段讀取，減輕實作期 Agent 的 Context 壓力；可由 Linter／Pre-commit 自動攔截的機械性規則應優先寫成自動檢查（透過 `retro` 或 `setup-pre-commit`），不寫入此檔。
+- **`DESIGN.md`（前端介面與動態品味）**：由 `learn-taste` 收錄使用者在對話中修正的 UI／動畫規則與其 `Why`。
+- **`.kicad_pro` 與原理圖接線表（硬體製程與連通規則）**：由 `kicad-schematic`、`kicad-pcb`、`kicad-release` 維護開案五項參數、Netclasses 與跨板腳位對照，並以 KiCad 10 CLI 的 ERC／DRC 零錯誤作為硬性交付門檻。
 
 ## Git 管理
 

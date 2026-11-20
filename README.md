@@ -169,6 +169,14 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`ui-prototype`](skills/design/ui-prototype/SKILL.md) | 需明確指定 | 建立多種 UI 原型與切換器，等待使用者選定後再整合。 |
 | [`write-swift`](skills/design/write-swift/SKILL.md) | 可自動選用 | 撰寫與審查現代 Swift、並行模型、效能及測試。 |
 
+### Hardware
+
+| 關鍵字 | 觸發方式 | 用途 |
+| --- | --- | --- |
+| [`kicad-pcb`](skills/hardware/kicad-pcb/SKILL.md) | 可自動選用 | 設定 KiCad `.kicad_pro`／`.kicad_dru` 規則、元件佈局、45° 走線、鋪銅回流、四層功率板與同尺寸減層試作。 |
+| [`kicad-release`](skills/hardware/kicad-release/SKILL.md) | 可自動選用 | 執行 KiCad 10 CLI ERC／DRC 與一致性檢查，於工作副本清理懸空物件，把關零錯誤與製造檔匯出。 |
+| [`kicad-schematic`](skills/hardware/kicad-schematic/SKILL.md) | 可自動選用 | 定義開案電氣參數、核對 KiCad 原理圖電源與封裝、建立跨板排線與共用腳位表並完成 ERC 驗收。 |
+
 ### Security
 
 | 關鍵字 | 觸發方式 | 用途 |
@@ -216,22 +224,55 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |
 | [`writing-shape`](skills/in-progress/writing-shape/SKILL.md) | 需明確指定 | 將原始素材逐段整理成文章。 |
 
-常見工程流程：
-
-```text
-grill-with-docs → to-spec → to-tickets → implement / tdd → code-review
-```
-
 這份索引是目前 Runtime skills 的閱讀入口；各 skill 的 frontmatter 與完整行為仍以
 自己的 `SKILL.md` 為準。[`rules/skills.md`](rules/skills.md) 負責 workspace 內的觸發、編排與
 Antigravity 轉譯。
 
-## 專案文件
+## 跨領域開發流程與雙向護欄
 
-每個開發專案自行保留 `.agents/CONTEXT.md` 與 `.agents/docs/adr/`；共享的 skills
-與 rules 僅以機器本機連結接入。專案若需要特殊操作規則，可自行維護根目錄
-`AGENTS.md`。完整目錄結構與 Git 管理方式見
-[PROJECT_SETUP.md](PROJECT_SETUP.md)。
+本儲存庫涵蓋多個工程與設計領域。各領域共用同一套**「起手鎖定規格與邊界 → 隔離 Context 施工 → 硬門檻驗收斷路 → 沉澱單一真實來源（SSOT）」**的雙向護欄原則，但依領域特性走各自的工作流，不將單一模板硬套於所有任務。
+
+### 各領域標準工作流
+
+| 領域 | 路由與適用情境 | 起手式（鎖定規格與邊界） | 執行期（隔離施工） | 收尾驗收（硬門檻與斷路器） | 沉澱之專案 SSOT |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **軟體／後端／韌體工程**<br>(`Engineering`) | `/ask-matt`<br>功能開發、重構、除錯 | `grill-with-docs` → `to-spec` → `to-tickets`（大型跨 Session 規劃先走 `wayfinder`；需驗證邏輯時搭配 `prototype`） | `implement` + `tdd`（每張 Ticket 使用全新 Context Window）或 `implement-spec`（多 Worktree 平行 Subagents） | `code-review`（平行啟動 Standards 與 Spec 兩個全新 Subagents 獨立審查） | `.agents/CONTEXT.md`、`.agents/docs/adr/`、`CODING_STANDARDS.md` 與 Linter（透過 `retro` 轉化） |
+| **前端介面與動態設計**<br>(`Design`) | `/ask-emil`<br>UI 元件、動畫、手勢、行動端體驗 | `ui-prototype`（於隔離頁面建立 3～5 種不同設計軸向的實動原型供真人挑選，探索期嚴禁修改正式碼） | `pick-ui-library` → `animate`／`choreograph`／`gestures`／`animate-expo` | `break-ui`（極端資料壓力測試）、`review-animations`、`mobile-native`、`animation-performance` | 根目錄 `DESIGN.md` 與 Lint 規則（透過 `learn-taste` 收錄設計修正與背後的 `Why`） |
+| **硬體電路與 PCB**<br>(`Hardware`) | KiCad 10 開案、改版、多板互連、減層試作 | `kicad-schematic`（開案先填妥「機構、電氣、板廠、網路分類、版別與驗收」五項參數表與跨板排線表） | `kicad-pcb`（先鎖機構再走功率迴路；減層試作須另建副本；`0 Ω` 跨線須回標原理圖與 BOM） | `kicad-release`（執行 KiCad 10 CLI 強制確認 **ERC = 0、DRC = 0、未接線 = 0、Schematic Parity = 0**，於工作副本清理懸空物件並匯出製造檔） | `.kicad_pro`、`.kicad_dru`、原理圖跨板接線表、BOM 與 `.agents/docs/adr/`（記錄分地或減層取捨） |
+| **資安與用語稽核**<br>(`Security`／`Language`) | `security-audit`<br>`taiwan-term` | 先盤點專案範圍、排除路徑（Exclusions），並讀取 `.agents/CONTEXT.md` 保護領域專有名詞 | 執行離線確定性掃描（如 `audit_terms.py`）或建立攻擊面覆蓋率帳本，禁止憑直覺全域替換 | `validate-coverage-ledger.cjs`、`validate-findings.cjs`（強制驗證 PoC 與真實影響）及 Diff 迴歸檢查 | 稽核報告、覆蓋率帳本與 `.agents/CONTEXT.md` 詞庫規範 |
+| **跨領域輔助與交接**<br>(`Productivity`) | 可疊加於上述任何領域流程 | `/i-have-adhd`（開啟行動優先、每輪重申進度 `Step X of Y`）、`/to-questionnaire`（向外部人員蒐集決策） | `/wait-what`（即時以領域詞彙重述脈絡） | `/i-have-adhd` 內建 **3 輪除錯螺旋斷路器**；跨環境或分叉支線時執行 `/handoff` | `%TEMP%`／`$TMPDIR` 交接檔（僅存指標路徑，不重複複製 Spec 與 ADR） |
+
+### 上下文衛生與斷路器規則（Context Hygiene & Circuit Breakers）
+
+為了防止多輪對話後的試錯過程污染 Context Window（導致第 3～5 輪開始修 A 壞 B），操作時應遵循以下斷路器機制：
+
+1. **規劃與施工物理隔離**：
+   - **規劃期（`grill-with-docs → to-spec → to-tickets`）**：保持在同一個未受污染的對話視窗（Smart Zone 約 150k tokens 內）完成，確保規格與切片共享完整決策脈絡。
+   - **施工期（`implement`／`implement-spec`）**：`to-tickets` 產出的每張 Ticket 皆為**可獨立驗證、且大小剛好塞進單一全新 Context Window 的垂直切片（Tracer Bullet）**。每完成一張 Ticket 即執行 `/clear` 重開對話視窗，下一個 Session 僅讀取下一張 Ticket、Spec 與專案 SSOT，徹底切斷前一張 Ticket 的試錯噪音。
+2. **階段邊界五選一決策樹（Phase Boundaries）**：
+   當一個階段結束時，依序評估以下五種交接方式（第一個符合者勝出）：
+   - **Continue（原地繼續）**：下一階段需要當前對話作為第一手脈絡（如小範圍 `grill-with-docs` 後直接 `implement`），且剩餘 Context 空間充足。
+   - **`/clear`（清空重開）**：當前對話的探索與試錯對下一步已無保留價值（如一張 Ticket 已完工提交，準備接下一張 Ticket）。
+   - **`/handoff`（產出交接檔）**：僅在工作需要**跨工具（Harness）、跨目錄（如切換至獨立 Prototype 目錄）、交接給同事、或從當前對話分叉（Fork）出支線任務**時使用。
+   - **Subagent（委派子代理）**：任務邊界明確且無須人工中途介入（如 `code-review` 雙軸平行審查、`research` 查閱外部第一手文件）。
+   - **`/compact`（壓縮摘要）**：同工具、同目錄且需保留當前意圖進入下一階段時使用。
+3. **試錯與邏輯發散斷路器**：
+   - **禁止盲猜修 Bug**：施工中遇到非預期故障或回歸錯誤，必須先透過 `diagnosing-bugs` 建立「單一指令即可穩定重現錯誤」的緊密回饋迴圈（Tight Feedback Loop），禁止在重現前連續猜測改碼。
+   - **3 輪除錯螺旋停損（Debug Spiral Rule）**：同一問題連續修改 3 輪仍未解決時，必須立即停止改碼，點出可能錯誤的前置假設並重新診斷；必要時直接回滾未提交變更並重開新對話。
+   - **收尾決策理由檢驗（金絲雀測試）**：每張 Ticket 或每版修改收尾準備提交前，要求 AI 於回覆或 Commit／PR 摘要中簡述 **「(1) 改了什麼、(2) 為什麼這樣改、(3) 放棄了哪個替代方案」**。一旦發現 AI 無法給出合理原因、開始硬拗或違反 Spec／ADR，代表該 Session 注意力已發散中毒——應立即捨棄未提交亂改、重開乾淨對話視窗並僅餵入 Spec、Ticket 與 ADR 重新接力。
+
+## 專案文件與單一真實來源（SSOT）
+
+為了避免把所有歷史紀錄塞進單一 `.md` 導致「文件通膨」與二次 Context 污染，每個開發專案的持久知識採取**四層職責分離**；共享的 skills 與 rules 僅以機器本機連結接入：
+
+| SSOT 層級 | 專案路徑 | 職責與寫入時機 | 嚴禁事項（防污染邊界） |
+| :--- | :--- | :--- | :--- |
+| **1. 領域詞彙層** | `.agents/CONTEXT.md`<br>（或多語境 `.agents/CONTEXT-MAP.md`） | 由 `domain-modeling`／`grill-with-docs` 在術語釐清當下即時更新，定義專案標準名詞、實體關係與禁用同義詞（`_Avoid_`）。 | **僅作為詞彙表（Glossary）**；嚴禁寫入實作細節、API 規格、操作指令或開發日誌。 |
+| **2. 架構決策層** | `.agents/docs/adr/NNNN-slug.md` | 僅在決策同時滿足 **① 難以逆轉（Hard to reverse）、② 無脈絡會令人驚訝（Surprising without context）、③ 真實技術取捨（Real trade-off）** 三項門檻時建立，記錄決策背景、理由與淘汰方案（`Considered Options`）。 | **嚴禁當作每版修改的 Changelog 流水帳**；日常局部實作理由應寫在 Commit／PR 或 Spec，保持 ADR 高純度以供後續 Session 按需讀取。 |
+| **3. 需求與狀態機層** | Issue Tracker 或<br>`.scratch/<feature>/issues/<NN>-<slug>.md` | 由 `to-spec` 記錄單次功能的 `Implementation Decisions`、`Testing Decisions`（測試接縫 Seams）與 `Out of Scope`；由 `to-tickets`／`wayfinder` 建立帶 `Blocked by` 相依邊的工作狀態機。 | Ticket 為單次 Context Window 的拋棄式工作單元，**完工驗收後即關閉**，不作為永久架構文件維護。 |
+| **4. 領域規範與自動防呆層** | 根目錄 `AGENTS.md`、`CODING_STANDARDS.md`、`DESIGN.md`、`.kicad_pro`、`.kicad_dru`、Pre-commit／Linter | • `AGENTS.md`：專案特定的建置、測試與修改限制。<br>• `CODING_STANDARDS.md` 與 Linter：由 `retro` 將踩坑經驗優先轉為 **0 Token 成本的自動化檢查（Linter／Pre-commit／CI）**，無法自動化的判斷準則才寫入 `CODING_STANDARDS.md` 供 `code-review` 讀取。<br>• `DESIGN.md`：由 `learn-taste` 記錄 UI 品味規則與 `Why`。<br>• `.kicad_pro`、`.kicad_dru` 與接線表：記錄硬體製程下限、Netclasses、自訂 DRC 規則與跨板腳位定義。 | 機械性語法或格式規範應優先交由 Linter／ERC／DRC 強制把關，避免堆積過長文字規範消耗實作 Agent 的 Context。 |
+
+完整目錄結構、連結安裝與 Git 管理方式見 [PROJECT_SETUP.md](PROJECT_SETUP.md)。
 
 ## 維護
 

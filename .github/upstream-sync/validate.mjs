@@ -100,14 +100,8 @@ for (const file of skillFiles) {
   }
   runtimeNames.set(metadata.name, relative);
 
-  const codexMetadata = path.join(path.dirname(file), "agents", "openai.yaml");
-  if (existsSync(codexMetadata)) {
-    const implicitDisabled = /^\s*allow_implicit_invocation:\s*false\s*$/m.test(
-      readFileSync(codexMetadata, "utf8"),
-    );
-    if (metadata.explicit !== implicitDisabled) {
-      errors.push(`Invocation policy disagrees between SKILL.md and agents/openai.yaml: ${relative}`);
-    }
+  if (existsSync(path.join(path.dirname(file), "agents"))) {
+    errors.push(`Unexpected external agent metadata in Antigravity skill: ${relative}`);
   }
   if (relative.startsWith("skills/in-progress/") && !metadata.explicit) {
     errors.push(`In-progress skill must require explicit invocation: ${relative}`);
@@ -178,9 +172,7 @@ const required = [
   "skills/security/security-audit/report-schema.json",
   "skills/productivity/i-have-adhd/LICENSE",
   "skills/productivity/i-have-adhd/SKILL.md",
-  "skills/productivity/i-have-adhd/agents/openai.yaml",
   "skills/language/taiwan-term/SKILL.md",
-  "skills/language/taiwan-term/agents/openai.yaml",
   "skills/language/taiwan-term/scripts/audit_terms.py",
   "skills/language/taiwan-term/scripts/build_snapshot.py",
   "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
@@ -216,10 +208,7 @@ try {
 }
 
 try {
-  const skill = readFileSync(path.join(repoRoot, "skills/productivity/i-have-adhd/SKILL.md"), "utf8");
-  const codex = readFileSync(path.join(repoRoot, "skills/productivity/i-have-adhd/agents/openai.yaml"), "utf8");
-  if (!/^disable-model-invocation:\s*true\s*$/m.test(skill) ||
-      !/^\s*allow_implicit_invocation:\s*false\s*$/m.test(codex)) {
+  if (!frontmatter(path.join(repoRoot, "skills/productivity/i-have-adhd/SKILL.md"))?.explicit) {
     errors.push("i-have-adhd must require explicit invocation");
   }
 } catch (error) {

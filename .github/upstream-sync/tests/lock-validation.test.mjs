@@ -60,7 +60,7 @@ function fixture(lock) {
     `${JSON.stringify({
       repository: "https://github.com/ayghri/i-have-adhd",
       commit: "c".repeat(40),
-      files: ["LICENSE", "skills/i-have-adhd/SKILL.md", "skills/i-have-adhd/agents/openai.yaml"],
+      files: ["LICENSE", "skills/i-have-adhd/SKILL.md"],
     })}\n`,
   );
   const terminologyCommit = "d".repeat(40);
@@ -132,7 +132,6 @@ function fixture(lock) {
     "skills/design/README.md",
     "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
-    "skills/language/taiwan-term/agents/openai.yaml",
     "skills/language/taiwan-term/scripts/audit_terms.py",
     "skills/language/taiwan-term/scripts/build_snapshot.py",
     "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
@@ -146,7 +145,6 @@ function fixture(lock) {
   write(root, "skills/security/security-audit/SKILL.md", "---\nname: security-audit\ndescription: Audit.\n---\n");
   write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
   write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\ndisable-model-invocation: true\n---\n");
-  write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: false\n");
   write(root, "skills/language/taiwan-term/SKILL.md", "---\nname: taiwan-term\ndescription: Audit Taiwan terminology.\n---\n");
   write(root, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
   write(
@@ -278,7 +276,7 @@ test("validator rejects implicit invocation for i-have-adhd", () => {
     commit: "a".repeat(40),
     files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
   });
-  write(root, "skills/productivity/i-have-adhd/agents/openai.yaml", "policy:\n  allow_implicit_invocation: true\n");
+  write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\n---\n");
   try {
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
