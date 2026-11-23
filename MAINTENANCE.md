@@ -1,200 +1,112 @@
 # Maintenance
 
-## 上游來源
+本文件分為兩大部分：
 
-| 上游 | 接收內容 | 版本紀錄 | 自動更新 |
-| --- | --- | --- | --- |
-| [`mattpocock/skills`](https://github.com/mattpocock/skills) | 適用的 skills、開發文件與授權 | [upstream lock](.github/upstream-sync/upstream-lock.json) | [Sync All Skills](.github/workflows/sync-skills.yml) |
-| [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) | `security-audit` 與其授權 | [security-audit lock](.github/security-audit-sync/upstream-lock.json) | [Sync All Skills](.github/workflows/sync-skills.yml) |
-| [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd) | explicit-only `i-have-adhd` 與其授權 | [i-have-adhd lock](.github/i-have-adhd-sync/upstream-lock.json) | [Sync All Skills](.github/workflows/sync-skills.yml) |
-| [`emilkowalski/skills`](https://github.com/emilkowalski/skills) | 設計與介面 skills、參考文件與 MIT 授權 | [Emil skills lock](.github/emil-skills-sync/upstream-lock.json) | [Sync All Skills](.github/workflows/sync-skills.yml) |
-| [`frank890417/taiwan-md`](https://github.com/frank890417/taiwan-md) | 正規化 Taiwan.md 用語快照 | [Taiwan.md lock](.github/taiwan-terminology-sync/upstream-lock.json) | [Sync All Skills](.github/workflows/sync-skills.yml) |
+- **[第一部分：架構與同步政策（說明）](#第一部分架構與同步政策說明)** — 解釋上游來源、採用邊界、所有權規則與自動更新原理。
+- **[第二部分：實作與驗證操作（可動手執行）](#第二部分實作與驗證操作可動手執行)** — 維護者與使用者實際需要設定或執行的操作步驟。
 
-五份 lock 是目前採用版本與檔案 inventory 的權威來源；本文件不另存固定
-baseline SHA。
+---
 
-## `mattpocock/skills` 採用政策
+## 第一部分：架構與同步政策（說明）
 
-從 `mattpocock/skills` 接收：
+### 上游來源與鎖定檔
 
-```text
-skills/**
-docs/**
-LICENSE
-```
-
-不接收上游的 `.agents/`、`.changeset/`、`.claude-plugin/`、`.out-of-scope/`、`scripts/`、root package files、根目錄說明文件與發布 workflows。
-
-Claude-only 與 deprecated skills 在匯入階段排除；分類 README 中對應的索引列也會移除。
-
-| 上游內容 | 處理方式 | 原因 |
+| 上游 | 接收內容 | 版本紀錄（權威來源） |
 | --- | --- | --- |
-| `.agents/` | 排除 | 避免 nested `.agents`。 |
-| `.changeset/` | 排除 | 只管理上游版本與 changelog。 |
-| `.claude-plugin/` | 排除 | 只供 Claude plugin 封裝。 |
-| `.github/workflows/` | 自行維護 | 本專案有獨立同步與驗證流程。 |
-| `.out-of-scope/` | 排除 | 上游已標示不在正式技能範圍。 |
-| `docs/` | 同步 | 接收 skill 文件；保護 `docs/security/`。 |
-| `scripts/` | 排除 | 只服務上游維護，本專案使用自己的同步工具。 |
-| `skills/` | 選擇性同步 | 排除 Claude-only、deprecated；依 `categoryMap` 將上游 `skills/engineering/` 映射為 `skills/software/`，並保護 `skills/ui-design/`、`skills/hardware/`、`skills/security/` 等獨立來源。 |
-| `.gitignore` | 自行維護 | 必須符合本專案的目錄與維護工具。 |
-| `CHANGELOG.md` | 排除 | 只記錄上游發版，不代表本專案變更。 |
-| `CLAUDE.md` | 排除 | Claude 專用規則。 |
-| `CONTEXT.md` | 自行維護 | 必須描述本專案的術語與架構邊界。 |
-| `LICENSE` | 同步 | 保留上游授權。 |
-| `README.md` | 自行維護 | 必須提供本專案的安裝與更新方式。 |
-| `package-lock.json` | 排除 | 只鎖定上游 Changesets 工具。 |
-| `package.json` | 排除 | 只供上游 Changesets 與發版流程。 |
+| [`mattpocock/skills`](https://github.com/mattpocock/skills) | 適用的 skills、開發文件與授權 | [upstream lock](.github/upstream-sync/upstream-lock.json) |
+| [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) | `security-audit` 與其授權 | [security-audit lock](.github/security-audit-sync/upstream-lock.json) |
+| [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd) | explicit-only `i-have-adhd` 與其授權 | [i-have-adhd lock](.github/i-have-adhd-sync/upstream-lock.json) |
+| [`emilkowalski/skills`](https://github.com/emilkowalski/skills) | UI 設計與介面 skills、參考文件與 MIT 授權 | [Emil skills lock](.github/emil-skills-sync/upstream-lock.json) |
+| [`frank890417/taiwan-md`](https://github.com/frank890417/taiwan-md) | 正規化 Taiwan.md 用語快照 | [Taiwan.md lock](.github/taiwan-terminology-sync/upstream-lock.json) |
 
-各 skill 同步流程排除非 Antigravity 專用的 `agents/` 設定檔。適用的上游
-`SKILL.md` 與其餘 skill 內容保持原文。分類 README 會移除排除項目的索引列與
-其他工具的呼叫設定說明。`docs/**` 除 `docs/security/**` 外保持上游內容。
+五份 lock 記錄各來源目前採用的 commit SHA 與檔案清單（本文件不另存固定 baseline SHA）。
 
-## Cloudflare `security-audit` 同步範圍
+### 各來源採用與映射政策
 
-`security-audit` 由統一同步流程呼叫專屬 adapter，從 `cloudflare/security-audit-skill` 接收：
+#### 1. `mattpocock/skills`（主上游）
 
-```text
-LICENSE → skills/security/security-audit/LICENSE
-skills/security-audit/** → skills/security/security-audit/**
-```
+僅從主上游接收 `skills/**`、`docs/**` 與 `LICENSE`，並排除非 Antigravity 專用的 `agents/` 設定、Claude-only skills、deprecated skills 與上游倉庫腳本：
 
-`skills/security/README.md` 與 `docs/security/**` 仍由本專案維護。
+| 上游路徑／類型 | 處理方式 | 說明 |
+| --- | --- | --- |
+| `skills/` | 選擇性同步＋映射 | 排除 Claude-only 與 deprecated；依 `categoryMap` 將 `skills/engineering/` 映射為 `skills/software/`，並避開獨立來源保護路徑。 |
+| `docs/`、`LICENSE` | 同步 | 保留 `docs/` 與根目錄授權；保護 `docs/security/` 不被覆寫。 |
+| `.agents/`、`.changeset/`、`.claude-plugin/`、`.out-of-scope/`、`scripts/`、`package*.json`、`CLAUDE.md`、`CHANGELOG.md` | 排除 | 避免 nested `.agents`、其他工具封裝檔或上游維護工具混入。 |
+| `.github/workflows/`、`.gitignore`、`CONTEXT.md`、`README.md` | 自行維護 | 必須符合本儲存庫架構與索引格式。 |
 
-## `i-have-adhd` 同步範圍
+分類 `README.md` 會移除被排除項目的索引列與其他工具的呼叫說明；`docs/**` 除 `docs/security/**` 外維持上游原文。
 
-`LICENSE` 與 `skills/i-have-adhd/**` 會同步到
-`skills/productivity/i-have-adhd/`。Adapter 固定加入
-`disable-model-invocation: true`，並排除非 Antigravity 的 `agents/` 設定檔；
-其餘內容維持 upstream snapshot。
+#### 2. 獨立上游來源
 
-## Taiwan.md 詞庫同步範圍
+- **Cloudflare `security-audit`**：將 `LICENSE` 與 `skills/security-audit/**` 同步至 `skills/security/security-audit/`；`skills/security/README.md` 與 `docs/security/**` 由本專案維護。
+- **`i-have-adhd`**：同步至 `skills/productivity/i-have-adhd/`，adapter 強制注入 `disable-model-invocation: true` 並排除 `agents/` 設定檔。
+- **Taiwan.md 詞庫**：`taiwan-term` 流程與掃描器由本專案維護；adapter 僅讀取 `README.md` 與 `data/terminology/*.yaml` 產生離線 JSON 快照，保留 CC BY-SA 4.0 授權資訊，執行時不連線。
+- **Emil UI 設計 skills**：`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/ui-design/*/**`，每支技能保留獨立 `LICENSE` 與參考文件；來源 `prototype` 為避開 `skills/software/prototype` 衝突而更名為 `ui-prototype`（`rules/skills.md` 負責解析別名）。更新時共用索引工具維護 `README.md` 的 UI Design 表格與 `skills/ui-design/README.md`。
 
-`taiwan-term` 的 skill 流程與掃描器由本專案維護。專屬 adapter 僅讀取
-Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit 的
-正規化 JSON 快照；Runtime skill 執行時不連線到上游。快照保留 Taiwan.md
-來源、版本與 CC BY-SA 4.0 授權資訊。
+### 所有權邊界與架構約束
 
-## Emil 設計與介面 skills 同步範圍
+[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、排除規則與受保護的 fork-owned paths（不接受主上游寫入）：
 
-`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/ui-design/*/**`，包含
-各技能的參考文件。根目錄 MIT `LICENSE` 複製到每個技能目錄，讓每個技能目錄都獨立保留授權。上游的根目錄說明文件、設定與其他工具不匯入。
+- `rules/**`、`plugins/**`、`docs/security/**`、`MAINTENANCE.md`、`README.md`、`CONTEXT.md`、`.gitignore`
+- `skills/hardware/**`、`skills/language/**`、`skills/ui-design/**`、`skills/security/**`、`skills/productivity/i-have-adhd/**`
+- `.github/upstream-sync/**`、`.github/skill-sync/**`、`.github/security-audit-sync/**`、`.github/i-have-adhd-sync/**`、`.github/emil-skills-sync/**`、`.github/taiwan-terminology-sync/**`、`.github/workflows/**`
 
-來源 `prototype` 對應到本專案 `ui-prototype`，僅調整 frontmatter name；
-原 Software `prototype` 保留。`rules/skills.md` 將這套來源文件中的技能
-`prototype` 參照解析為 `ui-prototype`。其餘技能內容與觸發設定維持上游原文。
-
-`skills/ui-design/README.md` 由本專案維護。Emil adapter 使用共用索引工具依來源技能更新
-根目錄 README 的 UI Design 表格與分類索引，同步新增、移除、別名與觸發方式；
-既有用途說明與其他專案文件保持原樣。新技能的用途預設採用上游 description
-的第一句，再由 PR 審查時確認。索引與技能必須一起通過 inventory validation。
-
-## 所有權
-
-[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、排除規則與 fork-owned paths。
-
-以下路徑不接受 `mattpocock/skills` 更新：
-
-- `rules/**`
-- `plugins/**`
-- `skills/hardware/**`
-- `skills/language/**`
-- `skills/ui-design/**`
-- `skills/security/**`
-- `skills/productivity/i-have-adhd/**`
-- `docs/security/**`
-- `.github/upstream-sync/**`
-- `.github/taiwan-terminology-sync/**`
-- `.github/emil-skills-sync/**`
-- `.github/skill-sync/**`
-- `.github/workflows/**`
-- 根目錄說明文件
-
-其中 `skills/security/security-audit/**` 由
-[`.github/security-audit-sync/`](.github/security-audit-sync/) 單獨管理；
-`skills/security/README.md` 仍由本專案維護。
-`skills/productivity/i-have-adhd/**` 則由
-[`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) 單獨管理。
-`skills/language/taiwan-term/**` 的 skill 邏輯由本專案維護，詞庫資料則由
-[`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) 正規化更新。
-`skills/ui-design/**` 的上游技能由 [`.github/emil-skills-sync/`](.github/emil-skills-sync/)
-獨立管理。
-
-## 架構約束
+核心架構約束：
 
 - Repository 根目錄不得包含 nested `.agents/`。
-- 上游更新只能寫入 allowlist。
-- Claude-only 與 deprecated skills 不得進入 runtime。
-- 專案的 `CONTEXT.md` 與 `docs/adr/` 必須留在該專案。
-- Runtime skill 的新增、刪除、改名或移動必須人工審查。
-- 所有 upstream 同步 Pull Request 都必須人工審查，不得 auto-merge。
-- `rules/skills.md` 必須保持在 12,000 字元內，並由 rules contract test 檢查舊路徑與名稱。
+- 上游更新只能寫入 allowlist，且 Claude-only／deprecated skills 不得進入 runtime。
+- 開發專案各自的 `CONTEXT.md` 與 `docs/adr/` 必須留在各專案內。
+- 所有 upstream 同步 PR（含新增、刪除、改名或移動）一律須人工審查，不得 auto-merge。
+- `rules/skills.md` 須保持在 12,000 字元內，並由 rules contract test 檢查無舊路徑或名稱。
 
-## 自動更新
+### 自動更新與檔案契約說明
 
-[`Sync All Skills`](.github/workflows/sync-skills.yml) 是唯一排程入口，每週一台灣
-時間 08:00 檢查全部五個來源。來源與同步參數集中於
-[`.github/skill-sync/sources.json`](.github/skill-sync/sources.json)。
+[`Sync All Skills`](.github/workflows/sync-skills.yml)（集中於 [`.github/skill-sync/sources.json`](.github/skill-sync/sources.json)）於每週一台灣時間 08:00 排程執行：
 
-1. 每週排程檢查全部來源；手動執行可選單一來源或全部來源。
-2. 以 matrix 呼叫共用的 [`sync-source.yml`](.github/workflows/sync-source.yml)。
-3. 各 job 比對來源最新 commit 與自己的 lock；相同時跳過後續處理。
-4. 有更新時驗證快照、呼叫該來源 adapter，依安裝後的技能清單更新根目錄 README 索引，再執行完整測試與 repository validation。
-5. 推送各來源的同步分支，建立或沿用 review-only PR，等待人工審查與合併。
+1. 以 matrix 呼叫共用的 [`sync-source.yml`](.github/workflows/sync-source.yml)，來源間互不影響（`fail-fast: false`），同一來源設有 concurrency 排隊。
+2. 比對來源最新 commit 與該來源 lock；無更新時直接跳過後續步驟（也不會取用 `SYNC_PR_TOKEN`）。
+3. 有更新時檢查快照、執行 adapter、透過 [索引工具](.github/skill-sync/indexes.mjs) 同步 `README.md`（主上游另外比對確保未夾帶其他修改）並通過全部測試，最後建立或沿用 review-only PR。
+4. 四個 JavaScript snapshot adapters 在寫入前會驗證完整 commit SHA 並拒絕 symlink 與不支援的檔案型別；`.gitattributes` 與快照產生器固定 Bash scripts 及詞庫快照使用 LF。
 
-所有來源共用 [索引工具](.github/skill-sync/indexes.mjs)，同步處理技能新增、
-移除、改名、分類移動與觸發方式變更。既有中文用途與索引以外的專案說明
-保留，新技能預設採用 description 的第一句；新增分類會建立對應表格。
-主上游的 commit 步驟會再次核對 README 變更是否符合產生結果，拒絕夾帶
-其他 README 修改，再將索引與 lock 納入同一筆 commit。
-Inventory 驗證仍會阻擋不一致，並列出缺少與多出的技能名稱。
+---
 
-不同來源可並行，`fail-fast: false` 讓單一來源失敗不取消其他來源；同一來源
-使用共用 concurrency group，排程與手動執行會排隊。每個 job 的 summary
-顯示最新 commit 與是否有更新。統一入口減少重複維護，各來源仍須各自查詢。
+## 第二部分：實作與驗證操作（可動手執行）
 
-來源 adapter、lock 與所有權邊界保持獨立；`mattpocock/skills` 保留 collision
-分類與保護。沒有更新的來源不會使用 `SYNC_PR_TOKEN`。
+### 1. 設定 GitHub Token（建立 `SYNC_PR_TOKEN`）
 
-原本各來源的 sync workflows 已移除。手動更新請在 Actions 選擇
-`Sync All Skills → Run workflow`，再從 `source` 選擇 `all` 或單一來源。
-[`sync-source.yml`](.github/workflows/sync-source.yml) 僅供統一入口呼叫。
+要讓自動同步 workflow 能建立 review-only PR，請在 GitHub 設定以下 Secret：
 
-同步分支存在時仍會更新，並以 REST 查詢 open PR；已關閉 PR 留下的遠端
-分支不會阻止重新建立 review-only PR。所有來源均不會 auto-merge；runtime
-詞庫掃描也不會讀取移動中的上游 branch。
+1. 建立 [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)：
+   - **Repository access**：僅選擇此 repository。
+   - **Repository permissions**：僅將 `Pull requests` 設為 `Read and write`（本流程透過 REST `POST /repos/{owner}/{repo}/pulls` 建立 PR，不需要 `Contents` 權限）。
+2. 到 GitHub Repository 的 `Settings → Secrets and variables → Actions` 新增 repository secret **`SYNC_PR_TOKEN`**，貼上該 token。
+3. 若 token 到期或撤銷請重新更新；若設定了強制要求額外 status check 的 ruleset，需補設定 GitHub App／PAT 或人工核准 workflow run。
 
-## GitHub 設定
+### 2. 手動觸發上游同步
 
-- 建立 [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)，
-  repository access 僅選擇此 repository，repository permission 僅將
-  `Pull requests` 設為 `Read and write`。
-- 到 `Settings → Secrets and variables → Actions` 建立
-  [repository secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
-  `SYNC_PR_TOKEN`，值為上述 token。共用同步 job 只在建立 review-only PR
-  的 step 使用此 secret；同步分支仍由權限限縮為 `contents: write` 的
-  `GITHUB_TOKEN` 推送。
-- PR step 直接呼叫 REST `POST /repos/{owner}/{repo}/pulls`，不使用會額外要求
-  `Contents: read` 的 `gh pr create` GraphQL 路徑；`SYNC_PR_TOKEN` 不需要
-  `Contents` permission。
-- Token 到期或撤銷後必須更新 `SYNC_PR_TOKEN`；workflow 若找不到 secret，會在
-  呼叫 GitHub API 前以明確錯誤停止。
-- Sync job 會在建立 PR 前完成測試，但不會自動合併。若 ruleset 要求另一個 PR
-  check，需為 bot PR 提供 GitHub App／PAT，或人工核准該 workflow run。
+想立即檢查更新而不等週一排程時：
 
-## 驗證
+1. 前往 GitHub Repository 的 **Actions** 分頁，選取 [`Sync All Skills`](.github/workflows/sync-skills.yml)。
+2. 點選 **Run workflow**，在 `source` 下拉選單選擇 `all` 或單一來源（`upstream`、`security-audit`、`i-have-adhd`、`taiwan-terminology`、`emil-skills`）。
+3. 等待執行完成後，到 **Pull requests** 審查同步 PR 的差異與分類結果，確認無誤後人工合併。
 
-維護者需要 Node.js 22+、Git 與 Python 3.10+。
+### 3. 驗證
+
+維護環境需具備 **Node.js 22+**、**Git** 與 **Python 3.10+**（Windows 若 `python` 不在 PATH，可設定 `PYTHON` 環境變數為執行檔路徑）。
+
+#### 本機同步與 Repository 契約檢查
 
 ```bash
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs
 ```
 
-修改 `plugins/**` 後，另外使用 Antigravity CLI 驗證每個 plugin 的 manifest、`rules/AGENTS.md` 與 `skills.json` 解析結果：
+> 若修改 snapshot adapter 共用契約，務必執行 `snapshot-input.test.mjs` 與各 adapter 測試；Skill 行為實測與靜態契約檢查分開判定，未執行或略過的案例不代表通過。
+
+#### Antigravity Plugins 檢查（修改 `plugins/**` 後執行）
 
 ```bash
-# 所有 plugin 須通過 0 error 驗證
+# 檢查單一 plugin（須為 0 errors）
 agy plugin validate plugins/<plugin-name>
 
 # 除了內含上游 >24,000 bytes SKILL.md 的 ui-design 之外，其餘 6 個 plugin 皆須通過 --strict
@@ -206,19 +118,14 @@ agy plugin validate plugins/security --strict
 agy plugin validate plugins/in-progress --strict
 ```
 
-註：`ui-design` 中的上游 `emil-design-eng/SKILL.md` 與 `write-swift/SKILL.md` 超過 Antigravity 單檔 24,000 bytes 上限，為保留 `emil-skills` 上游原貌而不手動截斷，因此執行 `agy plugin validate plugins/ui-design` 時會回報 2 項預期 warning（0 error）。
+> 註：`ui-design` 內的上游 `emil-design-eng/SKILL.md` 與 `write-swift/SKILL.md` 超過 24,000 bytes 單檔讀取提醒門檻；為保留上游原貌不手動截斷，對 `plugins/ui-design` 執行非 strict 驗證（回報 2 項預期 warning、0 error）即可。
 
-Python 測試預設在 Windows 呼叫 `python`，在 Linux 呼叫 `python3`。若執行檔不在
-PATH，可將 `PYTHON` 環境變數設為完整執行檔路徑；測試會使用 UTF-8 輸出，避免
-Windows 主控台編碼影響中文案例。CI 在 Ubuntu 與 Windows 執行 Node 單元測試與 repository validation。
+#### 台灣用語檢查（新增或修改中文文件後執行）
 
-`.gitattributes` 固定 Bash scripts 與詞庫快照使用 LF，快照產生器也固定輸出 LF。
-既有 checkout 若尚未套用換行政策，先確認沒有本機內容修改，再只將上述檔案
-轉為 LF；不要為了通過驗證改寫 lock 的 hash。
+```bash
+python skills/language/taiwan-term/scripts/audit_terms.py --mode detection
+```
 
-四個 JavaScript snapshot adapters 共用 regular-file 與完整 commit SHA 驗證，
-在寫入前拒絕 symlink 與不支援的檔案型別。Taiwan.md 的 Python adapter 保持
-詞庫專用的來源驗證。更新共用契約時，執行 `snapshot-input.test.mjs` 與既有
-各 adapter 的成功／失敗案例。
+### 4. 換行政策注意事項
 
-Skill 行為實測與 CI 的靜態契約檢查分開判定；未執行或略過的案例不代表通過。
+`.gitattributes` 固定 `.sh` 與 `terminology.snapshot.json` 使用 LF。若舊 checkout 尚未套用換行設定，先確認沒有未提交修改，再重新整理這類檔案的換行；切勿為了通過檢查而手動改寫 lock 檔案內的 hash。

@@ -1,12 +1,18 @@
 # Skills for Antigravity
 
-一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 [`emilkowalski/skills`](https://github.com/emilkowalski/skills) 的設計與介面技能、Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
+這是一套給 Antigravity 使用的共用技能（Skills）與規則集，整合了軟體開發、硬體 KiCad 電路設計、介面動畫、資安檢查、台灣用語校對與團隊協作工具。
 
-建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home，並整理為 7 個 [`plugins/`](plugins/README.md)（核心領域與 `skills/` 分類 1:1 對齊，上游開發中與雜項則合併收整），於 `~/.gemini/config/plugins.json` 全域掛載即可在所有專案依領域一鍵開關（本儲存庫已統一採 Antigravity 2.0 全域 Plugin 模式，不再提供逐專案連結腳本）。
+設定一次後，就能在所有專案共用這些技能，並依照目前的專案類型自由開關，避免不需要的工具干擾對話。
 
 ## 快速開始
 
-### 1. 取得儲存庫到 `~/.agents`
+### 1. 下載到 `~/.agents`
+
+Windows（PowerShell）：
+
+```powershell
+git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
+```
 
 WSL／Linux／Raspberry Pi：
 
@@ -14,17 +20,11 @@ WSL／Linux／Raspberry Pi：
 git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 ```
 
-Windows：
+> 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。
 
-```powershell
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
-```
+### 2. 掛載到 Antigravity
 
-若目標目錄已存在，請先確認或備份，勿直接覆寫。
-
-### 2. 全域掛載 Plugins
-
-在 `~/.gemini/config/plugins.json`（Windows 為 `%USERPROFILE%\.gemini\config\plugins.json`）加入 `plugins/` 目錄的**絕對路徑**（Antigravity 載入器要求絕對路徑，不展開 `~/`）：
+編輯 `~/.gemini/config/plugins.json`（Windows 為 `%USERPROFILE%\.gemini\config\plugins.json`），填入 `plugins` 資料夾的**完整絕對路徑**（不可寫成 `~/`）：
 
 ```json
 {
@@ -38,68 +38,39 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.ag
 
 （Linux／WSL／Raspberry Pi 請改填 `/home/<your-user>/.agents/plugins`。）
 
-設定後即可在任意專案直接使用，透過 Antigravity 左側邊欄 **Customizations > Installed** 或 `agy plugin list` / `agy plugin enable <name>` / `agy plugin disable <name>` 即時開關以下 7 個領域 Plugin（核心分類 1:1 對齊 `skills/`，上游開發中與雜項整併為單一開關；停用領域不會佔用 Context）：
+### 3. 依專案需求開關功能套件
 
-| Plugin ID | App 顯示名稱 | 預設狀態 | 對應目錄與涵蓋內容 |
+掛載後，打開 Antigravity 左側邊欄 **Customizations > Installed**（或使用 `agy plugin list` / `agy plugin enable <名稱>` / `agy plugin disable <名稱>`）即可隨時開關以下 7 個套件。關閉的套件不會載入，也不會浪費額外容量：
+
+| 套件名稱 | 在 App 顯示的名稱 | 預設狀態 | 包含什麼功能 |
 | --- | --- | --- | --- |
-| [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 啟用 | `skills/software/*`（19）＋通用工程規則 |
-| [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 啟用 | `skills/hardware/*`（3）＋硬體規則 |
-| [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 啟用 | `skills/productivity/*`（8） |
-| [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 啟用 | `skills/language/*`（1） |
-| [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 停用 | `skills/ui-design/*`（20）＋介面設計規則 |
-| [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 停用 | `skills/security/*`（1）＋資安驗證規則 |
-| [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中與雜項（In Progress & Misc） | 停用 | `skills/in-progress/*` ＋ `skills/misc/*`（10） |
+| [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 開啟 | 規格討論、TDD 開發、除錯與程式碼審查（19） |
+| [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 原理圖、PCB 佈線與製造檔檢查（3） |
+| [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、對話交接、教學與提問輔助（8） |
+| [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 開啟 | 繁體中文與台灣技術用語離線檢查（1） |
+| [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 關閉 | 網頁動態、手勢、Apple 介面規範與 Swift（20） |
+| [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 關閉 | 程式碼與 API 漏洞檢查流程（1） |
+| [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中與雜項（In Progress & Misc） | 關閉 | 上游測試中工具、寫作流程與 TypeScript 輔助（10） |
 
-## Repository 內容
+### 4. 日常使用與更新
 
-| 路徑 | 用途 |
+- **使用方式**：直接用自然語言告訴 Antigravity 你想做的事（例如「幫我用 TDD 寫登入功能」、「對這個專案做資安檢查」），或輸入 `/技能名稱` 直接呼叫。
+- **保持更新**：先確認 `~/.agents` 沒有未儲存的修改，再執行 `git pull --ff-only` 即可取得最新技能。
+
+## 資料夾說明
+
+| 資料夾 | 說明 |
 | --- | --- |
-| [`plugins/`](plugins/README.md) | 依領域打包的 7 個 Antigravity 2.0 plugins（以 `skills.json` 映射並搭配領域 `rules/AGENTS.md`）。 |
-| [`skills/`](skills/) | 可由 Antigravity 呼叫的軟體、硬體、UI 設計、生產力、語言、工具與資安 skills。 |
-| [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯基準規則。 |
-| [`docs/`](docs/) | 各 skills 的使用與開發參考。 |
-| [`.github/upstream-sync/`](.github/upstream-sync/) | `mattpocock/skills` 上游快照、所有權與分類映射 policy、驗證與測試。 |
-| [`.github/skill-sync/`](.github/skill-sync/) | 所有來源的統一掃描入口、來源清單與共用同步流程。 |
-| [`.github/security-audit-sync/`](.github/security-audit-sync/) | Cloudflare `security-audit` 的同步維護工具。 |
-| [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) | `i-have-adhd` 的同步維護工具，保留明確指定才執行的限制。 |
-| [`.github/emil-skills-sync/`](.github/emil-skills-sync/) | Emil 介面與動態 skills 的固定快照與獨立同步維護工具。 |
-| [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) | Taiwan.md 固定詞庫快照的同步維護工具。 |
-| [`CONTEXT.md`](CONTEXT.md) | 本專案的標準術語與關係範例。 |
+| [`plugins/`](plugins/README.md) | 7 個可直接開關的領域套件設定（各自引用下方的 `skills/` 與專用規則）。 |
+| [`skills/`](skills/) | 62 個技能的實際定義檔，依領域分類存放。 |
+| [`rules/`](rules/) | 跨套件共用的基礎行為規範。 |
+| [`docs/`](docs/) | 各技能的補充參考文件。 |
 
-上游的 Claude-only、deprecated 與發布工具不會進入可用 skills；主上游的 `skills/engineering/*` 會在同步時自動映射至 `skills/software/*`。[`security-audit`](skills/security/security-audit/SKILL.md) 與 [`i-have-adhd`](skills/productivity/i-have-adhd/SKILL.md) 分別透過專屬 adapter 同步自 [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) 與 [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)，所有更新均須經 Pull Request 人工審查。
+> 想了解上游自動更新來源、GitHub 設定與維護測試指令，請參閱 [維護手冊（MAINTENANCE.md）](MAINTENANCE.md)。
 
-[`taiwan-term`](skills/language/taiwan-term/SKILL.md) 的流程與掃描器由本專案維護；詞庫快照固定於 Taiwan.md commit，更新只透過需人工審查的 Pull Request 採用。
+## 全部技能一覽
 
-UI Design（`skills/ui-design/`）透過專屬 adapter 同步自 `emilkowalski/skills`，保留上游觸發設定、參考文件與 MIT 授權。其 `prototype` 在本專案命名為 `ui-prototype`，可與 Software 的 `prototype` 一起使用。
-
-所有來源共用 [`Sync All Skills`](.github/workflows/sync-skills.yml) 排程與同步流程：
-每週一台灣時間 08:00 檢查全部五個來源；沒有新 commit
-就跳過後續處理。可在 Actions 手動選擇單一來源或全部來源，更新各自建立需
-人工審查的 PR。
-
-## 更新全域 Agent home
-
-先確認 `~/.agents` 沒有未提交變更，再以 `git pull --ff-only` 更新，Antigravity 即會自動套用最新技能與 plugin 設定。
-
-## 使用 skills
-
-直接用自然語言描述需求。Antigravity 會依已啟用 plugin 內的 skill description 選擇工作流程，並在執行前讀取對應的 `SKILL.md`。
-
-例如：
-
-- 「這個 API 一直失敗，請幫我 diagnose。」
-- 「用 TDD 實作登入流程。」
-- 「先做 domain modeling，把術語釐清。」
-- 「用 grill-with-docs 挑戰這個設計。」
-- 「對這個 repository 做 security audit。」
-- 「用 animate 幫這個選單加上開合動畫。」
-- 「用 ui-prototype 做三種卡片介面，讓我挑選。」
-
-## Skills 關鍵字與用途
-
-下表以 skill name 作為關鍵字。掛載並啟用對應領域 plugin 後，可輸入 `/skill-name`，也可在自然語言中明確提到 `skill-name`；標示
-「需明確指定」的 skill 只有在使用者點名時才會執行，「可自動選用」則可由
-Antigravity 依需求與 frontmatter description 判斷是否使用。
+下列為所有可用技能。標示「可自動選用」時，Antigravity 會依你的需求自動取用；標示「需明確指定」時，需要你在對話中點名（或輸入 `/技能名稱`）才會執行。
 
 ### 軟體開發（Software）
 
@@ -131,21 +102,21 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | --- | --- | --- |
 | [`animate`](skills/ui-design/animate/SKILL.md) | 可自動選用 | 建立網頁動畫，選擇動態目的、工具、屬性、曲線與時間。 |
 | [`animate-expo`](skills/ui-design/animate-expo/SKILL.md) | 可自動選用 | 建立 React Native／Expo 動畫、手勢、轉場與觸覺回饋。 |
-| [`animation-performance`](skills/ui-design/animation-performance/SKILL.md) | 可自動選用 | Keep web animations inside the frame budget — animate composite-only properties, keep motion off the main thread when the page is busy, and find the cause when an animation drops frames. |
+| [`animation-performance`](skills/ui-design/animation-performance/SKILL.md) | 可自動選用 | 控制網頁動畫效能預算，僅動畫化合成層屬性並找出掉幀原因。 |
 | [`animation-vocabulary`](skills/ui-design/animation-vocabulary/SKILL.md) | 可自動選用 | 將動畫效果描述轉成精確名稱，方便溝通設計需求。 |
 | [`apple-design`](skills/ui-design/apple-design/SKILL.md) | 可自動選用 | 將 Apple 的介面與動態設計原則應用到網頁。 |
-| [`ask-emil`](skills/ui-design/ask-emil/SKILL.md) | 需明確指定 | Ask which skill or flow fits your situation. |
+| [`ask-emil`](skills/ui-design/ask-emil/SKILL.md) | 需明確指定 | 詢問目前介面或動畫情境適合使用哪個 UI Design 技能。 |
 | [`ask-sonner`](skills/ui-design/ask-sonner/SKILL.md) | 可自動選用 | 設定、客製化與排查 Sonner toast 通知。 |
 | [`break-ui`](skills/ui-design/break-ui/SKILL.md) | 可自動選用 | 以極端資料檢查介面，提供一般與極端資料切換及修正建議。 |
-| [`choreograph`](skills/ui-design/choreograph/SKILL.md) | 可自動選用 | Coordinate several elements that animate together — decide what moves, in what order, how much they overlap, and what stays still — so a group reads as one intentional motion instead of a pile of separate animations. |
+| [`choreograph`](skills/ui-design/choreograph/SKILL.md) | 可自動選用 | 協調多個元件的連動進場順序與節奏，讓畫面動態更有整體感。 |
 | [`emil-design-eng`](skills/ui-design/emil-design-eng/SKILL.md) | 可自動選用 | 改善 UI 細節、元件設計、動畫決策與使用質感。 |
 | [`find-animation-opportunities`](skills/ui-design/find-animation-opportunities/SKILL.md) | 可自動選用 | 找出值得加入動畫的介面位置，提出具體建議。 |
-| [`gestures`](skills/ui-design/gestures/SKILL.md) | 可自動選用 | Build drag, swipe, and sheet interactions that track the finger 1:1 and stay interruptible. |
+| [`gestures`](skills/ui-design/gestures/SKILL.md) | 可自動選用 | 實作跟手且可隨時中斷的拖曳、滑動與抽屜手勢互動。 |
 | [`improve-animations`](skills/ui-design/improve-animations/SKILL.md) | 可自動選用 | 稽核整體動態設計，產生依優先順序排列的實作計畫。 |
-| [`learn-taste`](skills/ui-design/learn-taste/SKILL.md) | 需明確指定 | Turn a session's design corrections into rules, with their why, in DESIGN.md, a project skill, or a lint check. |
+| [`learn-taste`](skills/ui-design/learn-taste/SKILL.md) | 需明確指定 | 將對話中的介面設計修正整理成 DESIGN.md 或 lint 規則與原因。 |
 | [`mobile-native`](skills/ui-design/mobile-native/SKILL.md) | 可自動選用 | 改善手機網頁的觸控、視窗高度、安全區域與互動體驗。 |
 | [`pick-ui-library`](skills/ui-design/pick-ui-library/SKILL.md) | 需明確指定 | 依前端需求從上游作者整理的清單挑選 UI 函式庫。 |
-| [`remove-animations`](skills/ui-design/remove-animations/SKILL.md) | 可自動選用 | Find the animations an interface doesn't need and remove them — motion on keyboard actions, high-frequency surfaces, functional data, and decoration with no purpose — then clean up what they leave behind. |
+| [`remove-animations`](skills/ui-design/remove-animations/SKILL.md) | 可自動選用 | 移除多餘或干擾高頻操作的動畫並清理殘留程式碼。 |
 | [`review-animations`](skills/ui-design/review-animations/SKILL.md) | 需明確指定 | 依設計工程準則審查既有動畫與動態程式碼。 |
 | [`ui-prototype`](skills/ui-design/ui-prototype/SKILL.md) | 需明確指定 | 建立多種 UI 原型與切換器，等待使用者選定後再整合。 |
 | [`write-swift`](skills/ui-design/write-swift/SKILL.md) | 可自動選用 | 撰寫與審查現代 Swift、並行模型、效能及測試。 |
@@ -200,59 +171,11 @@ Antigravity 依需求與 frontmatter description 判斷是否使用。
 | [`chief-of-staff`](skills/in-progress/chief-of-staff/SKILL.md) | 需明確指定 | 協調子 agents 與排程，在單一 session 中推進長期目標。 |
 | [`loop-me`](skills/in-progress/loop-me/SKILL.md) | 需明確指定 | 針對想建立的 workflows 進行規格訪談。 |
 | [`setup-ts-deep-modules`](skills/in-progress/setup-ts-deep-modules/SKILL.md) | 需明確指定 | 為 TypeScript repository 設定 dependency-cruiser 與 deep module 邊界。 |
-| [`software-factory`](skills/in-progress/software-factory/SKILL.md) | 需明確指定 | Shared language for designing a software factory: the tasks it runs and the services it plugs into. |
+| [`software-factory`](skills/in-progress/software-factory/SKILL.md) | 需明確指定 | 規劃自動化軟體工廠流程與串接任務的共用規格語言。 |
 | [`writing-beats`](skills/in-progress/writing-beats/SKILL.md) | 需明確指定 | 將原始素材組合成有先後脈絡的文章 beats。 |
 | [`writing-fragments`](skills/in-progress/writing-fragments/SKILL.md) | 需明確指定 | 探索並蒐集尚未組織的寫作 fragments。 |
 | [`writing-shape`](skills/in-progress/writing-shape/SKILL.md) | 需明確指定 | 將原始素材逐段整理成文章。 |
 
-這份索引是目前 Runtime skills 的閱讀入口；各 skill 的 frontmatter 與完整行為仍以
-自己的 `SKILL.md` 為準。[`rules/skills.md`](rules/skills.md) 與各 plugin 的 `rules/AGENTS.md` 負責觸發、編排與
-Antigravity 轉譯。
+## 維護與授權
 
-## 跨領域開發流程與雙向護欄
-
-本儲存庫涵蓋多個工程與設計領域。各領域共用同一套**「起手鎖定規格與邊界 → 隔離 Context 施工 → 硬門檻驗收斷路 → 沉澱單一真實來源（SSOT）」**的雙向護欄原則，但依領域特性走各自的工作流，不將單一模板硬套於所有任務。
-
-### 各領域標準工作流
-
-| 領域 | 路由與適用情境 | 起手式（鎖定規格與邊界） | 執行期（隔離施工） | 收尾驗收（硬門檻與斷路器） | 沉澱之專案 SSOT |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **軟體開發**<br>(`Software`) | `/ask-matt`<br>功能開發、重構、除錯 | `grill-with-docs` → `to-spec` → `to-tickets`（大型跨 Session 規劃先走 `wayfinder`；需驗證邏輯時搭配 `prototype`） | `implement` + `tdd`（每張 Ticket 使用全新 Context Window）或 `implement-spec`（多 Worktree 平行 Subagents） | `code-review`（平行啟動 Standards 與 Spec 兩個全新 Subagents 獨立審查） | `.agents/CONTEXT.md`、`.agents/docs/adr/`、`CODING_STANDARDS.md` 與 Linter（透過 `retro` 轉化） |
-| **Web 與介面設計**<br>(`UI Design`) | `/ask-emil`<br>UI 元件、動畫、手勢、行動端體驗 | `ui-prototype`（於隔離頁面建立 3～5 種不同設計軸向的實動原型供真人挑選，探索期嚴禁修改正式碼） | `pick-ui-library` → `animate`／`choreograph`／`gestures`／`animate-expo` | `break-ui`（極端資料壓力測試）、`review-animations`、`mobile-native`、`animation-performance` | 根目錄 `DESIGN.md` 與 Lint 規則（透過 `learn-taste` 收錄設計修正與背後的 `Why`） |
-| **硬體開發**<br>(`Hardware`) | KiCad 10 開案、改版、多板互連、減層試作 | `kicad-schematic`（開案先填妥「機構、電氣、板廠、網路分類、版別與驗收」五項參數表與跨板排線表） | `kicad-pcb`（先鎖機構再走功率迴路；減層試作須另建副本；`0 Ω` 跨線須回標原理圖與 BOM） | `kicad-release`（執行 KiCad 10 CLI 強制確認 **ERC = 0、DRC = 0、未接線 = 0、Schematic Parity = 0**，於工作副本清理懸空物件並匯出製造檔） | `.kicad_pro`、`.kicad_dru`、原理圖跨板接線表、BOM 與 `.agents/docs/adr/`（記錄分地或減層取捨） |
-| **資安與用語稽核**<br>(`Security`／`Language`) | `security-audit`<br>`taiwan-term` | 先盤點專案範圍、排除路徑（Exclusions），並讀取 `.agents/CONTEXT.md` 保護領域專有名詞 | 執行離線確定性掃描（如 `audit_terms.py`）或建立攻擊面覆蓋率帳本，禁止憑直覺全域替換 | `validate-coverage-ledger.cjs`、`validate-findings.cjs`（強制驗證 PoC 與真實影響）及 Diff 迴歸檢查 | 稽核報告、覆蓋率帳本與 `.agents/CONTEXT.md` 詞庫規範 |
-| **通用協作與生產力**<br>(`Productivity`) | 可疊加於上述任何領域流程 | `/i-have-adhd`（開啟行動優先、每輪重申進度 `Step X of Y`）、`/to-questionnaire`（向外部人員蒐集決策） | `/wait-what`（即時以領域詞彙重述脈絡） | `/i-have-adhd` 內建 **3 輪除錯螺旋斷路器**；跨環境或分叉支線時執行 `/handoff` | `%TEMP%`／`$TMPDIR` 交接檔（僅存指標路徑，不重複複製 Spec 與 ADR） |
-
-### 上下文衛生與斷路器規則（Context Hygiene & Circuit Breakers）
-
-為了防止多輪對話後的試錯過程污染 Context Window（導致第 3～5 輪開始修 A 壞 B），操作時應遵循以下斷路器機制：
-
-1. **規劃與施工物理隔離**：
-   - **規劃期（`grill-with-docs → to-spec → to-tickets`）**：保持在同一個未受污染的對話視窗（Smart Zone 約 150k tokens 內）完成，確保規格與切片共享完整決策脈絡。
-   - **施工期（`implement`／`implement-spec`）**：`to-tickets` 產出的每張 Ticket 皆為**可獨立驗證、且大小剛好塞進單一全新 Context Window 的垂直切片（Tracer Bullet）**。每完成一張 Ticket 即執行 `/clear` 重開對話視窗，下一個 Session 僅讀取下一張 Ticket、Spec 與專案 SSOT，徹底切斷前一張 Ticket 的試錯噪音。
-2. **階段邊界五選一決策樹（Phase Boundaries）**：
-   當一個階段結束時，依序評估以下五種交接方式（第一個符合者勝出）：
-   - **Continue（原地繼續）**：下一階段需要當前對話作為第一手脈絡（如小範圍 `grill-with-docs` 後直接 `implement`），且剩餘 Context 空間充足。
-   - **`/clear`（清空重開）**：當前對話的探索與試錯對下一步已無保留價值（如一張 Ticket 已完工提交，準備接下一張 Ticket）。
-   - **`/handoff`（產出交接檔）**：僅在工作需要**跨工具（Harness）、跨目錄（如切換至獨立 Prototype 目錄）、交接給同事、或從當前對話分叉（Fork）出支線任務**時使用。
-   - **Subagent（委派子代理）**：任務邊界明確且無須人工中途介入（如 `code-review` 雙軸平行審查、`research` 查閱外部第一手文件）。
-   - **`/compact`（壓縮摘要）**：同工具、同目錄且需保留當前意圖進入下一階段時使用。
-3. **試錯與邏輯發散斷路器**：
-   - **禁止盲猜修 Bug**：施工中遇到非預期故障或回歸錯誤，必須先透過 `diagnosing-bugs` 建立「單一指令即可穩定重現錯誤」的緊密回饋迴圈（Tight Feedback Loop），禁止在重現前連續猜測改碼。
-   - **3 輪除錯螺旋停損（Debug Spiral Rule）**：同一問題連續修改 3 輪仍未解決時，必須立即停止改碼，點出可能錯誤的前置假設並重新診斷；必要時直接回滾未提交變更並重開新對話。
-   - **收尾決策理由檢驗（金絲雀測試）**：每張 Ticket 或每版修改收尾準備提交前，要求 AI 於回覆或 Commit／PR 摘要中簡述 **「(1) 改了什麼、(2) 為什麼這樣改、(3) 放棄了哪個替代方案」**。一旦發現 AI 無法給出合理原因、開始硬拗或違反 Spec／ADR，代表該 Session 注意力已發散中毒——應立即捨棄未提交亂改、重開乾淨對話視窗並僅餵入 Spec、Ticket 與 ADR 重新接力。
-
-## 專案文件與單一真實來源（SSOT）
-
-為了避免把所有歷史紀錄塞進單一 `.md` 導致「文件通膨」與二次 Context 污染，每個開發專案的持久知識採取**四層職責分離**；共享的 skills 與 rules 則透過全域 plugins 載入：
-
-| SSOT 層級 | 專案路徑 | 職責與寫入時機 | 嚴禁事項（防污染邊界） |
-| :--- | :--- | :--- | :--- |
-| **1. 領域詞彙層** | `.agents/CONTEXT.md`<br>（或多語境 `.agents/CONTEXT-MAP.md`） | 由 `domain-modeling`／`grill-with-docs` 在術語釐清當下即時更新，定義專案標準名詞、實體關係與禁用同義詞（`_Avoid_`）。 | **僅作為詞彙表（Glossary）**；嚴禁寫入實作細節、API 規格、操作指令或開發日誌。 |
-| **2. 架構決策層** | `.agents/docs/adr/NNNN-slug.md` | 僅在決策同時滿足 **① 難以逆轉（Hard to reverse）、② 無脈絡會令人驚訝（Surprising without context）、③ 真實技術取捨（Real trade-off）** 三項門檻時建立，記錄決策背景、理由與淘汰方案（`Considered Options`）。 | **嚴禁當作每版修改的 Changelog 流水帳**；日常局部實作理由應寫在 Commit／PR 或 Spec，保持 ADR 高純度以供後續 Session 按需讀取。 |
-| **3. 需求與狀態機層** | Issue Tracker 或<br>`.scratch/<feature>/issues/<NN>-<slug>.md` | 由 `to-spec` 記錄單次功能的 `Implementation Decisions`、`Testing Decisions`（測試接縫 Seams）與 `Out of Scope`；由 `to-tickets`／`wayfinder` 建立帶 `Blocked by` 相依邊的工作狀態機。 | Ticket 為單次 Context Window 的拋棄式工作單元，**完工驗收後即關閉**，不作為永久架構文件維護。 |
-| **4. 領域規範與自動防呆層** | 根目錄 `AGENTS.md`、`CODING_STANDARDS.md`、`DESIGN.md`、`.kicad_pro`、`.kicad_dru`、Pre-commit／Linter | • `AGENTS.md`：專案特定的建置、測試與修改限制。<br>• `CODING_STANDARDS.md` 與 Linter：由 `retro` 將踩坑經驗優先轉為 **0 Token 成本的自動化檢查（Linter／Pre-commit／CI）**，無法自動化的判斷準則才寫入 `CODING_STANDARDS.md` 供 `code-review` 讀取。<br>• `DESIGN.md`：由 `learn-taste` 記錄 UI 品味規則與 `Why`。<br>• `.kicad_pro`、`.kicad_dru` 與接線表：記錄硬體製程下限、Netclasses、自訂 DRC 規則與跨板腳位定義。 | 機械性語法或格式規範應優先交由 Linter／ERC／DRC 強制把關，避免堆積過長文字規範消耗實作 Agent 的 Context。 |
-
-## 維護
-
-上游採用政策、自動同步與驗證方式見 [MAINTENANCE.md](MAINTENANCE.md)。上游授權保留於 [LICENSE](LICENSE)。
+上游同步策略、GitHub Actions 設定與驗證指令見 [MAINTENANCE.md](MAINTENANCE.md)；各套件開發細節見 [plugins/README.md](plugins/README.md)，授權條款保留於 [LICENSE](LICENSE)。

@@ -13,7 +13,7 @@ Antigravity 2.0 plugins (`plugins/`).
 
 ## Local checks
 
-See [MAINTENANCE.md](../../MAINTENANCE.md#驗證) for runtime prerequisites and
+See [MAINTENANCE.md](../../MAINTENANCE.md#3-驗證) for runtime prerequisites and
 `agy plugin validate` instructions.
 
 ```sh
