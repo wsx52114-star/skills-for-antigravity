@@ -1,0 +1,12 @@
+{
+  "name": "frontend-design",
+  "displayName": "Frontend Design & Motion",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Web, mobile, and Swift UI design engineering, animation choreography, gestures, frame-budget performance, and taste rules from emilkowalski/skills.",
+  "suggestedPrompts": [
+    "Use ui-prototype to build three layout variants behind a picker",
+    "Audit this component's animations for frame-budget performance",
+    "Stress-test this UI with break-ui using extreme data"
+  ]
+}

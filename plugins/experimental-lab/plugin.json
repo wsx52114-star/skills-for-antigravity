@@ -1,0 +1,12 @@
+{
+  "name": "experimental-lab",
+  "displayName": "Experimental & Misc Skills",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "In-progress experimental workflows and specialized TypeScript/exercise utilities, shipped disabled by default.",
+  "suggestedPrompts": [
+    "Explore raw writing notes with writing-fragments",
+    "Interview workflow requirements with loop-me",
+    "Configure Husky and lint-staged with setup-pre-commit"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "kicad-hardware",
+  "displayName": "KiCad Hardware & PCB",
+  "version": "1.0.0",
+  "description": "KiCad 10 hardware workflows for schematic review, new-board floorplan and layer/via planning, general PCB routing rules, CLI ERC/DRC gates, and manufacturing export.",
+  "suggestedPrompts": [
+    "Review this KiCad schematic for power trees, PWR_FLAG, footprints, and ERC",
+    "Plan a new PCB stackup and floorplan from this KiCad schematic",
+    "Run KiCad 10 CLI ERC/DRC parity checks and prepare Gerber, drill, BOM, and POS exports"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "focus-adhd",
+  "displayName": "Focus & ADHD Mode",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Explicitly invoked action-first, step-tracked response formatting for ADHD-friendly execution with a 3-attempt debug stop rule.",
+  "suggestedPrompts": [
+    "Use i-have-adhd to turn this debugging session into an action-first checklist",
+    "Rewrite this deployment guide in i-have-adhd format",
+    "Track progress step by step using i-have-adhd"
+  ]
+}

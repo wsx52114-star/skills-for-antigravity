@@ -2,12 +2,42 @@
 
 一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 [`emilkowalski/skills`](https://github.com/emilkowalski/skills) 的設計與介面技能、Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
-建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home；各開發專案透過本機連結啟用，並保留自己的領域語言、架構決策與程式碼。這不同於 Antigravity 原生位於 `~/.gemini/` 的全域設定。
+建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home。**Antigravity 2.0 推薦**依領域拆分 [`plugins/`](plugins/README.md) 並於 `~/.gemini/config/plugins.json` 全域掛載，可跨專案直接啟用並依領域開關；若需相容僅讀取專案 `.agents/skills/` 的環境，也可保留各開發專案的本機連結方式。
 
 ## 快速開始
 
-完整啟用分為三步：取得共享 Agent home、連結開發專案、檢查安裝。只完成
-`git clone` 還不會讓現有開發專案出現 `/skill-name`。
+### 方式 A：Antigravity 2.0 全域 Plugin 模式（官方推薦）
+
+1. 取得儲存庫到 `~/.agents`（見下方 clone 指令）。
+2. 在 `~/.gemini/config/plugins.json`（Windows 為 `%USERPROFILE%\.gemini\config\plugins.json`）加入該目錄的**絕對路徑**（載入器要求絕對路徑，不展開 `~/`）：
+
+```json
+{
+  "entries": [
+    {
+      "path": "C:/Users/<your-user>/.agents/plugins"
+    }
+  ]
+}
+```
+
+（Linux／WSL／Raspberry Pi 請改填 `/home/<your-user>/.agents/plugins`。）
+
+設定後即可在任意專案直接使用，透過 `agy plugin list`、`agy plugin enable <name>`、`agy plugin disable <name>` 或 Antigravity 側邊欄即時開關以下 7 個領域 Plugin（不佔用關閉領域的 Context）：
+
+| Plugin | 預設狀態 | 涵蓋範圍 |
+| --- | --- | --- |
+| [`engineering-workflow`](plugins/engineering-workflow/plugin.json) | 啟用 | 核心工程與生產力 skills（26）＋通用工程規則 |
+| [`kicad-hardware`](plugins/kicad-hardware/plugin.json) | 啟用 | KiCad 原理圖、PCB 佈線與 CLI 簽核（3）＋硬體規則 |
+| [`taiwan-terminology`](plugins/taiwan-terminology/plugin.json) | 啟用 | 離線 Taiwan.md 台灣用語檢查（1） |
+| [`frontend-design`](plugins/frontend-design/plugin.json) | 停用 | 前端 UI／動態設計 skills（20）＋設計流程規則 |
+| [`security-audit`](plugins/security-audit/plugin.json) | 停用 | Cloudflare 資安稽核（1）＋證據驗證規則 |
+| [`focus-adhd`](plugins/focus-adhd/plugin.json) | 停用 | explicit-only `i-have-adhd` 行動格式（1） |
+| [`experimental-lab`](plugins/experimental-lab/plugin.json) | 停用 | `in-progress` 與 `misc` 工具 skills（10） |
+
+### 方式 B：逐專案本機連結（舊版／相容模式）
+
+若開發環境僅讀取專案目錄下的 `.agents/skills/`，完整啟用分為三步：取得共享 Agent home、連結開發專案、檢查安裝。只完成 `git clone` 還不會讓現有開發專案出現 `/skill-name`。
 
 ### 1. 取得共享 Agent home
 
@@ -71,6 +101,7 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.agents\scripts\init_setup_local
 
 | 路徑 | 用途 |
 | --- | --- |
+| [`plugins/`](plugins/README.md) | 依領域打包的 Antigravity 2.0 plugins（以 `skills.json` 映射 `skills/` 並搭配獨立 `rules/AGENTS.md`）。 |
 | [`skills/`](skills/) | 可由 Antigravity 呼叫的工程、設計、生產力、語言、工具與安全 skills。 |
 | [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯規則。 |
 | [`docs/`](docs/) | 各 skills 的使用與開發參考。 |

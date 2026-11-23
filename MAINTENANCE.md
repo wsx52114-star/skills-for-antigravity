@@ -97,6 +97,7 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 以下路徑不接受 `mattpocock/skills` 更新：
 
 - `rules/**`
+- `plugins/**`
 - `skills/hardware/**`
 - `skills/language/**`
 - `skills/design/**`
@@ -192,6 +193,23 @@ Windows PowerShell 5.1 與 PowerShell 7。
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs
 ```
+
+修改 `plugins/**` 後，另外使用 Antigravity CLI 驗證每個 plugin 的 manifest、`rules/AGENTS.md` 與 `skills.json` 解析結果：
+
+```bash
+# 所有 plugin 須通過 0 error 驗證
+agy plugin validate plugins/<plugin-name>
+
+# 除了內含上游 >24,000 bytes SKILL.md 的 frontend-design 之外，其餘 plugin 皆須通過 --strict
+agy plugin validate plugins/engineering-workflow --strict
+agy plugin validate plugins/kicad-hardware --strict
+agy plugin validate plugins/taiwan-terminology --strict
+agy plugin validate plugins/security-audit --strict
+agy plugin validate plugins/focus-adhd --strict
+agy plugin validate plugins/experimental-lab --strict
+```
+
+註：`frontend-design` 中的上游 `emil-design-eng/SKILL.md` 與 `write-swift/SKILL.md` 超過 Antigravity 單檔 24,000 bytes 上限，為保留 `emil-skills` 上游原貌而不手動截斷，因此執行 `agy plugin validate plugins/frontend-design` 時會回報 2 項預期 warning（0 error）。
 
 Windows 的 Node 測試會明確略過 POSIX 安裝器案例；這些案例必須在 Linux／WSL
 執行，不能用 Windows 的通過結果代替。Windows 另執行：

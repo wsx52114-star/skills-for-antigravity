@@ -2,7 +2,17 @@
 
 這份指南說明如何讓開發專案共享 Agent home 的 skills 與 rules，同時保留自己的領域語言與架構決策。
 
-這是 workspace-local 啟用方式，不是將 skills 安裝到 Antigravity 原生的 `~/.gemini/config/skills/` global scope。
+## Antigravity 2.0 官方做法（全域 `plugins.json`，免逐專案連結）
+
+在 Antigravity 2.0 中，推薦將共享能力交由 `~/.gemini/config/plugins.json` 全域掛載 `~/.agents/plugins` 的**絕對路徑**（Windows 為 `C:/Users/<user>/.agents/plugins`，Linux／WSL／Raspberry Pi 為 `/home/<user>/.agents/plugins`；詳見 [plugins/README.md](plugins/README.md)），並透過 Antigravity Customizations 介面或 `agy plugin enable/disable <name>` 按領域開關。採此架構時，開發專案本身**不需要**執行安裝腳本或建立 `.agents/skills` 與 `.agents/rules` 連結，專案內僅保留屬於該專案且納入 Git 的 SSOT 檔案即可：
+
+- `AGENTS.md`（選用）：專案建置、測試與操作限制
+- `DESIGN_NOTES.md`／`DESIGN.md`／`CODING_STANDARDS.md`（按領域選用）
+- `.agents/CONTEXT.md` 與 `.agents/docs/adr/`（專案領域詞彙表與架構決策）
+
+## 逐專案本機連結模式（相容／非 Plugin 環境）
+
+若需相容僅掃描專案目錄 `.agents/skills/` 的工具，可使用下方 workspace-local 啟用方式（不同於 Antigravity 原生位於 `~/.gemini/config/` 的全域設定）。
 
 ## 目標結構
 

@@ -1,0 +1,12 @@
+{
+  "name": "security-audit",
+  "displayName": "Security Audit",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Codebase security auditing with attack-surface coverage ledgers and validated high-impact vulnerability reporting from Cloudflare's security-audit-skill.",
+  "suggestedPrompts": [
+    "Run a security-audit reconnaissance pass and build the coverage ledger",
+    "Audit authentication and IPC boundaries in this repository",
+    "Validate and format confirmed security findings against the report schema"
+  ]
+}
