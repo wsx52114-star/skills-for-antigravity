@@ -53,35 +53,72 @@ function skillsFrom(definitions) {
   return skills;
 }
 
-function categoryHeading(category) {
+export const categoryDisplayNames = {
+  software: "軟體開發（Software）",
+  hardware: "硬體開發（Hardware）",
+  "ui-design": "Web 與介面設計（UI Design）",
+  productivity: "通用協作與生產力（Productivity）",
+  language: "台灣用語規範（Language）",
+  security: "資安稽核（Security）",
+  "in-progress": "上游開發中（In Progress）",
+  misc: "雜項工具（Misc）",
+};
+
+function defaultCategoryHeading(category) {
   return `### ${category.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ")}`;
 }
+
+function categoryHeading(category) {
+  return `### ${categoryDisplayNames[category] ?? category.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ")}`;
+}
+
+const headingToCategory = new Map(
+  Object.entries(categoryDisplayNames).flatMap(([category, label]) => [
+    [`### ${label}`, category],
+    [defaultCategoryHeading(category), category],
+  ]),
+);
 
 export function renderRootIndex(content, definitions, categories) {
   const skills = skillsFrom(definitions);
   const lines = content.split(/\r?\n/);
   const indexedCategories = [];
+  const existingHeadings = new Map();
   for (let index = 0; index < lines.length; index++) {
     if (!lines[index].startsWith("### ")) continue;
     let end = index + 1;
     while (end < lines.length && !/^#{1,3} /.test(lines[end])) end++;
     if (lines.slice(index + 1, end).includes(tableHeader)) {
-      indexedCategories.push(lines[index].slice(4).toLowerCase().replaceAll(" ", "-"));
+      const category = headingToCategory.get(lines[index]) ?? lines[index].slice(4).toLowerCase().replaceAll(" ", "-");
+      if (existingHeadings.has(category)) {
+        throw new Error(`Duplicate skill index heading: ${lines[index]}`);
+      }
+      existingHeadings.set(category, lines[index]);
+      indexedCategories.push(category);
     }
   }
   const selected = categories ?? [...new Set([...indexedCategories, ...skills.map((skill) => skill.category)])];
   const descriptions = new Map(lines.map((line) => line.match(tableRow)).filter(Boolean).map((match) => [match[1], match[3]]));
   for (const category of selected) {
-    const heading = categoryHeading(category);
+    const currentLines = content.split(/\r?\n/);
+    const preferredHeading = categoryHeading(category);
+    const fallbackHeading = defaultCategoryHeading(category);
+    const heading = existingHeadings.get(category) ?? (
+      currentLines.includes(preferredHeading)
+        ? preferredHeading
+        : (currentLines.includes(fallbackHeading) ? fallbackHeading : preferredHeading)
+    );
     const rows = skills.filter((skill) => skill.category === category).map((skill) =>
       `| [\`${skill.name}\`](${skill.relative}) | ${skill.explicit ? "需明確指定" : "可自動選用"} | ${descriptions.get(skill.name) ?? summary(skill).replaceAll("|", "\\|")} |`);
-    if (!content.split(/\r?\n/).includes(heading) && !categories && indexedCategories.length) {
+    if (!currentLines.includes(heading) && !categories && indexedCategories.length) {
       // Insert new categories after the last existing skill table, before local notes.
-      content = section(content, categoryHeading(indexedCategories.at(-1)), (sectionLines) => {
+      const anchorHeading = existingHeadings.get(indexedCategories.at(-1)) ?? categoryHeading(indexedCategories.at(-1));
+      content = section(content, anchorHeading, (sectionLines) => {
         let end = sectionLines.indexOf(tableHeader) + 2;
         while (sectionLines[end]?.startsWith("|")) end++;
         return [...sectionLines.slice(0, end), "", heading, "", tableHeader, "| --- | --- | --- |", ...rows, ...sectionLines.slice(end)];
       });
+      existingHeadings.set(category, heading);
       indexedCategories.push(category);
       continue;
     }

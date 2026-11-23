@@ -1,5 +1,8 @@
 {
   "upstream": "https://github.com/mattpocock/skills",
+  "categoryMap": {
+    "engineering": "software"
+  },
   "upstreamAllowlist": [
     "skills/",
     "docs/",
@@ -11,9 +14,10 @@
     ".github/taiwan-terminology-sync/",
     ".github/emil-skills-sync/",
     "rules/",
+    "plugins/",
     "skills/hardware/",
     "skills/language/",
-    "skills/design/",
+    "skills/ui-design/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/"
@@ -32,9 +36,10 @@
     ".github/taiwan-terminology-sync/",
     ".github/emil-skills-sync/",
     "rules/",
+    "plugins/",
     "skills/hardware/",
     "skills/language/",
-    "skills/design/",
+    "skills/ui-design/",
     "skills/security/",
     "skills/productivity/i-have-adhd/",
     "docs/security/",

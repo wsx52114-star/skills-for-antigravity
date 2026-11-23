@@ -36,7 +36,7 @@ Claude-only 與 deprecated skills 在匯入階段排除；分類 README 中對�
 | `.out-of-scope/` | 排除 | 上游已標示不在正式技能範圍。 |
 | `docs/` | 同步 | 接收 skill 文件；保護 `docs/security/`。 |
 | `scripts/` | 排除 | 只服務上游維護，本專案使用自己的同步工具。 |
-| `skills/` | 選擇性同步 | 排除 Claude-only、deprecated；保護 `skills/security/` 與其他獨立來源。 |
+| `skills/` | 選擇性同步 | 排除 Claude-only、deprecated；依 `categoryMap` 將上游 `skills/engineering/` 映射為 `skills/software/`，並保護 `skills/ui-design/`、`skills/hardware/`、`skills/security/` 等獨立來源。 |
 | `.gitignore` | 自行維護 | 必須符合本專案的目錄與維護工具。 |
 | `CHANGELOG.md` | 排除 | 只記錄上游發版，不代表本專案變更。 |
 | `CLAUDE.md` | 排除 | Claude 專用規則。 |
@@ -77,29 +77,29 @@ Taiwan.md 的 `README.md` 與 `data/terminology/*.yaml`，產生固定 commit �
 
 ## Emil 設計與介面 skills 同步範圍
 
-`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/design/*/**`，包含
-各技能的參考文件。根目錄 MIT `LICENSE` 複製到每個技能目錄，讓專案使用
-Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他工具不匯入。
+`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/ui-design/*/**`，包含
+各技能的參考文件。根目錄 MIT `LICENSE` 複製到每個技能目錄，讓每個技能目錄都獨立保留授權。上游的根目錄說明文件、設定與其他工具不匯入。
 
 來源 `prototype` 對應到本專案 `ui-prototype`，僅調整 frontmatter name；
-原 Engineering `prototype` 保留。`rules/skills.md` 將這套來源文件中的技能
+原 Software `prototype` 保留。`rules/skills.md` 將這套來源文件中的技能
 `prototype` 參照解析為 `ui-prototype`。其餘技能內容與觸發設定維持上游原文。
 
-`skills/design/README.md` 由本專案維護。Emil adapter 使用共用索引工具依來源技能更新
-根目錄 README 的 Design 表格與分類索引，同步新增、移除、別名與觸發方式；
+`skills/ui-design/README.md` 由本專案維護。Emil adapter 使用共用索引工具依來源技能更新
+根目錄 README 的 UI Design 表格與分類索引，同步新增、移除、別名與觸發方式；
 既有用途說明與其他專案文件保持原樣。新技能的用途預設採用上游 description
 的第一句，再由 PR 審查時確認。索引與技能必須一起通過 inventory validation。
 
 ## 所有權
 
-[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、排除規則與 fork-owned paths。
+[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、排除規則與 fork-owned paths。
 
 以下路徑不接受 `mattpocock/skills` 更新：
 
 - `rules/**`
+- `plugins/**`
 - `skills/hardware/**`
 - `skills/language/**`
-- `skills/design/**`
+- `skills/ui-design/**`
 - `skills/security/**`
 - `skills/productivity/i-have-adhd/**`
 - `docs/security/**`
@@ -117,7 +117,7 @@ Copy Mode 時仍保留授權。上游的根目錄說明文件、設定與其他�
 [`.github/i-have-adhd-sync/`](.github/i-have-adhd-sync/) 單獨管理。
 `skills/language/taiwan-term/**` 的 skill 邏輯由本專案維護，詞庫資料則由
 [`.github/taiwan-terminology-sync/`](.github/taiwan-terminology-sync/) 正規化更新。
-`skills/design/**` 的上游技能由 [`.github/emil-skills-sync/`](.github/emil-skills-sync/)
+`skills/ui-design/**` 的上游技能由 [`.github/emil-skills-sync/`](.github/emil-skills-sync/)
 獨立管理。
 
 ## 架構約束
@@ -184,29 +184,33 @@ Inventory 驗證仍會阻擋不一致，並列出缺少與多出的技能名稱�
 
 ## 驗證
 
-維護者需要 Node.js 22+、Git 與 Python 3.10+。Linux／WSL 安裝器測試另需要
-Bash 4+、GNU coreutils、find、grep 與 awk。Windows 的 PowerShell 測試支援
-Windows PowerShell 5.1 與 PowerShell 7。
+維護者需要 Node.js 22+、Git 與 Python 3.10+。
 
 ```bash
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs
 ```
 
-Windows 的 Node 測試會明確略過 POSIX 安裝器案例；這些案例必須在 Linux／WSL
-執行，不能用 Windows 的通過結果代替。Windows 另執行：
+修改 `plugins/**` 後，另外使用 Antigravity CLI 驗證每個 plugin 的 manifest、`rules/AGENTS.md` 與 `skills.json` 解析結果：
 
-```powershell
-powershell -NoProfile -File .github/upstream-sync/tests/local-setup-win.test.ps1
-powershell -NoProfile -File .github/upstream-sync/tests/local-setup-win-safety.test.ps1
-pwsh -NoProfile -File .github/upstream-sync/tests/local-setup-win.test.ps1
-pwsh -NoProfile -File .github/upstream-sync/tests/local-setup-win-safety.test.ps1
+```bash
+# 所有 plugin 須通過 0 error 驗證
+agy plugin validate plugins/<plugin-name>
+
+# 除了內含上游 >24,000 bytes SKILL.md 的 ui-design 之外，其餘 6 個 plugin 皆須通過 --strict
+agy plugin validate plugins/software --strict
+agy plugin validate plugins/hardware --strict
+agy plugin validate plugins/productivity --strict
+agy plugin validate plugins/language --strict
+agy plugin validate plugins/security --strict
+agy plugin validate plugins/in-progress --strict
 ```
+
+註：`ui-design` 中的上游 `emil-design-eng/SKILL.md` 與 `write-swift/SKILL.md` 超過 Antigravity 單檔 24,000 bytes 上限，為保留 `emil-skills` 上游原貌而不手動截斷，因此執行 `agy plugin validate plugins/ui-design` 時會回報 2 項預期 warning（0 error）。
 
 Python 測試預設在 Windows 呼叫 `python`，在 Linux 呼叫 `python3`。若執行檔不在
 PATH，可將 `PYTHON` 環境變數設為完整執行檔路徑；測試會使用 UTF-8 輸出，避免
-Windows 主控台編碼影響中文案例。CI 在 Ubuntu 執行完整 POSIX 測試，在 Windows
-執行 Node 測試、repository validation 與兩個 PowerShell 版本的安裝測試。
+Windows 主控台編碼影響中文案例。CI 在 Ubuntu 與 Windows 執行 Node 單元測試與 repository validation。
 
 `.gitattributes` 固定 Bash scripts 與詞庫快照使用 LF，快照產生器也固定輸出 LF。
 既有 checkout 若尚未套用換行政策，先確認沒有本機內容修改，再只將上述檔案

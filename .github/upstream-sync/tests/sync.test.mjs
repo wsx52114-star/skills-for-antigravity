@@ -20,7 +20,7 @@ function fixture() {
   git(repo, "init");
   git(repo, "config", "user.name", "Test");
   git(repo, "config", "user.email", "test@example.com");
-  const skill = path.join(repo, "skills", "engineering", "tdd");
+  const skill = path.join(repo, "skills", "software", "tdd");
   mkdirSync(skill, { recursive: true });
   writeFileSync(path.join(skill, "SKILL.md"), "---\nname: tdd\ndescription: First.\n---\n");
   writeFileSync(path.join(skill, "run.sh"), "echo first\n");
@@ -37,7 +37,7 @@ test("content-only upstream edits are classified as non-structural", () => {
   const item = fixture();
   try {
     const before = git(item.repo, "rev-parse", "HEAD");
-    writeFileSync(path.join(item.repo, "skills", "engineering", "tdd", "SKILL.md"), "---\nname: tdd\ndescription: Improved.\n---\n");
+    writeFileSync(path.join(item.repo, "skills", "software", "tdd", "SKILL.md"), "---\nname: tdd\ndescription: Improved.\n---\n");
     git(item.repo, "add", ".");
     git(item.repo, "commit", "-m", "content");
     const result = classify(item.repo, before, "HEAD");
@@ -51,7 +51,7 @@ test("skill inventory changes require manual review", () => {
   const item = fixture();
   try {
     const before = git(item.repo, "rev-parse", "HEAD");
-    const added = path.join(item.repo, "skills", "engineering", "research");
+    const added = path.join(item.repo, "skills", "software", "research");
     mkdirSync(added, { recursive: true });
     writeFileSync(path.join(added, "SKILL.md"), "---\nname: research\ndescription: Research.\n---\n");
     git(item.repo, "add", ".");
@@ -67,7 +67,7 @@ test("executable changes inside an existing skill require manual review", () => 
   const item = fixture();
   try {
     const before = git(item.repo, "rev-parse", "HEAD");
-    writeFileSync(path.join(item.repo, "skills", "engineering", "tdd", "run.sh"), "echo changed\n");
+    writeFileSync(path.join(item.repo, "skills", "software", "tdd", "run.sh"), "echo changed\n");
     git(item.repo, "add", ".");
     git(item.repo, "commit", "-m", "script");
     const result = classify(item.repo, before, "HEAD");

@@ -61,5 +61,5 @@ test("shared synchronization keeps skip, concurrency, token, and review contract
 test("validation workflow uses read-only repository permissions", () => {
   assert.match(validation, /permissions:\s*\n\s+contents: read/);
   assert.match(validation, /runs-on: windows-latest/);
-  assert.match(validation, /local-setup-win\.test\.ps1/);
+  assert.match(validation, /upstream-sync\/validate\.mjs/);
 });

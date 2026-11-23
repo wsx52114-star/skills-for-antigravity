@@ -19,12 +19,15 @@ function fixture(lock) {
   const root = mkdtempSync(path.join(tmpdir(), "antigravity-lock-"));
   const policy = {
     upstream: "https://github.com/mattpocock/skills",
+    categoryMap: {
+      engineering: "software",
+    },
     upstreamAllowlist: ["skills/", "docs/", "LICENSE"],
     blockedUpstreamPaths: [
       ".github/taiwan-terminology-sync/",
       ".github/emil-skills-sync/",
       "skills/language/",
-      "skills/design/",
+      "skills/ui-design/",
       "skills/security/",
       "skills/productivity/i-have-adhd/",
     ],
@@ -34,7 +37,7 @@ function fixture(lock) {
       ".github/taiwan-terminology-sync/",
       ".github/emil-skills-sync/",
       "skills/language/",
-      "skills/design/",
+      "skills/ui-design/",
       "skills/security/",
       "skills/productivity/i-have-adhd/",
     ],
@@ -69,8 +72,8 @@ function fixture(lock) {
     commit: "e".repeat(40),
     files: ["LICENSE", "skills/animate/SKILL.md"],
   })}\n`);
-  write(root, "skills/design/animate/SKILL.md", "---\nname: animate\ndescription: Animate UI.\n---\n");
-  write(root, "skills/design/animate/LICENSE", "MIT\n");
+  write(root, "skills/ui-design/animate/SKILL.md", "---\nname: animate\ndescription: Animate UI.\n---\n");
+  write(root, "skills/ui-design/animate/LICENSE", "MIT\n");
   const terminologySnapshot = `${JSON.stringify({
     schema_version: 1,
     source: {
@@ -129,7 +132,7 @@ function fixture(lock) {
     ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
     "rules/skills.md",
     "skills/security/README.md",
-    "skills/design/README.md",
+    "skills/ui-design/README.md",
     "skills/security/security-audit/LICENSE",
     "skills/security/security-audit/report-schema.json",
     "skills/language/taiwan-term/scripts/audit_terms.py",
@@ -137,16 +140,12 @@ function fixture(lock) {
     "skills/language/taiwan-term/references/taiwan-md/NOTICE.md",
     "MAINTENANCE.md",
     ".github/workflows/validate-antigravity.yml",
-    ".github/upstream-sync/tests/local-setup-win.test.ps1",
-    "scripts/init_setup_local_repo_wsl.sh",
-    "scripts/init_setup_local_repo_win.ps1",
-    "PROJECT_SETUP.md",
   ]) write(root, required, required.endsWith(".json") ? "{}\n" : undefined);
   write(root, "skills/security/security-audit/SKILL.md", "---\nname: security-audit\ndescription: Audit.\n---\n");
   write(root, "skills/productivity/i-have-adhd/LICENSE", "MIT\n");
   write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\ndisable-model-invocation: true\n---\n");
   write(root, "skills/language/taiwan-term/SKILL.md", "---\nname: taiwan-term\ndescription: Audit Taiwan terminology.\n---\n");
-  write(root, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
+  write(root, "skills/software/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
   write(
     root,
     "README.md",
@@ -154,8 +153,8 @@ function fixture(lock) {
       "[security-audit](skills/security/security-audit/SKILL.md)",
       "[i-have-adhd](skills/productivity/i-have-adhd/SKILL.md)",
       "[taiwan-term](skills/language/taiwan-term/SKILL.md)",
-      "[animate](skills/design/animate/SKILL.md)",
-      "[tdd](skills/engineering/tdd/SKILL.md)",
+      "[animate](skills/ui-design/animate/SKILL.md)",
+      "[tdd](skills/software/tdd/SKILL.md)",
       "",
     ].join("\n"),
   );
@@ -182,9 +181,9 @@ test("validator rejects a README skill inventory that drifts from runtime", () =
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
-  write(root, "README.md", "[tdd](skills/engineering/missing/SKILL.md)\n");
+  write(root, "README.md", "[tdd](skills/software/missing/SKILL.md)\n");
   try {
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
@@ -201,7 +200,7 @@ test("validator rejects invalid lock metadata and ordering", () => {
   const root = fixture({
     repository: "https://example.com/wrong",
     commit: "short",
-    files: ["skills/engineering/tdd/SKILL.md", "LICENSE", "LICENSE"],
+    files: ["skills/software/tdd/SKILL.md", "LICENSE", "LICENSE"],
   });
   try {
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
@@ -214,11 +213,11 @@ test("validator rejects invalid lock metadata and ordering", () => {
   }
 });
 
-test("validator rejects an Emil lock whose inventory does not match installed design skills", () => {
+test("validator rejects an Emil lock whose inventory does not match installed ui-design skills", () => {
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
   write(root, ".github/emil-skills-sync/upstream-lock.json", `${JSON.stringify({
     repository: "https://github.com/emilkowalski/skills",
@@ -232,13 +231,13 @@ test("validator rejects an Emil lock whose inventory does not match installed de
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("validator requires the Emil license beside every installed design skill", () => {
+test("validator requires the Emil license beside every installed ui-design skill", () => {
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
-  rmSync(path.join(root, "skills/design/animate/LICENSE"));
+  rmSync(path.join(root, "skills/ui-design/animate/LICENSE"));
   try {
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
@@ -250,7 +249,7 @@ test("validator rejects a Cloudflare lock whose inventory does not match the ins
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
   write(
     root,
@@ -274,7 +273,7 @@ test("validator rejects implicit invocation for i-have-adhd", () => {
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
   write(root, "skills/productivity/i-have-adhd/SKILL.md", "---\nname: i-have-adhd\ndescription: Focus.\n---\n");
   try {
@@ -290,9 +289,9 @@ test("validator rejects category indexes that reference excluded skills", () => 
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/README.md", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/README.md", "skills/software/tdd/SKILL.md"],
   });
-  write(root, "skills/engineering/README.md", "- [claude-handoff](./claude-handoff/SKILL.md)\n");
+  write(root, "skills/software/README.md", "- [claude-handoff](./claude-handoff/SKILL.md)\n");
   try {
     const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
     assert.equal(result.status, 1);
@@ -306,7 +305,7 @@ test("validator rejects excluded skill paths even when they contain no SKILL.md"
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/deprecated/payload.sh", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/deprecated/payload.sh", "skills/software/tdd/SKILL.md"],
   });
   write(root, "skills/deprecated/payload.sh", "echo unsafe\n");
   try {
@@ -318,11 +317,27 @@ test("validator rejects excluded skill paths even when they contain no SKILL.md"
   }
 });
 
+test("validator rejects unmapped source skill directories defined in categoryMap", () => {
+  const root = fixture({
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
+  });
+  write(root, "skills/engineering/legacy/SKILL.md", "---\nname: legacy\ndescription: Unmapped.\n---\n");
+  try {
+    const result = spawnSync(process.execPath, [validator, root], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Unmapped source skill directory still exists for 'engineering'/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("validator allows an empty harness directory but rejects nested runtime content", () => {
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",
     commit: "a".repeat(40),
-    files: ["LICENSE", "skills/engineering/tdd/SKILL.md"],
+    files: ["LICENSE", "skills/software/tdd/SKILL.md"],
   });
   mkdirSync(path.join(root, ".agents"), { recursive: true });
   try {

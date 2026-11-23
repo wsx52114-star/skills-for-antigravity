@@ -1,4 +1,4 @@
-# Design and interface skills
+# UI design and interface skills
 
 Imported from [emilkowalski/skills](https://github.com/emilkowalski/skills).
 Each skill includes its upstream MIT license and supporting references.
@@ -30,5 +30,5 @@ Each skill includes its upstream MIT license and supporting references.
 - [ui-prototype](./ui-prototype/SKILL.md): Build several UI variants behind a picker, then wait for the user's choice.
 
 `ui-prototype` is the source skill `prototype`, renamed to coexist with the
-engineering skill. Invocation settings otherwise follow upstream frontmatter.
+software skill. Invocation settings otherwise follow upstream frontmatter.
 Updates use [the Emil sync control plane](../../.github/emil-skills-sync/README.md).

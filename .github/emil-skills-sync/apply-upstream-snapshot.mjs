@@ -5,7 +5,7 @@ import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, stat
 import path from "node:path";
 import process from "node:process";
 import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
-import { adaptSkill, destinationPrefix, runtimeSkillName, upstreamRepository } from "./lib.mjs";
+import { adaptSkill, destinationCategory, destinationPrefix, runtimeSkillName, upstreamRepository } from "./lib.mjs";
 import { planSkillIndexes } from "../skill-sync/indexes.mjs";
 
 function parseArgs(argv) {
@@ -64,7 +64,7 @@ function main() {
     }
   }
 
-  for (const [file, entry] of planSkillIndexes(options.repoRoot, definitions, { categories: ["design"], categoryIndexes: ["design"] })) planned.set(file, entry);
+  for (const [file, entry] of planSkillIndexes(options.repoRoot, definitions, { categories: [destinationCategory], categoryIndexes: [destinationCategory] })) planned.set(file, entry);
 
   const tracked = execFileSync("git", ["-C", options.repoRoot, "ls-files", "-z", "--", destinationPrefix], { encoding: "utf8" })
     .split("\0").filter(Boolean);
