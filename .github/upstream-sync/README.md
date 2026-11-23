@@ -8,24 +8,24 @@ Automatic checks and manual runs use [Sync All Skills](../workflows/sync-skills.
 Select `upstream` to check only this source. Shared orchestration lives in
 [`.github/skill-sync/`](../skill-sync/README.md).
 
-The repository is stored at `~/.agents` as a shared Agent home. Initialized
-workspaces consume the root `skills/` and `rules/` directories through
-project-local links or copies; this is not Antigravity's native global scope.
+The repository is stored at `~/.agents` as the global Agent home and mounted via
+Antigravity 2.0 plugins (`plugins/`).
 
 ## Local checks
 
-See [MAINTENANCE.md](../../MAINTENANCE.md#驗證) for runtime prerequisites,
-Windows/WSL coverage, and the PowerShell regression suites.
+See [MAINTENANCE.md](../../MAINTENANCE.md#驗證) for runtime prerequisites and
+`agy plugin validate` instructions.
 
 ```sh
 node --test .github/upstream-sync/tests/*.test.mjs
 node .github/upstream-sync/validate.mjs
 ```
 
-`ownership.json` defines the upstream allowlist, fork-owned paths, and skills
-that must not enter the direct runtime checkout. During composition, index
-lines for excluded skills are removed from imported category READMEs.
-`upstream-lock.json` records the source commit and composed file inventory.
+`ownership.json` defines the upstream allowlist, `categoryMap` (which maps
+upstream `skills/engineering/*` to local `skills/software/*`), fork-owned paths,
+and skills that must not enter the direct runtime checkout. During composition,
+index lines for excluded skills are removed from imported category READMEs.
+`upstream-lock.json` records the source commit and composed local file inventory.
 
 The fork-owned `skills/security/security-audit/` subtree is managed separately
 by [`.github/security-audit-sync/`](../security-audit-sync/) and is never

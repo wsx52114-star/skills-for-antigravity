@@ -31,6 +31,7 @@ const taiwanTerminologyRoot = path.join(repoRoot, "skills", "language", "taiwan-
 const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
+const categoryMap = policy.categoryMap ?? {};
 
 function isExcludedSkillPath(relative) {
   const segments = relative.split("/");
@@ -145,6 +146,13 @@ const repositoryFiles = listFiles(repoRoot);
 for (const relative of repositoryFiles.filter(isExcludedSkillPath)) {
   errors.push(`Non-runtime excluded path is present: ${relative}`);
 }
+for (const [sourceCategory, targetCategory] of Object.entries(categoryMap)) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(sourceCategory) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(targetCategory)) {
+    errors.push(`Invalid upstream categoryMap entry: ${sourceCategory} -> ${targetCategory}`);
+  } else if (sourceCategory !== targetCategory && repositoryFiles.some((file) => file.startsWith(`skills/${sourceCategory}/`))) {
+    errors.push(`Unmapped source skill directory still exists for '${sourceCategory}': expected 'skills/${targetCategory}/'`);
+  }
+}
 
 const required = [
   ".github/skill-sync/sources.json",
@@ -166,7 +174,7 @@ const required = [
   ".github/taiwan-terminology-sync/upstream-lock.json",
   "rules/skills.md",
   "skills/security/README.md",
-  "skills/design/README.md",
+  "skills/ui-design/README.md",
   "skills/security/security-audit/LICENSE",
   "skills/security/security-audit/SKILL.md",
   "skills/security/security-audit/report-schema.json",
@@ -180,10 +188,6 @@ const required = [
   "skills/language/taiwan-term/references/taiwan-md/terminology.snapshot.json",
   "MAINTENANCE.md",
   ".github/workflows/validate-antigravity.yml",
-  ".github/upstream-sync/tests/local-setup-win.test.ps1",
-  "scripts/init_setup_local_repo_wsl.sh",
-  "scripts/init_setup_local_repo_win.ps1",
-  "PROJECT_SETUP.md",
   "README.md",
 ];
 for (const relative of required) {

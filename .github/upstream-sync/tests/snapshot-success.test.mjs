@@ -27,13 +27,13 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     const snapshot = path.join(root, "snapshot");
     mkdirSync(path.join(repo, ".github", "upstream-sync"), { recursive: true });
     mkdirSync(path.join(repo, "rules"), { recursive: true });
-    mkdirSync(path.join(repo, "skills", "engineering", "removed"), { recursive: true });
+    mkdirSync(path.join(repo, "skills", "software", "removed"), { recursive: true });
     mkdirSync(path.join(repo, "skills", "security"), { recursive: true });
     writeFileSync(path.join(repo, "README.md"), "fork readme\n");
     writeFileSync(path.join(repo, "STALE.md"), "remove me\n");
     writeFileSync(path.join(repo, ".github", "upstream-sync", "local.md"), "keep control plane\n");
     writeFileSync(path.join(repo, "rules", "skills.md"), "keep runtime rules\n");
-    writeFileSync(path.join(repo, "skills", "engineering", "removed", "SKILL.md"), "---\nname: removed\ndescription: Stale upstream skill.\n---\n");
+    writeFileSync(path.join(repo, "skills", "software", "removed", "SKILL.md"), "---\nname: removed\ndescription: Stale upstream skill.\n---\n");
     writeFileSync(path.join(repo, "skills", "security", "local.md"), "keep security\n");
     git(repo, "init");
     git(repo, "config", "user.name", "Test");
@@ -61,9 +61,10 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     assert.equal(readFileSync(path.join(repo, "README.md"), "utf8"), "fork readme\n");
     assert.equal(readFileSync(path.join(repo, "docs", "NEW.md"), "utf8"), "new file\n");
     assert.equal(readFileSync(path.join(repo, "docs", "README.md"), "utf8"), "Keep ./deprecated/example in developer docs.\n");
-    assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "SKILL.md")), true);
-    assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "agents", "openai.yaml")), false);
-    assert.equal(readFileSync(path.join(repo, "skills", "engineering", "tdd", "README.md"), "utf8"), "Keep ./deprecated/example in skill docs.\n");
+    assert.equal(existsSync(path.join(repo, "skills", "software", "tdd", "SKILL.md")), true);
+    assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "SKILL.md")), false);
+    assert.equal(existsSync(path.join(repo, "skills", "software", "tdd", "agents", "openai.yaml")), false);
+    assert.equal(readFileSync(path.join(repo, "skills", "software", "tdd", "README.md"), "utf8"), "Keep ./deprecated/example in skill docs.\n");
     assert.equal(existsSync(path.join(repo, "skills", "in-progress", "claude-handoff", "SKILL.md")), false);
     assert.equal(readFileSync(path.join(repo, "skills", "in-progress", "README.md"), "utf8"), "- [wizard](./wizard/SKILL.md)\n");
     assert.equal(existsSync(path.join(repo, "skills", "deprecated", "old-skill", "SKILL.md")), false);
@@ -72,8 +73,10 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     assert.equal(readFileSync(path.join(repo, "rules", "skills.md"), "utf8"), "keep runtime rules\n");
     assert.equal(readFileSync(path.join(repo, "skills", "security", "local.md"), "utf8"), "keep security\n");
     assert.equal(existsSync(path.join(repo, "STALE.md")), true);
-    assert.equal(existsSync(path.join(repo, "skills", "engineering", "removed", "SKILL.md")), false);
-    assert.equal(existsSync(path.join(repo, ".github", "upstream-sync", "upstream-lock.json")), true);
+    assert.equal(existsSync(path.join(repo, "skills", "software", "removed", "SKILL.md")), false);
+    const lock = JSON.parse(readFileSync(path.join(repo, ".github", "upstream-sync", "upstream-lock.json"), "utf8"));
+    assert.equal(lock.files.includes("skills/software/tdd/SKILL.md"), true);
+    assert.equal(lock.files.includes("skills/engineering/tdd/SKILL.md"), false);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

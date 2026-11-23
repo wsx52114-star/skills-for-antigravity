@@ -58,7 +58,7 @@ function fixture(id = "emil-skills") {
     copyFileSync(path.join(repoRoot, relative), destination);
   }
   write(repo, source.lock, `${JSON.stringify({ repository: source.repository, commit: "0".repeat(40), files: [] })}\n`);
-  write(repo, "skills/engineering/prototype/SKILL.md", "---\nname: prototype\ndescription: Engineering prototype.\n---\n");
+  write(repo, "skills/software/prototype/SKILL.md", "---\nname: prototype\ndescription: Software prototype.\n---\n");
   commit(repo);
   return { root, repo, remote, snapshot, source, sha };
 }
@@ -92,7 +92,7 @@ test("a changed source fetches, applies its real adapter, and commits its own lo
     assert.equal(result.changed, "true");
     assert.equal(readFileSync(path.join(item.snapshot, "skills/prototype/PICKER.md"), "utf8"), "picker\n");
     applySnapshot(item.repo, item.source, item.snapshot, result.sha);
-    assert.match(readFileSync(path.join(item.repo, "skills/design/ui-prototype/SKILL.md"), "utf8"), /name: ui-prototype/);
+    assert.match(readFileSync(path.join(item.repo, "skills/ui-design/ui-prototype/SKILL.md"), "utf8"), /name: ui-prototype/);
     const lock = JSON.parse(readFileSync(path.join(item.repo, item.source.lock), "utf8"));
     assert.equal(lock.commit, item.sha);
     const committed = commitSnapshot(item.repo, item.source);
@@ -142,8 +142,8 @@ for (const blocked of [false, true]) {
       const before = git(item.repo, "rev-parse", "HEAD");
       const lock = JSON.parse(readFileSync(path.join(item.repo, item.source.lock), "utf8"));
       write(item.repo, item.source.lock, `${JSON.stringify({ ...lock, commit: item.sha })}\n`);
-      if (blocked) write(item.repo, "skills/design/intrusion/notes.md", "collision\n");
-      else write(item.repo, "skills/engineering/prototype/SKILL.md", "---\nname: prototype\ndescription: Improved engineering prototype.\n---\n");
+      if (blocked) write(item.repo, "skills/ui-design/intrusion/notes.md", "collision\n");
+      else write(item.repo, "skills/software/prototype/SKILL.md", "---\nname: prototype\ndescription: Improved software prototype.\n---\n");
       const result = commitSnapshot(item.repo, item.source);
       assert.equal(result.blocked, String(blocked));
       assert.equal(result.structural, String(blocked));
@@ -169,13 +169,13 @@ test("primary source commits a lock-only update without creating a content commi
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });
 
-const engineeringIndex = "# Project setup\n\nKeep local setup instructions.\n\n### Engineering\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`prototype`](skills/engineering/prototype/SKILL.md) | 可自動選用 | 保留中文用途。 |\n\n## Maintenance\n\nKeep local maintenance instructions.\n";
+const softwareIndex = "# Project setup\n\nKeep local setup instructions.\n\n### 軟體開發（Software）\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`prototype`](skills/software/prototype/SKILL.md) | 可自動選用 | 保留中文用途。 |\n\n## Maintenance\n\nKeep local maintenance instructions.\n";
 
 for (const change of ["addition", "rename", "invocation"]) {
   test(`primary real adapter keeps the root inventory and classification consistent after ${change}`, () => {
     const item = fixture("upstream");
     try {
-      write(item.repo, "README.md", engineeringIndex);
+      write(item.repo, "README.md", softwareIndex);
       write(item.repo, "LICENSE", "MIT\n");
       commit(item.repo);
       const before = git(item.repo, "rev-parse", "HEAD");
@@ -187,10 +187,10 @@ for (const change of ["addition", "rename", "invocation"]) {
       const readme = readFileSync(path.join(item.repo, "README.md"), "utf8");
       assert.match(readme, /Keep local setup instructions/);
       assert.match(readme, /Keep local maintenance instructions/);
-      if (change === "addition") assert.match(readme, /skills\/engineering\/added\/SKILL\.md\) \| 可自動選用 \| New skill\. \|/);
+      if (change === "addition") assert.match(readme, /skills\/software\/added\/SKILL\.md\) \| 可自動選用 \| New skill\. \|/);
       if (change === "rename") {
-        assert.doesNotMatch(readme, /skills\/engineering\/prototype\//);
-        assert.match(readme, /skills\/engineering\/renamed\/SKILL\.md/);
+        assert.doesNotMatch(readme, /skills\/software\/prototype\//);
+        assert.match(readme, /skills\/software\/renamed\/SKILL\.md/);
       } else assert.match(readme, /保留中文用途。/);
       if (change === "invocation") assert.match(readme, /prototype\/SKILL\.md\) \| 需明確指定/);
       const result = commitSnapshot(item.repo, item.source);
@@ -205,10 +205,10 @@ for (const change of ["addition", "rename", "invocation"]) {
 test("primary commit rejects unrelated README edits instead of exempting the whole file", () => {
   const item = fixture("upstream");
   try {
-    write(item.repo, "README.md", engineeringIndex);
+    write(item.repo, "README.md", softwareIndex);
     commit(item.repo);
     write(item.repo, item.source.lock, `${JSON.stringify({ commit: item.sha })}\n`);
-    write(item.repo, "README.md", engineeringIndex.replace("Keep local setup instructions.", "Unexpected replacement."));
+    write(item.repo, "README.md", softwareIndex.replace("Keep local setup instructions.", "Unexpected replacement."));
     assert.throws(() => commitSnapshot(item.repo, item.source), /README.*generated skill index/);
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });
@@ -216,14 +216,14 @@ test("primary commit rejects unrelated README edits instead of exempting the who
 test("shared apply rejects a malformed root table before the real adapter replaces skills", () => {
   const item = fixture("upstream");
   try {
-    const malformed = engineeringIndex.replace("| --- | --- | --- |", "invalid divider");
+    const malformed = softwareIndex.replace("| --- | --- | --- |", "invalid divider");
     write(item.repo, "README.md", malformed);
     commit(item.repo);
     write(item.snapshot, "LICENSE", "MIT\n");
     write(item.snapshot, "skills/engineering/added/SKILL.md", "---\nname: added\ndescription: New skill.\n---\n");
-    assert.throws(() => applySnapshot(item.repo, item.source, item.snapshot, item.sha), /missing the engineering table header/);
+    assert.throws(() => applySnapshot(item.repo, item.source, item.snapshot, item.sha), /missing the software table header/);
     assert.equal(git(item.repo, "status", "--porcelain"), "");
-    assert.equal(existsSync(path.join(item.repo, "skills/engineering/prototype/SKILL.md")), true);
-    assert.equal(existsSync(path.join(item.repo, "skills/engineering/added/SKILL.md")), false);
+    assert.equal(existsSync(path.join(item.repo, "skills/software/prototype/SKILL.md")), true);
+    assert.equal(existsSync(path.join(item.repo, "skills/software/added/SKILL.md")), false);
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });

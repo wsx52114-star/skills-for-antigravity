@@ -1,0 +1,11 @@
+{
+  "name": "language",
+  "displayName": "台灣用語規範（Language）",
+  "version": "1.0.0",
+  "description": "Offline Taiwan.md Traditional Chinese terminology auditing and normalization using project context glossaries.",
+  "suggestedPrompts": [
+    "Run taiwan-term in detection mode across this repository",
+    "Audit user-facing Traditional Chinese UI text with taiwan-term",
+    "Normalize domain terminology against Taiwan.md and .agents/CONTEXT.md"
+  ]
+}

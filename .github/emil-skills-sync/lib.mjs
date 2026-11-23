@@ -1,5 +1,6 @@
 export const upstreamRepository = "https://github.com/emilkowalski/skills";
-export const destinationPrefix = "skills/design/";
+export const destinationCategory = "ui-design";
+export const destinationPrefix = `skills/${destinationCategory}/`;
 
 export function runtimeSkillName(sourceName) {
   return sourceName === "prototype" ? "ui-prototype" : sourceName;

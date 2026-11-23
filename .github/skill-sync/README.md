@@ -35,7 +35,7 @@ content. Unrelated README edits fail rather than being exempted. Both the
 index and lock are then included in the single snapshot commit. Existing
 blocked-path classification remains in place.
 
-Emil uses the same helper to plan its Design table and project-owned category
+Emil uses the same helper to plan its UI Design table and project-owned category
 index before writing skills. Category READMEs owned by other upstreams remain
 source content. Repository validation remains strict and lists missing and
 extra runtime names when the root inventory differs.

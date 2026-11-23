@@ -1,0 +1,11 @@
+{
+  "name": "software",
+  "displayName": "軟體開發（Software）",
+  "version": "1.0.0",
+  "description": "General software engineering workflows: architecture, domain modeling, specs, tickets, TDD, debugging, implementation, and dual-axis code review.",
+  "suggestedPrompts": [
+    "Diagnose this failing test and fix the root cause with a regression test",
+    "Run grill-with-docs to align on architecture and draft the spec",
+    "Review current branch changes since main against standards and spec"
+  ]
+}

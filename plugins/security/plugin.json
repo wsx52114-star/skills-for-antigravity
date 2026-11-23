@@ -1,0 +1,12 @@
+{
+  "name": "security",
+  "displayName": "資安稽核（Security）",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Codebase, API, and infrastructure security auditing with attack-surface coverage ledgers and PoC verification.",
+  "suggestedPrompts": [
+    "Audit authentication and API boundaries using security-audit",
+    "Verify attack-surface coverage and validate high-severity findings with PoCs",
+    "Inspect input validation and command-execution paths for security risks"
+  ]
+}

@@ -33,7 +33,7 @@ jobs:
       - name: Validate direct Agent home layout
         run: node .github/upstream-sync/validate.mjs
 
-  validate-windows-install:
+  validate-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -54,15 +54,3 @@ jobs:
           node --test .github/upstream-sync/tests/*.test.mjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node .github/upstream-sync/validate.mjs
-
-      - name: Test PowerShell project installation
-        shell: pwsh
-        run: |
-          .github/upstream-sync/tests/local-setup-win.test.ps1
-          .github/upstream-sync/tests/local-setup-win-safety.test.ps1
-
-      - name: Test Windows PowerShell 5.1 project installation
-        shell: powershell
-        run: |
-          .github/upstream-sync/tests/local-setup-win.test.ps1
-          .github/upstream-sync/tests/local-setup-win-safety.test.ps1

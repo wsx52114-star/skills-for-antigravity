@@ -1,0 +1,12 @@
+{
+  "name": "in-progress",
+  "displayName": "上游開發中（In Progress）",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Experimental upstream workflows under active development, including multi-agent orchestration, writing crafts, and TypeScript deep-module tooling (explicit-only).",
+  "suggestedPrompts": [
+    "Coordinate a multi-agent session goal with chief-of-staff",
+    "Configure dependency-cruiser module boundaries with setup-ts-deep-modules",
+    "Shape raw technical notes into structured beats using writing-beats"
+  ]
+}

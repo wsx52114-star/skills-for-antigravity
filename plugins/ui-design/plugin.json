@@ -1,0 +1,12 @@
+{
+  "name": "ui-design",
+  "displayName": "Web 與介面設計（UI Design）",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Web frontend UI engineering, animations, gestures, mobile-web polish, Apple design principles, Swift, and Expo motion workflows.",
+  "suggestedPrompts": [
+    "Use ui-prototype to explore three isolated layout variants",
+    "Audit existing animations for performance and frame-budget issues",
+    "Stress-test this UI component with worst-case data using break-ui"
+  ]
+}

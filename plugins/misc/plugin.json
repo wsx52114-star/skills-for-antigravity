@@ -1,0 +1,12 @@
+{
+  "name": "misc",
+  "displayName": "雜項工具（Misc）",
+  "version": "1.0.0",
+  "disabled": true,
+  "description": "Standalone TypeScript and repository setup utilities for Shoehorn migration, Husky pre-commit hooks, and exercise scaffolding.",
+  "suggestedPrompts": [
+    "Migrate test file type assertions with migrate-to-shoehorn",
+    "Set up Husky, lint-staged, Prettier, and type-check pre-commit hooks",
+    "Scaffold interactive TypeScript exercise directories and solutions"
+  ]
+}

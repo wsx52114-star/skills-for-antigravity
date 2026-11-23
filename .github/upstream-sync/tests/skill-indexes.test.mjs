@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { readRuntimeSkills, renderRootIndex } from "../../skill-sync/indexes.mjs";
+import { categoryDisplayNames, readRuntimeSkills, renderRootIndex } from "../../skill-sync/indexes.mjs";
 
 function definition(category, name, explicit = false, description = "First sentence. Second sentence.") {
   return { relative: `skills/${category}/${name}/SKILL.md`, content: `---\nname: ${name}\ndescription: ${description}\n${explicit ? "disable-model-invocation: true\n" : ""}---\n` };
@@ -56,6 +56,33 @@ test("shared root index rejects malformed tables, duplicate headings, and invali
   assert.throws(() => renderRootIndex(original.replace("skills/engineering/original/", "skills/engineering/wrong/"), definitions), /Unsupported engineering index row/);
   assert.throws(() => renderRootIndex(original, [...definitions, definition("design", "original")]), /Duplicate runtime skill/);
   assert.throws(() => renderRootIndex(original, [{ ...definitions[0], content: "invalid" }]), /valid name and description/);
+});
+
+test("localized category headings render and update idempotently", () => {
+  const original = [
+    "# Overview",
+    "",
+    `### ${categoryDisplayNames.software}`,
+    "",
+    "| 關鍵字 | 觸發方式 | 用途 |",
+    "| --- | --- | --- |",
+    "| [`tdd`](skills/software/tdd/SKILL.md) | 可自動選用 | 保留既有軟體說明。 |",
+    "",
+    "Footer notes.",
+  ].join("\n");
+  const definitions = [
+    definition("software", "tdd"),
+    definition("hardware", "kicad-pcb"),
+    definition("ui-design", "animate", true, "Build web animations."),
+  ];
+  const rendered = renderRootIndex(original, definitions);
+  assert.match(rendered, /### 軟體開發（Software）/);
+  assert.match(rendered, /保留既有軟體說明。/);
+  assert.match(rendered, /### 硬體開發（Hardware）[\s\S]*skills\/hardware\/kicad-pcb\/SKILL\.md/);
+  assert.match(rendered, /### Web 與介面設計（UI Design）[\s\S]*skills\/ui-design\/animate\/SKILL\.md\) \| 需明確指定/);
+  assert.ok(rendered.indexOf("### Web 與介面設計（UI Design）") < rendered.indexOf("Footer notes."));
+  assert.equal(renderRootIndex(rendered, definitions), rendered);
+  assert.throws(() => renderRootIndex(`${rendered}\n### Software\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n`, definitions), /Duplicate skill index heading/);
 });
 
 test("current repository index generation is idempotent and preserves human descriptions", () => {

@@ -1,6 +1,0 @@
-{
-  "entries": [
-    { "path": "../../skills/engineering" },
-    { "path": "../../skills/productivity", "exclude": ["i-have-adhd"] }
-  ]
-}

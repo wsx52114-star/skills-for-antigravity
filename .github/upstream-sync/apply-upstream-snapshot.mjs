@@ -13,7 +13,7 @@ import path from "node:path";
 import process from "node:process";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { loadPolicy, matchesAny } from "./lib/policy.mjs";
+import { loadPolicy, mapUpstreamPath, matchesAny } from "./lib/policy.mjs";
 import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
 
 function parseArgs(argv) {
@@ -62,8 +62,12 @@ function main() {
       (segment) => excludedSkillNames.has(segment) || excludedSkillPathSegments.has(segment),
     );
   };
+  const categoryMap = ownership.categoryMap ?? {};
   const snapshotFiles = listRegularFiles(options.snapshotRoot, options.snapshotRoot, [], (item) => !isAllowed(item));
-  const blockedCollisions = snapshotFiles.filter((item) => matchesAny(item, ownership.blockedUpstreamPaths));
+  const blockedCollisions = snapshotFiles.filter((item) =>
+    matchesAny(item, ownership.blockedUpstreamPaths) ||
+    matchesAny(mapUpstreamPath(item, categoryMap), ownership.blockedUpstreamPaths),
+  );
   if (blockedCollisions.length) {
     throw new Error(`Upstream snapshot collides with fork-owned paths: ${blockedCollisions.join(", ")}`);
   }
@@ -74,8 +78,21 @@ function main() {
   if (!hasLicense || skillDefinitions.length === 0) {
     throw new Error("Invalid upstream snapshot: LICENSE and at least one skills/**/SKILL.md are required");
   }
-  const installable = allowedFiles.filter((item) => !isForkOwned(item));
-  const installableSet = new Set(installable);
+  const mappedEntries = [];
+  const seenDestinations = new Set();
+  for (const item of allowedFiles) {
+    const destination = mapUpstreamPath(item, categoryMap);
+    if (seenDestinations.has(destination)) {
+      throw new Error(`Upstream snapshot maps multiple files to the same path: ${destination}`);
+    }
+    seenDestinations.add(destination);
+    mappedEntries.push({ source: item, destination });
+  }
+  const installable = mappedEntries.filter(
+    (entry) => !isForkOwned(entry.source) && !isForkOwned(entry.destination),
+  );
+  const installableDestinations = installable.map((entry) => entry.destination).sort();
+  const installableSet = new Set(installableDestinations);
   const tracked = execFileSync("git", ["-C", options.repoRoot, "ls-files", "-z"], { encoding: "utf8" })
     .split("\0")
     .filter(Boolean);
@@ -85,12 +102,12 @@ function main() {
       rmSync(path.join(options.repoRoot, relativePath), { recursive: true, force: true });
     }
   }
-  for (const relativePath of installable) {
-    const source = path.join(options.snapshotRoot, relativePath);
-    const destination = path.join(options.repoRoot, relativePath);
+  for (const entry of installable) {
+    const source = path.join(options.snapshotRoot, entry.source);
+    const destination = path.join(options.repoRoot, entry.destination);
     mkdirSync(path.dirname(destination), { recursive: true });
     copyFileSync(source, destination);
-    const segments = relativePath.split("/");
+    const segments = entry.destination.split("/");
     const isCategoryReadme = segments.length === 3 && segments[0] === "skills" && segments[2] === "README.md";
     if (isCategoryReadme) {
       const content = readFileSync(destination, "utf8");
@@ -102,7 +119,7 @@ function main() {
     repository: ownership.upstream,
     commit: options.sha,
     syncedAt: new Date().toISOString(),
-    files: installable,
+    files: installableDestinations,
   };
   writeFileSync(
     path.join(options.repoRoot, ".github", "upstream-sync", "upstream-lock.json"),
