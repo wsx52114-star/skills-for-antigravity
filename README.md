@@ -2,7 +2,7 @@
 
 一套供各 Antigravity workspace 共用的工程 skills，承襲 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的工作流程，並整合 [`emilkowalski/skills`](https://github.com/emilkowalski/skills) 的設計與介面技能、Antigravity rules、`security-audit`、Taiwan.md 用語檢查與 explicit-only 的 `i-have-adhd`。
 
-建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home，並依 8 個技能分類建立 1:1 對應的 [`plugins/`](plugins/README.md)，於 `~/.gemini/config/plugins.json` 全域掛載即可在所有專案依領域一鍵開關（本儲存庫已統一採 Antigravity 2.0 全域 Plugin 模式，不再提供逐專案連結腳本）。
+建議將儲存庫集中存放於 `~/.agents`，作為共享 Agent home，並整理為 7 個 [`plugins/`](plugins/README.md)（核心領域與 `skills/` 分類 1:1 對齊，上游開發中與雜項則合併收整），於 `~/.gemini/config/plugins.json` 全域掛載即可在所有專案依領域一鍵開關（本儲存庫已統一採 Antigravity 2.0 全域 Plugin 模式，不再提供逐專案連結腳本）。
 
 ## 快速開始
 
@@ -38,7 +38,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.ag
 
 （Linux／WSL／Raspberry Pi 請改填 `/home/<your-user>/.agents/plugins`。）
 
-設定後即可在任意專案直接使用，透過 Antigravity 左側邊欄 **Customizations > Installed** 或 `agy plugin list` / `agy plugin enable <name>` / `agy plugin disable <name>` 即時開關以下 8 個與分類 1:1 對齊的領域 Plugin（停用領域不會佔用 Context）：
+設定後即可在任意專案直接使用，透過 Antigravity 左側邊欄 **Customizations > Installed** 或 `agy plugin list` / `agy plugin enable <name>` / `agy plugin disable <name>` 即時開關以下 7 個領域 Plugin（核心分類 1:1 對齊 `skills/`，上游開發中與雜項整併為單一開關；停用領域不會佔用 Context）：
 
 | Plugin ID | App 顯示名稱 | 預設狀態 | 對應目錄與涵蓋內容 |
 | --- | --- | --- | --- |
@@ -48,14 +48,13 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.ag
 | [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 啟用 | `skills/language/*`（1） |
 | [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 停用 | `skills/ui-design/*`（20）＋介面設計規則 |
 | [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 停用 | `skills/security/*`（1）＋資安驗證規則 |
-| [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中（In Progress） | 停用 | `skills/in-progress/*`（7，皆須明確指定） |
-| [`misc`](plugins/misc/plugin.json) | 雜項工具（Misc） | 停用 | `skills/misc/*`（3） |
+| [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中與雜項（In Progress & Misc） | 停用 | `skills/in-progress/*` ＋ `skills/misc/*`（10） |
 
 ## Repository 內容
 
 | 路徑 | 用途 |
 | --- | --- |
-| [`plugins/`](plugins/README.md) | 與 `skills/` 1:1 對齊的 8 個 Antigravity 2.0 plugins（以 `skills.json` 映射並搭配領域 `rules/AGENTS.md`）。 |
+| [`plugins/`](plugins/README.md) | 依領域打包的 7 個 Antigravity 2.0 plugins（以 `skills.json` 映射並搭配領域 `rules/AGENTS.md`）。 |
 | [`skills/`](skills/) | 可由 Antigravity 呼叫的軟體、硬體、UI 設計、生產力、語言、工具與資安 skills。 |
 | [`rules/`](rules/) | Skill 觸發、工作流程與 Antigravity 轉譯基準規則。 |
 | [`docs/`](docs/) | 各 skills 的使用與開發參考。 |

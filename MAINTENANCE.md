@@ -197,14 +197,13 @@ node .github/upstream-sync/validate.mjs
 # 所有 plugin 須通過 0 error 驗證
 agy plugin validate plugins/<plugin-name>
 
-# 除了內含上游 >24,000 bytes SKILL.md 的 ui-design 之外，其餘 7 個 plugin 皆須通過 --strict
+# 除了內含上游 >24,000 bytes SKILL.md 的 ui-design 之外，其餘 6 個 plugin 皆須通過 --strict
 agy plugin validate plugins/software --strict
 agy plugin validate plugins/hardware --strict
 agy plugin validate plugins/productivity --strict
 agy plugin validate plugins/language --strict
 agy plugin validate plugins/security --strict
 agy plugin validate plugins/in-progress --strict
-agy plugin validate plugins/misc --strict
 ```
 
 註：`ui-design` 中的上游 `emil-design-eng/SKILL.md` 與 `write-swift/SKILL.md` 超過 Antigravity 單檔 24,000 bytes 上限，為保留 `emil-skills` 上游原貌而不手動截斷，因此執行 `agy plugin validate plugins/ui-design` 時會回報 2 項預期 warning（0 error）。
