@@ -26,7 +26,7 @@ Use the installed skills as behavioral workflows. Skill frontmatter is the live 
 - If `.agents/CONTEXT-MAP.md` exists, use it to find context-specific `CONTEXT.md` and `docs/adr/` locations; otherwise fall back to a root `CONTEXT-MAP.md`.
 - Create project knowledge lazily. Add `.agents/CONTEXT.md` when the first domain term is resolved and `.agents/docs/adr/` when the first qualifying decision is accepted.
 - Write an ADR only when a decision is hard to reverse, surprising without context, and the result of a real trade-off. Never use ADRs as per-version changelogs; record single-feature decisions in the spec, commit, or PR summary, and turn recurring mechanical mistakes into automated checks via `retro`.
-- Respect domain-specific project sources of truth when present: root `AGENTS.md` for operational rules, `CODING_STANDARDS.md` for review judgement calls, `DESIGN.md` for UI and motion taste rules captured by `learn-taste`, and `.kicad_pro` for KiCad constraints.
+- Respect domain-specific project sources of truth when present: root `AGENTS.md` for operational rules, `CODING_STANDARDS.md` for review judgement calls, `DESIGN.md` for UI and motion taste rules captured by `learn-taste`, and `.kicad_pro`, `.kicad_dru`, and hardware design notes (e.g., `DESIGN_NOTES.md`) for KiCad constraints.
 - Keep project knowledge inside the current project. Never write it into the shared Agent home.
 - Never use the Agent home's `CONTEXT.md` as the current development project's **Project context**.
 - Treat the Agent home's `docs/` as skill documentation, not as a target project's documentation.
@@ -53,7 +53,7 @@ When the human explicitly chooses the full chain:
 Match other domains to their native loops rather than forcing the software chain everywhere:
 
 - **Frontend UI and motion** (`ask-emil`): `ui-prototype` (isolated variants before production code) → `pick-ui-library` / `animate` / `choreograph` / `gestures` → `break-ui` / `review-animations` / `mobile-native` / `animation-performance` → `learn-taste` (record rules and their why in `DESIGN.md` or lint checks).
-- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → `kicad-pcb` (isolated working copies for layer reduction or dangling-item trial deletion; back-annotate `0 Ω` jumpers to schematic and BOM) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors).
+- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → `kicad-pcb` (new-board planning with stage/drill-span approvals, root-level working copies for layer reduction or dangling-item edits, and `0 Ω` jumper back-annotation) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors).
 - **Security and terminology audits**: `security-audit` (coverage-ledger and PoC-validated findings) and `taiwan-term` (offline Taiwan.md snapshot scan enforcing `.agents/CONTEXT.md`).
 
 Preserve context hygiene and circuit breakers across sessions:
@@ -84,7 +84,7 @@ Inspect the current project's language, framework, test runner, package manager,
 - **Frontend web**: prefer user-observable component or integration tests; use the project's browser tooling and API mocking conventions.
 - **Backend services**: test service or endpoint behavior with realistic fakes or isolated data stores; inspect logs, query plans, and profiles when diagnosing.
 - **Firmware and embedded**: separate business logic from hardware access; prefer host-side tests for logic and use SWD/JTAG, logic analysis, RTT, or UART when hardware evidence is required.
-- **Hardware and KiCad PCB**: enforce `.kicad_pro` netclasses, fab minimums, return-path continuity, and KiCad CLI ERC/DRC parity checks before generating manufacturing outputs.
+- **Hardware and KiCad PCB**: enforce `.kicad_pro` netclasses, `.kicad_dru` custom rules, fab minimums, return-path continuity, and KiCad CLI ERC/DRC parity checks before generating manufacturing outputs.
 - **Python and automation**: use the project's environment, test runner, formatter, linter, and type checker; isolate filesystem, process, and network effects at public seams.
 - **CLI and cross-platform work**: account for Windows, WSL, Linux, and Raspberry Pi path and shell differences. Validate on the target environment when behavior is platform-dependent.
 - **Specs and work tracking**: preserve the configured issue tracker, label vocabulary, domain glossary, and ADR boundaries.

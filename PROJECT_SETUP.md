@@ -142,7 +142,7 @@ Skills 以 `.agents/skills/<skill-name>/SKILL.md` 的官方 flat layout 接入�
 - **`AGENTS.md`（常駐導航指標與操作限制）**：會進入每個 Session 的 Context，應保持極簡（僅放建置／測試指令與指向其他文件的導航指標）。前端專案若由 `learn-taste` 建立了 `DESIGN.md`，建議在 `AGENTS.md` 加入一行：`Before building or changing UI, read DESIGN.md.`。
 - **`CODING_STANDARDS.md`（程式碼審查規範）**：主要由 `code-review` 的 Standards Subagent 在審查階段讀取，減輕實作期 Agent 的 Context 壓力；可由 Linter／Pre-commit 自動攔截的機械性規則應優先寫成自動檢查（透過 `retro` 或 `setup-pre-commit`），不寫入此檔。
 - **`DESIGN.md`（前端介面與動態品味）**：由 `learn-taste` 收錄使用者在對話中修正的 UI／動畫規則與其 `Why`。
-- **`.kicad_pro` 與原理圖接線表（硬體製程與連通規則）**：由 `kicad-schematic`、`kicad-pcb`、`kicad-release` 維護開案五項參數、Netclasses 與跨板腳位對照，並以 KiCad 10 CLI 的 ERC／DRC 零錯誤作為硬性交付門檻。
+- **`.kicad_pro`、`.kicad_dru`、硬體設計筆記（如 `DESIGN_NOTES.md`）與原理圖接線表（硬體製程與連通規則）**：由 `kicad-schematic`、`kicad-pcb`、`kicad-release` 維護開案五項參數、Netclasses、自訂 DRC 規則、疊構／鑽孔層對核准與跨板腳位對照，並以 KiCad 10 CLI 的 ERC／DRC 零錯誤作為硬性交付門檻。
 
 ## Git 管理
 

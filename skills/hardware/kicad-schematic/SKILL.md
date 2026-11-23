@@ -23,7 +23,7 @@ Write checkable constraints into KiCad project configuration: put **Netclasses a
 
 ## 2. Schematic Design and PCB Sync Workflow
 
-1. **Start from the latest confirmed baseline.** Continue from the last schematic and PCB confirmed by the design owner. Keep prototypes and working copies inside the project with clear revision naming while preserving project settings and local symbol/footprint libraries; clearly distinguish production vs. prototype files when finished.
+1. **Start from the latest confirmed baseline.** Continue from the last schematic and PCB confirmed by the design owner. Keep prototypes and working copies at the project root with distinct working basenames (or in an isolated Git worktree) so `.kicad_pro`, `.kicad_dru`, and `${KIPRJMOD}` local symbol/footprint library paths stay valid; clearly distinguish production vs. prototype files when finished.
 2. **Verify power, ground, and signals stage by stage.** Label supply sources, voltages, grounding scheme, and cross-board interfaces. Check component power pins, pin electrical types/directions, and intentional no-connects. After tracing actual power feed paths (external inputs or passive links such as fuses), place `PWR_FLAG` where KiCad lacks an active power-output driver.
 3. **Assign purchasable, assemblable footprints.** Verify datasheet dimensions, symbol pin numbers, pad numbers, pin-1 orientation, and polarity. Use unambiguous SMD passive footprints (such as `0402` or `0603`) rated for the required power, voltage, and assembly process. Align `DNP` and BOM fields (MPN, Value, Footprint) so schematic, PCB, and procurement files target the same BOM revision.
 4. **Audit PCB update differences.** Before updating the PCB, review expected reference designators, footprints, pad-to-net assignments, and added/removed parts. Trace any pad-net mismatch across symbol pin numbers, footprint pad definitions, and existing copper. Confirm whether mounting/shield pads are mechanical-only or electrically connected before assigning pin numbers and symbol pins. Review info, warning, and error messages separately in the update preview.
@@ -33,7 +33,7 @@ Write checkable constraints into KiCad project configuration: put **Netclasses a
 
 - **Front-panel and cross-board interconnects:** When designing FFC/header cables, shared GPIOs, tri-state LED matrices, or ADC resistor ladders, read [`references/panel-and-interconnect.md`](references/panel-and-interconnect.md) first and build the pin-mapping and state tables.
 - **Split grounds and Kelvin sensing:** For split grounds (e.g., `GNDPWR`, `GND`, `GNDA`), explicitly specify the star point, net tie, or bridging component (`0 Ω` resistor) in the schematic. For shunt Kelvin sensing, distinguish the high-current branch from dedicated sense taps in the schematic.
-- **Back-annotating `0 Ω` jumpers from layer reduction:** Confirm voltage drop, current rating, and BOM impact first; once approved, split the net in the schematic and sync the footprint, PCB, BOM, and assembly outputs.
+- **Back-annotating `0 Ω` jumpers from layer reduction:** Permit `0 Ω` jumper resistors only on low-voltage nets (never high-voltage/isolation nets). Confirm voltage drop, current rating, BOM impact, and explicit user approval first; once approved, split the net in the schematic and sync the footprint, PCB, BOM, and assembly outputs.
 
 ## 4. Agent Boundary and Verification Gate
 
