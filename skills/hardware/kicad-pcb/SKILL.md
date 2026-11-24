@@ -1,6 +1,6 @@
 ---
 name: kicad-pcb
-description: Plan a new KiCad board from a schematic, including board outline, thickness, layer count, via spans and placement. Configure .kicad_pro/.kicad_dru rules, review routing and copper zones, and plan four-layer power layouts or layer-reduction prototypes.
+description: Plan a new KiCad board from a schematic, including board outline, thickness, layer count, via spans and placement. Configure .kicad_pro/.kicad_dru rules, review routing, copper zones, and silkscreen placement, and plan four-layer power layouts or layer-reduction prototypes.
 ---
 
 # KiCad PCB Layout, Routing, and Layer Reduction
@@ -17,7 +17,7 @@ With the approved plan and ERC-clean schematic, set design rules, lock mechanics
 - **Land rules in project files:** Write track widths, via defaults, and Netclasses into `.kicad_pro`, and write layer-specific, high-voltage creepage, or controlled-impedance custom rules into `.kicad_dru`. Treat fab minimums as manufacturing floors; size widths, vias, and clearances for thermal rise, voltage drop, and production margin. Assign explicit values to every power path.
 - **Verify sync diffs and revision identity:** Before importing schematic updates, follow `kicad-schematic` to audit reference designators, footprints, pad nets, mechanical vs. electrical mounting pads, and intentional quirks (reversed headers, split grounds, DNP, jumpers). Keep prototype copies clearly labeled beside production boards so exports always target the confirmed revision.
 
-## 2. General Routing, Pad/Via Entry, and Ground Rules
+## 2. General Routing, Pad/Via Entry, Ground, and Silkscreen Rules
 
 Apply these rules across all projects; document any intentional retained exceptions (such as high-power pads or via arrays) in the project's hardware design notes:
 
@@ -49,6 +49,10 @@ Apply these rules across all projects; document any intentional retained excepti
 - **Resolve bottlenecks in order:** Adjust movable component placement, orientation, and fanout first, then re-route crossing branches as a group while holding widths and 90°/45° rules.
 - **Low-voltage-only `0 Ω` jumpers:** Only low-voltage nets may use `0 Ω` jumper resistors (never high-voltage or isolation nets), and only after explicit user approval. Synchronize approved jumper or footprint changes across schematic, PCB, and BOM together.
 
+### Silkscreen Placement
+
+- **Reference designators, polarity marks, and board text:** Read [`references/silkscreen.md`](references/silkscreen.md) before placing, editing, scripting, or reviewing `F.Silkscreen` / `B.Silkscreen` text, font limits, reading angles, clearances, or `.kicad_pro` `min_silk_clearance` checks.
+
 ## 3. Architecture-Specific Rules
 
 - **Four-layer power boards:** Read [`references/power-4layer.md`](references/power-4layer.md) before routing to assign copper layer roles, reference planes, power/sense priority, and revision-to-revision copper comparisons.
@@ -57,6 +61,6 @@ Apply these rules across all projects; document any intentional retained excepti
 
 ## 4. Agent Boundary, Verification, and Sign-Off Handoff
 
-- **Agent vs. KiCad GUI boundary:** The agent may inspect/edit `.kicad_pro` Netclasses and `.kicad_dru` custom rules, parse `.kicad_pcb` stackup/widths/zones/nets/terminations, and analyze DRC coordinate reports. Interactive component placement and manual copper routing cannot be performed via `kicad-cli`; output coordinate-level recommendations and stop for the user to execute in KiCad GUI.
-- **Mandatory per-change verification:** After every modification, refill zones and hand off to `kicad-release` to run full KiCad 10 CLI DRC (`--all-track-errors --schematic-parity --refill-zones`) and ERC, requiring **0 DRC errors, 0 unconnected items, 0 schematic-parity mismatches, and 0 ERC errors**. Additionally audit every pad and via for center endpoints, zero pass-through tracks, zero edge-only touches, zero dangling stubs, and zero duplicate overlapping segments.
+- **Agent vs. KiCad GUI boundary:** The agent may inspect/edit `.kicad_pro` Netclasses/constraints and `.kicad_dru` custom rules, parse `.kicad_pcb` stackup/widths/zones/nets/terminations/silkscreen, and analyze DRC coordinate reports. Interactive component placement and manual copper routing cannot be performed via `kicad-cli`; output coordinate-level recommendations and stop for the user to execute in KiCad GUI.
+- **Mandatory per-change verification:** After every modification, refill zones and hand off to `kicad-release` to run full KiCad 10 CLI DRC (`--all-track-errors --schematic-parity --refill-zones`) and ERC, requiring **0 DRC errors, 0 unconnected items, 0 schematic-parity mismatches, and 0 ERC errors**. Additionally audit every pad and via for center endpoints, zero pass-through tracks, zero edge-only touches, zero dangling stubs, and zero duplicate overlapping segments, and verify silkscreen compliance against `references/silkscreen.md` before release.
 - **Before write-back comparison and exception logging:** Before writing a revision back, follow `kicad-release`'s baseline-vs-candidate DRC workflow and compare width distributions, via counts, per-net lengths, angle compliance, and pad/via centering. Document all routing trade-offs and intentional retained exceptions (e.g., high-power pads, via arrays) in the project's hardware design notes.

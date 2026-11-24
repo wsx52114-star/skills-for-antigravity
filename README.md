@@ -125,7 +125,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
-| [`kicad-pcb`](skills/hardware/kicad-pcb/SKILL.md) | 可自動選用 | 設定 KiCad `.kicad_pro`／`.kicad_dru` 規則、元件佈局、90°／45° 走線、焊盤／過孔中心對齊、鋪銅回流與四層／減層規則。 |
+| [`kicad-pcb`](skills/hardware/kicad-pcb/SKILL.md) | 可自動選用 | 設定 KiCad `.kicad_pro`／`.kicad_dru` 規則、元件佈局、90°／45° 走線、焊盤／過孔中心對齊、鋪銅回流、絲印擺放與四層／減層規則。 |
 | [`kicad-release`](skills/hardware/kicad-release/SKILL.md) | 可自動選用 | 執行 KiCad 10 CLI ERC／DRC 與一致性檢查，於工作副本清理懸空物件，把關零錯誤與製造檔匯出。 |
 | [`kicad-schematic`](skills/hardware/kicad-schematic/SKILL.md) | 可自動選用 | 定義開案電氣參數、核對 KiCad 原理圖電源與封裝、建立跨板排線與共用腳位表並完成 ERC 驗收。 |
 
