@@ -10,8 +10,8 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const composer = path.join(repoRoot, ".github/emil-skills-sync/apply-upstream-snapshot.mjs");
 const primaryComposer = path.join(repoRoot, ".github/upstream-sync/apply-upstream-snapshot.mjs");
 const commit = "e".repeat(40);
-const rootReadme = "# Fork overview\n\n### Web 與介面設計（UI Design）\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`animate`](skills/ui-design/animate/SKILL.md) | 可自動選用 | Local animation summary. |\n| [`removed`](skills/ui-design/removed/SKILL.md) | 可自動選用 | Old skill. |\n\n### 軟體開發（Software）\n\nfork readme\n";
-const designReadme = "# UI design skills\n\n## Model-invoked\n\n- [animate](./animate/SKILL.md): Local animation summary.\n- [removed](./removed/SKILL.md): Old skill.\n\n## User-invoked\n\nfork design index\n";
+const rootReadme = "# Project overview\n\n### Web 與介面設計（UI Design）\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`animate`](skills/ui-design/animate/SKILL.md) | 可自動選用 | Local animation summary. |\n| [`removed`](skills/ui-design/removed/SKILL.md) | 可自動選用 | Old skill. |\n\n### 軟體開發（Software）\n\nproject readme\n";
+const designReadme = "# UI design skills\n\n## Model-invoked\n\n- [animate](./animate/SKILL.md): Local animation summary.\n- [removed](./removed/SKILL.md): Old skill.\n\n## User-invoked\n\nproject design index\n";
 
 function write(root, relative, content) {
   const file = path.join(root, relative);
@@ -58,8 +58,8 @@ test("Emil composition preserves invocation, references, attribution, and the ex
       assert.equal(readFileSync(path.join(item.repo, `skills/ui-design/${name}/LICENSE`), "utf8"), "MIT Emil license\n");
     }
     assert.equal(readFileSync(path.join(item.repo, "skills/software/prototype/SKILL.md"), "utf8"), "original software prototype\n");
-    assert.match(readFileSync(path.join(item.repo, "skills/ui-design/README.md"), "utf8"), /fork design index/);
-    assert.match(readFileSync(path.join(item.repo, "README.md"), "utf8"), /fork readme/);
+    assert.match(readFileSync(path.join(item.repo, "skills/ui-design/README.md"), "utf8"), /project design index/);
+    assert.match(readFileSync(path.join(item.repo, "README.md"), "utf8"), /project readme/);
     assert.equal(existsSync(path.join(item.repo, "skills/ui-design/removed/SKILL.md")), false);
     const lock = JSON.parse(readFileSync(path.join(item.repo, ".github/emil-skills-sync/upstream-lock.json"), "utf8"));
     assert.equal(lock.repository, "https://github.com/emilkowalski/skills");
@@ -155,12 +155,16 @@ for (const invalid of ["invalid frontmatter", "alias collision"]) {
 test("primary upstream composition preserves independently managed ui-design skills", () => {
   const item = fixture();
   try {
+    write(item.repo, "LICENSE", "project license\n");
+    git(item.repo, "add", "LICENSE");
     rmSync(item.snapshot, { recursive: true, force: true });
     write(item.snapshot, "LICENSE", "primary license\n");
     write(item.snapshot, "skills/engineering/tdd/SKILL.md", "---\nname: tdd\ndescription: Test.\n---\n");
     mkdirSync(path.join(item.repo, ".github/upstream-sync"), { recursive: true });
     const composed = apply(item, primaryComposer);
     assert.equal(composed.status, 0, composed.stderr);
+    assert.equal(readFileSync(path.join(item.repo, "LICENSE"), "utf8"), "project license\n");
+    assert.equal(readFileSync(path.join(item.repo, "LICENSES/mattpocock-skills.LICENSE"), "utf8"), "primary license\n");
     assert.equal(existsSync(path.join(item.repo, "skills/software/tdd/SKILL.md")), true);
     assert.equal(existsSync(path.join(item.repo, "skills/engineering/tdd/SKILL.md")), false);
     assert.equal(readFileSync(path.join(item.repo, "skills/ui-design/removed/SKILL.md"), "utf8"), "old skill\n");
@@ -168,7 +172,7 @@ test("primary upstream composition preserves independently managed ui-design ski
     write(item.snapshot, "skills/ui-design/intrusion/SKILL.md", "collision\n");
     const result = apply(item, primaryComposer);
     assert.equal(result.status, 2, result.stdout + result.stderr);
-    assert.match(result.stderr, /collides with fork-owned paths/);
+    assert.match(result.stderr, /collides with project-owned paths/);
     assert.equal(existsSync(path.join(item.repo, "skills/ui-design/intrusion/SKILL.md")), false);
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply a Taiwan.md source snapshot to the fork-owned runtime skill."""
+"""Apply a Taiwan.md source snapshot to the project-owned runtime skill."""
 
 from __future__ import annotations
 

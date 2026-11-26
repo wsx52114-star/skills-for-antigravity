@@ -1,20 +1,21 @@
 # Productivity
 
-General workflow tools, not code-specific.
-
-## User-invoked
-
-Reachable only when you type them (`disable-model-invocation: true`).
-
-- **[grill-me](./grill-me/SKILL.md)**: Get relentlessly interviewed about a plan or design until every branch of the design tree is resolved.
-- **[handoff](./handoff/SKILL.md)**: Compact the current conversation into a handoff document so another agent can continue the work.
-- **[teach](./teach/SKILL.md)**: Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
-- **[to-questionnaire](./to-questionnaire/SKILL.md)**: Turn a decision you can't answer alone into a Markdown questionnaire for the one person who can (filled in async, or together over a meeting).
-- **[wait-what](./wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `GLOSSARY.md` vocabulary.
+General workflow tools, combining skills synchronized from `mattpocock/skills`, `ayghri/i-have-adhd`, and project-owned review and drift-auditing skills.
 
 ## Model-invoked
 
-Model- or user-reachable (rich trigger phrasing so the model can reach for them).
+- [grilling](./grilling/SKILL.md): Grill the user relentlessly about a plan, decision, or idea.
+- [writing-for-agents](./writing-for-agents/SKILL.md): Writing documents for agents.
 
-- **[grilling](./grilling/SKILL.md)**: Interview the user relentlessly about a plan, decision, or idea until every branch of the design tree is resolved.
-- **[writing-for-agents](./writing-for-agents/SKILL.md)**: Writing documents for agents: skills, AGENTS.md/CLAUDE.md, and any doc an agent reaches by a pointer.
+## User-invoked
+
+- [design-review](./design-review/SKILL.md): Cold-review a spec or design document using parallel fresh-context subagents before slicing tickets, routing, or implementation.
+- [doc-drift](./doc-drift/SKILL.md): Audit long-lived project documentation (CONTEXT.md, ADRs, specs, DESIGN_NOTES.md, pin maps) against current code and hardware interfaces for drift.
+- [grill-me](./grill-me/SKILL.md): A relentless interview to sharpen a plan or design.
+- [handoff](./handoff/SKILL.md): Compact the current conversation into a handoff document for another agent to pick up.
+- [i-have-adhd](./i-have-adhd/SKILL.md): Shape output for a reader with ADHD: lead with the next action, number multi-step work, restate state across turns, suppress tangents, give specific time estimates, make wins visible.
+- [teach](./teach/SKILL.md): Teach the user a new skill or concept, within this workspace.
+- [to-questionnaire](./to-questionnaire/SKILL.md): Turn a decision you can't fully answer into a questionnaire for someone else to fill in.
+- [wait-what](./wait-what/SKILL.md): Stop.
+
+This index is maintained by [the shared skill index helper](../../.github/skill-sync/indexes.mjs).

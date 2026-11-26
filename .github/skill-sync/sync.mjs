@@ -6,7 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
-import { planSkillIndexes, readRuntimeSkills, renderRootIndex } from "./indexes.mjs";
+import { managedCategoryIndexes, planSkillIndexes, readRuntimeSkills, renderCategoryIndex, renderRootIndex } from "./indexes.mjs";
 
 const sources = JSON.parse(readFileSync(new URL("./sources.json", import.meta.url), "utf8"));
 
@@ -58,10 +58,10 @@ export function fetchSnapshot(repoRoot, source, snapshotRoot) {
 export function applySnapshot(repoRoot, source, snapshotRoot, sha) {
   requireCommitSha(sha);
   // Reject malformed local indexes before the adapter changes installed files.
-  planSkillIndexes(repoRoot, readRuntimeSkills(repoRoot));
+  planSkillIndexes(repoRoot, readRuntimeSkills(repoRoot), { categoryIndexes: managedCategoryIndexes });
   const runtime = source.runtime === "node" ? process.execPath : (process.env.PYTHON ?? (process.platform === "win32" ? "python" : "python3"));
   const output = run(runtime, [path.join(repoRoot, source.adapter), "--repo-root", repoRoot, "--snapshot-root", snapshotRoot, "--sha", sha], { encoding: "utf8" });
-  for (const [relative, { bytes, mode }] of planSkillIndexes(repoRoot, readRuntimeSkills(repoRoot))) {
+  for (const [relative, { bytes, mode }] of planSkillIndexes(repoRoot, readRuntimeSkills(repoRoot), { categoryIndexes: managedCategoryIndexes })) {
     const destination = path.join(repoRoot, relative);
     writeFileSync(destination, bytes);
     if (process.platform !== "win32") chmodSync(destination, mode);
@@ -81,18 +81,28 @@ export function commitSnapshot(repoRoot, source) {
   git(repoRoot, "add", "-A");
   const result = { branch, title, blocked: "false", structural: "true" };
   if (source.classify) {
-    // Only a reproducible local index edit may accompany the source content.
-    const indexChanged = Boolean(git(repoRoot, "diff", "--cached", "--name-only", "--", "README.md"));
-    if (indexChanged) {
-      const original = run("git", ["-C", repoRoot, "show", `${before}:README.md`], { encoding: "utf8" });
-      const expected = renderRootIndex(original, readRuntimeSkills(repoRoot)).replaceAll("\r\n", "\n");
-      const staged = run("git", ["-C", repoRoot, "show", ":README.md"], { encoding: "utf8" }).replaceAll("\r\n", "\n");
-      const originalMode = git(repoRoot, "ls-tree", before, "--", "README.md").split(" ")[0];
-      const stagedMode = git(repoRoot, "ls-files", "--stage", "--", "README.md").split(" ")[0];
-      if (staged !== expected || originalMode !== stagedMode) throw new Error("README changes must match the generated skill index");
-      git(repoRoot, "restore", "--staged", "README.md");
+    // Only reproducible local index edits may accompany the source content.
+    const indexPaths = ["README.md", ...managedCategoryIndexes.map((category) => `skills/${category}/README.md`)];
+    const changedIndexes = [];
+    let runtimeSkills = null;
+    for (const indexPath of indexPaths) {
+      if (!git(repoRoot, "diff", "--cached", "--name-only", "--", indexPath)) continue;
+      runtimeSkills ??= readRuntimeSkills(repoRoot);
+      const original = run("git", ["-C", repoRoot, "show", `${before}:${indexPath}`], { encoding: "utf8" });
+      const rendered = indexPath === "README.md"
+        ? renderRootIndex(original, runtimeSkills)
+        : renderCategoryIndex(original, runtimeSkills, indexPath.split("/")[1]);
+      const expected = rendered.replaceAll("\r\n", "\n");
+      const staged = run("git", ["-C", repoRoot, "show", `:${indexPath}`], { encoding: "utf8" }).replaceAll("\r\n", "\n");
+      const originalMode = git(repoRoot, "ls-tree", before, "--", indexPath).split(" ")[0];
+      const stagedMode = git(repoRoot, "ls-files", "--stage", "--", indexPath).split(" ")[0];
+      if (staged !== expected || originalMode !== stagedMode) {
+        throw new Error(`${indexPath === "README.md" ? "README" : indexPath} changes must match the generated skill index`);
+      }
+      git(repoRoot, "restore", "--staged", indexPath);
+      changedIndexes.push(indexPath);
     }
-    // Classify source content independently of the generated index and lock.
+    // Classify source content independently of the generated indexes and lock.
     git(repoRoot, "restore", "--staged", source.lock);
     const contentChanged = Boolean(git(repoRoot, "diff", "--cached", "--name-only"));
     if (contentChanged) git(repoRoot, "commit", "-m", title);
@@ -104,8 +114,7 @@ export function commitSnapshot(repoRoot, source) {
       const index = line.indexOf("=");
       if (index > 0) result[line.slice(0, index)] = line.slice(index + 1);
     }
-    git(repoRoot, "add", source.lock);
-    if (indexChanged) git(repoRoot, "add", "README.md");
+    git(repoRoot, "add", source.lock, ...changedIndexes);
     if (contentChanged) git(repoRoot, "commit", "--amend", "--no-edit");
     else git(repoRoot, "commit", "-m", title);
   } else {

@@ -5,12 +5,14 @@
   },
   "upstreamAllowlist": [
     "skills/",
-    "docs/",
-    "LICENSE"
+    "docs/"
   ],
+  "upstreamLicensePath": "LICENSES/mattpocock-skills.LICENSE",
   "blockedUpstreamPaths": [
     ".github/skill-sync/",
     ".github/upstream-sync/",
+    ".github/security-audit-sync/",
+    ".github/i-have-adhd-sync/",
     ".github/taiwan-terminology-sync/",
     ".github/emil-skills-sync/",
     "rules/",
@@ -32,9 +34,11 @@
   "excludedSkillPathSegments": [
     "deprecated"
   ],
-  "forkOwned": [
+  "projectOwned": [
     ".github/skill-sync/",
     ".github/upstream-sync/",
+    ".github/security-audit-sync/",
+    ".github/i-have-adhd-sync/",
     ".github/taiwan-terminology-sync/",
     ".github/emil-skills-sync/",
     "rules/",
@@ -43,11 +47,14 @@
     "skills/language/",
     "skills/ui-design/",
     "skills/security/",
+    "skills/productivity/README.md",
     "skills/productivity/design-review/",
     "skills/productivity/doc-drift/",
     "skills/productivity/i-have-adhd/",
+    "skills/software/README.md",
     "docs/security/",
     ".github/workflows/",
+    "LICENSE",
     "MAINTENANCE.md",
     "README.md",
     "CONTEXT.md",

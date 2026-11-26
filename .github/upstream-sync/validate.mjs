@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { loadPolicy, matchesAny } from "./lib/policy.mjs";
+import { isExcludedUpstreamPath, loadPolicy, matchesAny } from "./lib/policy.mjs";
 import { destinationPrefix as emilDestinationPrefix, runtimeSkillName, upstreamSkillName, upstreamRepository as emilRepository } from "../emil-skills-sync/lib.mjs";
 
 const repoRoot = path.resolve(
@@ -32,13 +32,6 @@ const policy = loadPolicy(controlPlaneRoot);
 const excludedSkillNames = new Set(policy.excludedSkillNames ?? []);
 const excludedSkillPathSegments = new Set(policy.excludedSkillPathSegments ?? []);
 const categoryMap = policy.categoryMap ?? {};
-
-function isExcludedSkillPath(relative) {
-  const segments = relative.split("/");
-  return segments[0] === "skills" && segments.slice(1).some(
-    (segment) => excludedSkillNames.has(segment) || excludedSkillPathSegments.has(segment),
-  );
-}
 
 function filesNamed(directory, filename, result = []) {
   if (!existsSync(directory)) return result;
@@ -93,7 +86,7 @@ for (const file of skillFiles) {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(metadata.name)) {
     errors.push(`Runtime skill name is not slash-command safe: ${metadata.name}`);
   }
-  if (excludedSkillNames.has(metadata.name) || isExcludedSkillPath(relative)) {
+  if (excludedSkillNames.has(metadata.name) || isExcludedUpstreamPath(relative, policy)) {
     errors.push(`Non-runtime skill is present in the direct checkout: ${relative}`);
   }
   if (runtimeNames.has(metadata.name)) {
@@ -143,7 +136,7 @@ for (const file of readdirSync(path.join(repoRoot, "skills"), { withFileTypes: t
 }
 
 const repositoryFiles = listFiles(repoRoot);
-for (const relative of repositoryFiles.filter(isExcludedSkillPath)) {
+for (const relative of repositoryFiles.filter((file) => isExcludedUpstreamPath(file, policy))) {
   errors.push(`Non-runtime excluded path is present: ${relative}`);
 }
 for (const [sourceCategory, targetCategory] of Object.entries(categoryMap)) {
@@ -173,6 +166,10 @@ const required = [
   ".github/taiwan-terminology-sync/apply_upstream_snapshot.py",
   ".github/taiwan-terminology-sync/upstream-lock.json",
   "rules/skills.md",
+  "LICENSE",
+  ...(typeof policy.upstreamLicensePath === "string" && policy.upstreamLicensePath.trim() ? [policy.upstreamLicensePath] : []),
+  "skills/productivity/README.md",
+  "skills/software/README.md",
   "skills/security/README.md",
   "skills/ui-design/README.md",
   "skills/security/security-audit/LICENSE",
@@ -191,7 +188,7 @@ const required = [
   "README.md",
 ];
 for (const relative of required) {
-  if (!existsSync(path.join(repoRoot, relative))) errors.push(`Required fork file is missing: ${relative}`);
+  if (!existsSync(path.join(repoRoot, relative))) errors.push(`Required project file is missing: ${relative}`);
 }
 
 for (const forbidden of [".agents", ".antigravity"]) {
@@ -219,6 +216,28 @@ try {
   errors.push(`Invalid i-have-adhd invocation policy: ${error.message}`);
 }
 
+for (const category of ["productivity", "software", "ui-design"]) {
+  const categoryReadme = path.join(repoRoot, "skills", category, "README.md");
+  if (!existsSync(categoryReadme)) continue;
+  const content = readFileSync(categoryReadme, "utf8");
+  const links = [...content.matchAll(/\]\((\.\/([a-z0-9-]+)\/SKILL\.md)(?:#[^)]*)?\)/g)];
+  for (const match of links) {
+    if (!existsSync(path.join(repoRoot, "skills", category, match[1]))) {
+      errors.push(`Category README skill link does not exist: skills/${category}/${match[1]}`);
+    }
+  }
+  const documented = [...new Set(links.map((match) => match[2]))].sort();
+  const runtime = [...runtimeNames.entries()]
+    .filter(([, relative]) => relative.startsWith(`skills/${category}/`))
+    .map(([name]) => name)
+    .sort();
+  if (JSON.stringify(documented) !== JSON.stringify(runtime)) {
+    const missing = runtime.filter((name) => !documented.includes(name));
+    const extra = documented.filter((name) => !runtime.includes(name));
+    errors.push(`skills/${category}/README.md inventory does not match installed runtime skills (missing: ${missing.join(", ") || "none"}; extra: ${extra.join(", ") || "none"})`);
+  }
+}
+
 try {
   const lock = JSON.parse(readFileSync(path.join(controlPlaneRoot, "upstream-lock.json"), "utf8"));
   if (lock.repository !== policy.upstream) {
@@ -227,6 +246,9 @@ try {
   if (!/^[0-9a-f]{40}$/.test(lock.commit ?? "")) {
     errors.push("Upstream lock commit must be a full lowercase commit SHA");
   }
+  if (typeof policy.upstreamLicensePath !== "string" || !policy.upstreamLicensePath.trim()) {
+    errors.push("Upstream policy must define upstreamLicensePath");
+  }
   if (!Array.isArray(lock.files) || lock.files.some((file) => typeof file !== "string")) {
     errors.push("Upstream lock files must be an array of paths");
   } else {
@@ -234,16 +256,24 @@ try {
     if (JSON.stringify(lock.files) !== JSON.stringify(sortedUnique)) {
       errors.push("Upstream lock files must be sorted and unique");
     }
+    const isManagedUpstream = (file) => file === policy.upstreamLicensePath || matchesAny(file, policy.upstreamAllowlist);
     const actual = repositoryFiles.filter(
-      (file) => matchesAny(file, policy.upstreamAllowlist) && !matchesAny(file, policy.forkOwned),
+      (file) => isManagedUpstream(file) && !matchesAny(file, policy.projectOwned),
     );
     if (JSON.stringify(sortedUnique) !== JSON.stringify(actual)) {
       errors.push("Upstream lock inventory does not match the composed upstream files");
     }
+    if (typeof policy.upstreamLicensePath === "string" && policy.upstreamLicensePath.trim() &&
+        !lock.files.includes(policy.upstreamLicensePath)) {
+      errors.push(`Upstream lock must include ${policy.upstreamLicensePath}`);
+    }
   }
   for (const file of Array.isArray(lock.files) ? lock.files : []) {
-    if (!matchesAny(file, policy.upstreamAllowlist)) errors.push(`Upstream lock contains a non-allowlisted file: ${file}`);
-    if (matchesAny(file, policy.blockedUpstreamPaths)) errors.push(`Upstream lock contains a fork-owned collision: ${file}`);
+    const isManagedUpstream = file === policy.upstreamLicensePath || matchesAny(file, policy.upstreamAllowlist);
+    if (!isManagedUpstream) errors.push(`Upstream lock contains a non-allowlisted file: ${file}`);
+    if (matchesAny(file, policy.blockedUpstreamPaths) || matchesAny(file, policy.projectOwned)) {
+      errors.push(`Upstream lock contains a project-owned collision: ${file}`);
+    }
   }
 } catch (error) {
   errors.push(`Invalid upstream lock: ${error.message}`);

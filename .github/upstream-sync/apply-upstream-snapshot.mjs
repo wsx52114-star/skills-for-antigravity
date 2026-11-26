@@ -13,7 +13,7 @@ import path from "node:path";
 import process from "node:process";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { loadPolicy, mapUpstreamPath, matchesAny } from "./lib/policy.mjs";
+import { isExcludedUpstreamPath, loadPolicy, mapUpstreamPath, matchesAny } from "./lib/policy.mjs";
 import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
 
 function parseArgs(argv) {
@@ -51,27 +51,26 @@ function main() {
   const options = parseArgs(process.argv.slice(2));
   const controlPlaneRoot = path.dirname(fileURLToPath(import.meta.url));
   const ownership = loadPolicy(controlPlaneRoot);
-  const isAllowed = (item) => matchesAny(item, ownership.upstreamAllowlist);
-  const isForkOwned = (item) => matchesAny(item, ownership.forkOwned);
+  const upstreamLicensePath = ownership.upstreamLicensePath;
+  if (typeof upstreamLicensePath !== "string" || !upstreamLicensePath.trim()) {
+    throw new Error("Upstream ownership policy must define upstreamLicensePath");
+  }
+  const isAllowedSource = (item) => item === "LICENSE" || matchesAny(item, ownership.upstreamAllowlist);
+  const isManagedLocal = (item) => item === upstreamLicensePath || matchesAny(item, ownership.upstreamAllowlist);
+  const isProjectOwned = (item) => matchesAny(item, ownership.projectOwned);
   const excludedSkillNames = new Set(ownership.excludedSkillNames ?? []);
   const excludedSkillPathSegments = new Set(ownership.excludedSkillPathSegments ?? []);
   const excludedReferenceSegments = [...excludedSkillNames, ...excludedSkillPathSegments];
-  const isExcludedSkill = (item) => {
-    const segments = item.split("/");
-    return segments[0] === "skills" && segments.some(
-      (segment) => excludedSkillNames.has(segment) || excludedSkillPathSegments.has(segment),
-    );
-  };
   const categoryMap = ownership.categoryMap ?? {};
-  const snapshotFiles = listRegularFiles(options.snapshotRoot, options.snapshotRoot, [], (item) => !isAllowed(item));
+  const snapshotFiles = listRegularFiles(options.snapshotRoot, options.snapshotRoot, [], (item) => !isAllowedSource(item));
   const blockedCollisions = snapshotFiles.filter((item) =>
     matchesAny(item, ownership.blockedUpstreamPaths) ||
-    matchesAny(mapUpstreamPath(item, categoryMap), ownership.blockedUpstreamPaths),
+    matchesAny(mapUpstreamPath(item, categoryMap, upstreamLicensePath), ownership.blockedUpstreamPaths),
   );
   if (blockedCollisions.length) {
-    throw new Error(`Upstream snapshot collides with fork-owned paths: ${blockedCollisions.join(", ")}`);
+    throw new Error(`Upstream snapshot collides with project-owned paths: ${blockedCollisions.join(", ")}`);
   }
-  const allowedFiles = snapshotFiles.filter((item) => isAllowed(item) && !isExcludedSkill(item) &&
+  const allowedFiles = snapshotFiles.filter((item) => isAllowedSource(item) && !isExcludedUpstreamPath(item, ownership) &&
     (!item.startsWith("skills/") || isAntigravitySkillFile(item)));
   const hasLicense = allowedFiles.includes("LICENSE");
   const skillDefinitions = allowedFiles.filter((item) => item.startsWith("skills/") && item.endsWith("/SKILL.md"));
@@ -81,15 +80,17 @@ function main() {
   const mappedEntries = [];
   const seenDestinations = new Set();
   for (const item of allowedFiles) {
-    const destination = mapUpstreamPath(item, categoryMap);
+    const destination = mapUpstreamPath(item, categoryMap, upstreamLicensePath);
     if (seenDestinations.has(destination)) {
       throw new Error(`Upstream snapshot maps multiple files to the same path: ${destination}`);
     }
     seenDestinations.add(destination);
     mappedEntries.push({ source: item, destination });
   }
-  const installable = mappedEntries.filter(
-    (entry) => !isForkOwned(entry.source) && !isForkOwned(entry.destination),
+  const installable = mappedEntries.filter((entry) =>
+    entry.source === "LICENSE"
+      ? !isProjectOwned(entry.destination)
+      : !isProjectOwned(entry.source) && !isProjectOwned(entry.destination),
   );
   const installableDestinations = installable.map((entry) => entry.destination).sort();
   const installableSet = new Set(installableDestinations);
@@ -98,7 +99,7 @@ function main() {
     .filter(Boolean);
 
   for (const relativePath of tracked) {
-    if (isAllowed(relativePath) && !isForkOwned(relativePath) && !installableSet.has(relativePath)) {
+    if (isManagedLocal(relativePath) && !isProjectOwned(relativePath) && !installableSet.has(relativePath)) {
       rmSync(path.join(options.repoRoot, relativePath), { recursive: true, force: true });
     }
   }

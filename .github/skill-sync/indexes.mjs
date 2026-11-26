@@ -159,6 +159,13 @@ function categoryIndex(content, skills) {
   return content;
 }
 
+export const managedCategoryIndexes = ["productivity", "software"];
+
+export function renderCategoryIndex(content, definitions, category) {
+  const skills = skillsFrom(definitions).filter((skill) => skill.category === category);
+  return categoryIndex(content, skills);
+}
+
 export function planSkillIndexes(repoRoot, definitions, { categories, categoryIndexes = [] } = {}) {
   const skills = skillsFrom(definitions);
   const planned = new Map();

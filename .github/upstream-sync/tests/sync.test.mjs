@@ -77,7 +77,7 @@ test("executable changes inside an existing skill require manual review", () => 
   } finally { item.cleanup(); }
 });
 
-test("upstream edits to fork-owned paths are blocked", () => {
+test("upstream edits to project-owned paths are blocked", () => {
   const item = fixture();
   try {
     const before = git(item.repo, "rev-parse", "HEAD");

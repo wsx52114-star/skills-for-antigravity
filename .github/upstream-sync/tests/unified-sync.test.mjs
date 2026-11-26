@@ -170,13 +170,16 @@ test("primary source commits a lock-only update without creating a content commi
 });
 
 const softwareIndex = "# Project setup\n\nKeep local setup instructions.\n\n### 軟體開發（Software）\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n| [`prototype`](skills/software/prototype/SKILL.md) | 可自動選用 | 保留中文用途。 |\n\n## Maintenance\n\nKeep local maintenance instructions.\n";
+const softwareCategoryIndex = "# Software\n\n## Model-invoked\n\n- [prototype](./prototype/SKILL.md): Software prototype.\n\n## User-invoked\n\nKeep local category notes.\n";
 
 for (const change of ["addition", "rename", "invocation"]) {
   test(`primary real adapter keeps the root inventory and classification consistent after ${change}`, () => {
     const item = fixture("upstream");
     try {
       write(item.repo, "README.md", softwareIndex);
-      write(item.repo, "LICENSE", "MIT\n");
+      write(item.repo, "skills/software/README.md", softwareCategoryIndex);
+      write(item.repo, "LICENSE", "project MIT\n");
+      write(item.repo, "LICENSES/mattpocock-skills.LICENSE", "MIT\n");
       commit(item.repo);
       const before = git(item.repo, "rev-parse", "HEAD");
       write(item.snapshot, "LICENSE", "MIT\n");
@@ -184,15 +187,30 @@ for (const change of ["addition", "rename", "invocation"]) {
       write(item.snapshot, `skills/engineering/${name}/SKILL.md`, `---\nname: ${name}\ndescription: Updated skill.\n${change === "invocation" ? "disable-model-invocation: true\n" : ""}---\n`);
       if (change === "addition") write(item.snapshot, "skills/engineering/added/SKILL.md", "---\nname: added\ndescription: New skill. More detail.\n---\n");
       applySnapshot(item.repo, item.source, item.snapshot, item.sha);
+      assert.equal(readFileSync(path.join(item.repo, "LICENSE"), "utf8"), "project MIT\n");
+      assert.equal(readFileSync(path.join(item.repo, "LICENSES/mattpocock-skills.LICENSE"), "utf8"), "MIT\n");
       const readme = readFileSync(path.join(item.repo, "README.md"), "utf8");
+      const catReadme = readFileSync(path.join(item.repo, "skills/software/README.md"), "utf8");
       assert.match(readme, /Keep local setup instructions/);
       assert.match(readme, /Keep local maintenance instructions/);
-      if (change === "addition") assert.match(readme, /skills\/software\/added\/SKILL\.md\) \| 可自動選用 \| New skill\. \|/);
+      assert.match(catReadme, /Keep local category notes\./);
+      if (change === "addition") {
+        assert.match(readme, /skills\/software\/added\/SKILL\.md\) \| 可自動選用 \| New skill\. \|/);
+        assert.match(catReadme, /## Model-invoked[\s\S]*- \[added\]\(\.\/added\/SKILL\.md\): New skill\./);
+      }
       if (change === "rename") {
         assert.doesNotMatch(readme, /skills\/software\/prototype\//);
         assert.match(readme, /skills\/software\/renamed\/SKILL\.md/);
-      } else assert.match(readme, /保留中文用途。/);
-      if (change === "invocation") assert.match(readme, /prototype\/SKILL\.md\) \| 需明確指定/);
+        assert.doesNotMatch(catReadme, /\.\/prototype\//);
+        assert.match(catReadme, /- \[renamed\]\(\.\/renamed\/SKILL\.md\): Updated skill\./);
+      } else {
+        assert.match(readme, /保留中文用途。/);
+        assert.match(catReadme, /- \[prototype\]\(\.\/prototype\/SKILL\.md\): Software prototype\./);
+      }
+      if (change === "invocation") {
+        assert.match(readme, /prototype\/SKILL\.md\) \| 需明確指定/);
+        assert.match(catReadme, /## User-invoked[\s\S]*- \[prototype\]\(\.\/prototype\/SKILL\.md\): Software prototype\./);
+      }
       const result = commitSnapshot(item.repo, item.source);
       assert.equal(result.blocked, "false");
       assert.equal(result.structural, String(change !== "invocation"));
@@ -210,6 +228,17 @@ test("primary commit rejects unrelated README edits instead of exempting the who
     write(item.repo, item.source.lock, `${JSON.stringify({ commit: item.sha })}\n`);
     write(item.repo, "README.md", softwareIndex.replace("Keep local setup instructions.", "Unexpected replacement."));
     assert.throws(() => commitSnapshot(item.repo, item.source), /README.*generated skill index/);
+  } finally { rmSync(item.root, { recursive: true, force: true }); }
+});
+
+test("primary commit rejects unrelated category README edits", () => {
+  const item = fixture("upstream");
+  try {
+    write(item.repo, "skills/software/README.md", softwareCategoryIndex);
+    commit(item.repo);
+    write(item.repo, item.source.lock, `${JSON.stringify({ commit: item.sha })}\n`);
+    write(item.repo, "skills/software/README.md", softwareCategoryIndex.replace("Keep local category notes.", "Unexpected edit."));
+    assert.throws(() => commitSnapshot(item.repo, item.source), /skills\/software\/README\.md changes must match the generated skill index/);
   } finally { rmSync(item.root, { recursive: true, force: true }); }
 });
 

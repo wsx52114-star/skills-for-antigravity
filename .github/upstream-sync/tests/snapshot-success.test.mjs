@@ -27,12 +27,16 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     const snapshot = path.join(root, "snapshot");
     mkdirSync(path.join(repo, ".github", "upstream-sync"), { recursive: true });
     mkdirSync(path.join(repo, "rules"), { recursive: true });
+    mkdirSync(path.join(repo, "skills", "productivity"), { recursive: true });
     mkdirSync(path.join(repo, "skills", "software", "removed"), { recursive: true });
     mkdirSync(path.join(repo, "skills", "security"), { recursive: true });
-    writeFileSync(path.join(repo, "README.md"), "fork readme\n");
+    writeFileSync(path.join(repo, "LICENSE"), "project license\n");
+    writeFileSync(path.join(repo, "README.md"), "project readme\n");
     writeFileSync(path.join(repo, "STALE.md"), "remove me\n");
     writeFileSync(path.join(repo, ".github", "upstream-sync", "local.md"), "keep control plane\n");
     writeFileSync(path.join(repo, "rules", "skills.md"), "keep runtime rules\n");
+    writeFileSync(path.join(repo, "skills", "productivity", "README.md"), "project productivity readme\n");
+    writeFileSync(path.join(repo, "skills", "software", "README.md"), "project software readme\n");
     writeFileSync(path.join(repo, "skills", "software", "removed", "SKILL.md"), "---\nname: removed\ndescription: Stale upstream skill.\n---\n");
     writeFileSync(path.join(repo, "skills", "security", "local.md"), "keep security\n");
     git(repo, "init");
@@ -41,26 +45,35 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     git(repo, "add", ".");
     git(repo, "commit", "-m", "before");
 
-    mkdirSync(path.join(snapshot, "docs"), { recursive: true });
+    mkdirSync(path.join(snapshot, "docs", "engineering"), { recursive: true });
     mkdirSync(path.join(snapshot, "skills", "engineering", "tdd", "agents"), { recursive: true });
+    mkdirSync(path.join(snapshot, "skills", "productivity"), { recursive: true });
     writeFileSync(path.join(snapshot, "skills", "engineering", "tdd", "agents", "openai.yaml"), "interface: {}\n");
     mkdirSync(path.join(snapshot, "skills", "deprecated", "old-skill"), { recursive: true });
     mkdirSync(path.join(snapshot, "skills", "in-progress", "claude-handoff"), { recursive: true });
     writeFileSync(path.join(snapshot, "README.md"), "upstream readme\n");
     writeFileSync(path.join(snapshot, "docs", "NEW.md"), "new file\n");
     writeFileSync(path.join(snapshot, "docs", "README.md"), "Keep ./deprecated/example in developer docs.\n");
+    writeFileSync(path.join(snapshot, "docs", "engineering", "pr.md"), "excluded doc\n");
+    writeFileSync(path.join(snapshot, "skills", "engineering", "README.md"), "# Engineering\n");
+    writeFileSync(path.join(snapshot, "skills", "productivity", "README.md"), "# Upstream productivity\n");
     writeFileSync(path.join(snapshot, "skills", "engineering", "tdd", "SKILL.md"), "---\nname: tdd\ndescription: Test.\n---\n");
     writeFileSync(path.join(snapshot, "skills", "engineering", "tdd", "README.md"), "Keep ./deprecated/example in skill docs.\n");
     writeFileSync(path.join(snapshot, "skills", "deprecated", "old-skill", "SKILL.md"), "---\nname: old-skill\ndescription: Deprecated.\n---\n");
     writeFileSync(path.join(snapshot, "skills", "in-progress", "claude-handoff", "SKILL.md"), "---\nname: claude-handoff\ndescription: Claude only.\n---\n");
     writeFileSync(path.join(snapshot, "skills", "in-progress", "README.md"), "- [claude-handoff](./claude-handoff/SKILL.md)\n- [wizard](./wizard/SKILL.md)\n");
-    writeFileSync(path.join(snapshot, "LICENSE"), "MIT\n");
+    writeFileSync(path.join(snapshot, "LICENSE"), "upstream MIT\n");
 
     const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "a".repeat(40)], { encoding: "utf8" });
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(readFileSync(path.join(repo, "README.md"), "utf8"), "fork readme\n");
+    assert.equal(readFileSync(path.join(repo, "LICENSE"), "utf8"), "project license\n");
+    assert.equal(readFileSync(path.join(repo, "LICENSES", "mattpocock-skills.LICENSE"), "utf8"), "upstream MIT\n");
+    assert.equal(readFileSync(path.join(repo, "README.md"), "utf8"), "project readme\n");
+    assert.equal(readFileSync(path.join(repo, "skills", "productivity", "README.md"), "utf8"), "project productivity readme\n");
+    assert.equal(readFileSync(path.join(repo, "skills", "software", "README.md"), "utf8"), "project software readme\n");
     assert.equal(readFileSync(path.join(repo, "docs", "NEW.md"), "utf8"), "new file\n");
     assert.equal(readFileSync(path.join(repo, "docs", "README.md"), "utf8"), "Keep ./deprecated/example in developer docs.\n");
+    assert.equal(existsSync(path.join(repo, "docs", "engineering", "pr.md")), false);
     assert.equal(existsSync(path.join(repo, "skills", "software", "tdd", "SKILL.md")), true);
     assert.equal(existsSync(path.join(repo, "skills", "engineering", "tdd", "SKILL.md")), false);
     assert.equal(existsSync(path.join(repo, "skills", "software", "tdd", "agents", "openai.yaml")), false);
@@ -68,13 +81,17 @@ test("snapshot composition imports skills, developer docs, and license", () => {
     assert.equal(existsSync(path.join(repo, "skills", "in-progress", "claude-handoff", "SKILL.md")), false);
     assert.equal(readFileSync(path.join(repo, "skills", "in-progress", "README.md"), "utf8"), "- [wizard](./wizard/SKILL.md)\n");
     assert.equal(existsSync(path.join(repo, "skills", "deprecated", "old-skill", "SKILL.md")), false);
-    assert.equal(readFileSync(path.join(repo, "LICENSE"), "utf8"), "MIT\n");
     assert.equal(readFileSync(path.join(repo, ".github", "upstream-sync", "local.md"), "utf8"), "keep control plane\n");
     assert.equal(readFileSync(path.join(repo, "rules", "skills.md"), "utf8"), "keep runtime rules\n");
     assert.equal(readFileSync(path.join(repo, "skills", "security", "local.md"), "utf8"), "keep security\n");
     assert.equal(existsSync(path.join(repo, "STALE.md")), true);
     assert.equal(existsSync(path.join(repo, "skills", "software", "removed", "SKILL.md")), false);
     const lock = JSON.parse(readFileSync(path.join(repo, ".github", "upstream-sync", "upstream-lock.json"), "utf8"));
+    assert.equal(lock.files.includes("LICENSES/mattpocock-skills.LICENSE"), true);
+    assert.equal(lock.files.includes("LICENSE"), false);
+    assert.equal(lock.files.includes("docs/engineering/pr.md"), false);
+    assert.equal(lock.files.includes("skills/productivity/README.md"), false);
+    assert.equal(lock.files.includes("skills/software/README.md"), false);
     assert.equal(lock.files.includes("skills/software/tdd/SKILL.md"), true);
     assert.equal(lock.files.includes("skills/engineering/tdd/SKILL.md"), false);
   } finally {
@@ -102,7 +119,7 @@ test("upstream adapter path collisions are rejected", () => {
 
     const result = spawnSync(process.execPath, [composer, "--repo-root", repo, "--snapshot-root", snapshot, "--sha", "b".repeat(40)], { encoding: "utf8" });
     assert.equal(result.status, 2);
-    assert.match(result.stderr, /collides with fork-owned paths/);
+    assert.match(result.stderr, /collides with project-owned paths/);
     assert.equal(readFileSync(path.join(repo, "KEEP.md"), "utf8"), "keep me\n");
   } finally {
     rmSync(root, { recursive: true, force: true });

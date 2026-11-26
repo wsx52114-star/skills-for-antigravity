@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { categoryDisplayNames, readRuntimeSkills, renderRootIndex } from "../../skill-sync/indexes.mjs";
+import { categoryDisplayNames, managedCategoryIndexes, planSkillIndexes, readRuntimeSkills, renderCategoryIndex, renderRootIndex } from "../../skill-sync/indexes.mjs";
 
 function definition(category, name, explicit = false, description = "First sentence. Second sentence.") {
   return { relative: `skills/${category}/${name}/SKILL.md`, content: `---\nname: ${name}\ndescription: ${description}\n${explicit ? "disable-model-invocation: true\n" : ""}---\n` };
@@ -85,8 +85,28 @@ test("localized category headings render and update idempotently", () => {
   assert.throws(() => renderRootIndex(`${rendered}\n### Software\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n`, definitions), /Duplicate skill index heading/);
 });
 
+test("renderCategoryIndex updates Model-invoked and User-invoked entries idempotently", () => {
+  const original = "# Software\n\n## Model-invoked\n\n- [tdd](./tdd/SKILL.md): Keep custom summary.\n- [stale](./stale/SKILL.md): Remove me.\n\n## User-invoked\n\nFooter notes.\n";
+  const definitions = [
+    definition("software", "tdd", true),
+    definition("software", "research", false, "Investigate primary sources. More detail."),
+    definition("productivity", "other"),
+  ];
+  const rendered = renderCategoryIndex(original, definitions, "software");
+  assert.doesNotMatch(rendered, /stale/);
+  assert.doesNotMatch(rendered, /other/);
+  assert.match(rendered, /## Model-invoked\n\n- \[research\]\(\.\/research\/SKILL\.md\): Investigate primary sources\./);
+  assert.match(rendered, /## User-invoked\n\n- \[tdd\]\(\.\/tdd\/SKILL\.md\): Keep custom summary\.\n\nFooter notes\./);
+  assert.equal(renderCategoryIndex(rendered, definitions, "software"), rendered);
+});
+
 test("current repository index generation is idempotent and preserves human descriptions", () => {
-  const root = new URL("../../../", import.meta.url);
-  const original = readFileSync(new URL("README.md", root), "utf8");
-  assert.equal(renderRootIndex(original, readRuntimeSkills(fileURLToPath(root))), original);
+  const rootPath = fileURLToPath(new URL("../../../", import.meta.url));
+  const skills = readRuntimeSkills(rootPath);
+  const original = readFileSync(`${rootPath}/README.md`, "utf8");
+  assert.equal(renderRootIndex(original, skills), original);
+  const planned = planSkillIndexes(rootPath, skills, { categoryIndexes: [...managedCategoryIndexes, "ui-design"] });
+  for (const relative of ["README.md", "skills/productivity/README.md", "skills/software/README.md", "skills/ui-design/README.md"]) {
+    assert.equal(planned.get(relative)?.bytes.toString("utf8"), readFileSync(`${rootPath}/${relative}`, "utf8"), relative);
+  }
 });
