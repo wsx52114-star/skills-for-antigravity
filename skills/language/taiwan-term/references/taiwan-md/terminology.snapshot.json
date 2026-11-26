@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": {
-    "commit": "7a9b222ee45298d3db0ea2d2f58fac6ebe318e9d",
+    "commit": "2c009533519d88a0e58522726c05210766bfc688",
     "repository": "https://github.com/frank890417/taiwan-md"
   },
   "statistics": {
-    "severity_a": 26,
-    "severity_b": 5,
-    "terms": 2286
+    "severity_a": 30,
+    "severity_b": 12,
+    "terms": 2297
   },
   "terms": [
     {
@@ -623,6 +623,21 @@
       "source_file": "下載量.yaml",
       "taiwan": [
         "下載次數"
+      ]
+    },
+    {
+      "china": [
+        "不了一點"
+      ],
+      "detection": {
+        "false_positives": [],
+        "severity": "B"
+      },
+      "fork_type": "C",
+      "source_file": "不了一點.yaml",
+      "taiwan": [
+        "一點都不〜",
+        "完全無法〜"
       ]
     },
     {
@@ -2490,17 +2505,6 @@
       "source_file": "義肢.yaml",
       "taiwan": [
         "義肢"
-      ]
-    },
-    {
-      "china": [
-        "假貨"
-      ],
-      "detection": null,
-      "fork_type": "B",
-      "source_file": "仿冒品.yaml",
-      "taiwan": [
-        "仿冒品"
       ]
     },
     {
@@ -4476,6 +4480,22 @@
     },
     {
       "china": [
+        "卷積"
+      ],
+      "detection": {
+        "false_positives": [
+          "卷積雲"
+        ],
+        "severity": "B"
+      },
+      "fork_type": "E",
+      "source_file": "摺積.yaml",
+      "taiwan": [
+        "摺積"
+      ]
+    },
+    {
+      "china": [
         "卸載"
       ],
       "detection": null,
@@ -5325,6 +5345,17 @@
       "source_file": "商業機密.yaml",
       "taiwan": [
         "商業機密"
+      ]
+    },
+    {
+      "china": [
+        "商量"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "商量.yaml",
+      "taiwan": [
+        "商量"
       ]
     },
     {
@@ -6737,12 +6768,16 @@
       "china": [
         "大佬"
       ],
-      "detection": null,
+      "detection": {
+        "false_positives": [],
+        "severity": "B"
+      },
       "fork_type": "E",
       "source_file": "大佬.yaml",
       "taiwan": [
         "高手",
-        "大大"
+        "大大",
+        "大神"
       ]
     },
     {
@@ -6812,6 +6847,20 @@
       "source_file": "大巴士.yaml",
       "taiwan": [
         "大巴士"
+      ]
+    },
+    {
+      "china": [
+        "大數據"
+      ],
+      "detection": {
+        "false_positives": [],
+        "severity": "B"
+      },
+      "fork_type": "B",
+      "source_file": "巨量資料.yaml",
+      "taiwan": [
+        "巨量資料"
       ]
     },
     {
@@ -8132,17 +8181,6 @@
       "source_file": "兒童活動中心.yaml",
       "taiwan": [
         "兒童活動中心"
-      ]
-    },
-    {
-      "china": [
-        "尚比亞"
-      ],
-      "detection": null,
-      "fork_type": "orthographic",
-      "source_file": "尚比亞.yaml",
-      "taiwan": [
-        "贊比亞"
       ]
     },
     {
@@ -9679,6 +9717,17 @@
     },
     {
       "china": [
+        "怎麼回事"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "怎麼回事.yaml",
+      "taiwan": [
+        "怎麼回事"
+      ]
+    },
+    {
+      "china": [
         "急診"
       ],
       "detection": null,
@@ -10916,6 +10965,26 @@
       "source_file": "推播.yaml",
       "taiwan": [
         "推播"
+      ]
+    },
+    {
+      "china": [
+        "提交"
+      ],
+      "detection": {
+        "false_positives": [
+          "提交大會",
+          "提交審議",
+          "提交董事會"
+        ],
+        "severity": "B"
+      },
+      "fork_type": "F",
+      "source_file": "送出.yaml",
+      "taiwan": [
+        "送出",
+        "繳交",
+        "遞交"
       ]
     },
     {
@@ -13449,7 +13518,7 @@
       "fork_type": "orthographic",
       "source_file": "梵高.yaml",
       "taiwan": [
-        "梵穀"
+        "梵谷"
       ]
     },
     {
@@ -15384,6 +15453,18 @@
       "source_file": "熱賣.yaml",
       "taiwan": [
         "熱賣"
+      ]
+    },
+    {
+      "china": [
+        "燒心"
+      ],
+      "detection": null,
+      "fork_type": "E",
+      "source_file": "燒心.yaml",
+      "taiwan": [
+        "燒心",
+        "梗語，進行中"
       ]
     },
     {
@@ -17697,13 +17778,17 @@
     },
     {
       "china": [
-        "程序編寫員"
+        "程序員"
       ],
-      "detection": null,
+      "detection": {
+        "false_positives": [],
+        "severity": "A"
+      },
       "fork_type": "B",
       "source_file": "程式設計師.yaml",
       "taiwan": [
-        "程式設計師"
+        "程式設計師",
+        "軟體工程師"
       ]
     },
     {
@@ -18966,11 +19051,29 @@
       "china": [
         "繃不住"
       ],
-      "detection": null,
+      "detection": {
+        "false_positives": [],
+        "severity": "B"
+      },
       "fork_type": "E",
       "source_file": "繃不住.yaml",
       "taiwan": [
         "忍不住"
+      ]
+    },
+    {
+      "china": [
+        "繃住"
+      ],
+      "detection": {
+        "false_positives": [],
+        "severity": "A"
+      },
+      "fork_type": "E",
+      "source_file": "繃住.yaml",
+      "taiwan": [
+        "撐住",
+        "忍住"
       ]
     },
     {
@@ -19386,17 +19489,6 @@
     },
     {
       "china": [
-        "肯亞"
-      ],
-      "detection": null,
-      "fork_type": "orthographic",
-      "source_file": "肯亞.yaml",
-      "taiwan": [
-        "肯尼亞"
-      ]
-    },
-    {
-      "china": [
         "肯定",
         "他肯定還在睡覺"
       ],
@@ -19406,6 +19498,17 @@
       "taiwan": [
         "一定",
         "絕對"
+      ]
+    },
+    {
+      "china": [
+        "肯尼亞"
+      ],
+      "detection": null,
+      "fork_type": "orthographic",
+      "source_file": "肯亞.yaml",
+      "taiwan": [
+        "肯亞"
       ]
     },
     {
@@ -19891,17 +19994,6 @@
     },
     {
       "china": [
-        "莫三鼻克"
-      ],
-      "detection": null,
-      "fork_type": "orthographic",
-      "source_file": "莫三鼻克.yaml",
-      "taiwan": [
-        "莫桑比克"
-      ]
-    },
-    {
-      "china": [
         "莫奈"
       ],
       "detection": null,
@@ -19920,6 +20012,17 @@
       "source_file": "莫札特.yaml",
       "taiwan": [
         "莫札特"
+      ]
+    },
+    {
+      "china": [
+        "莫桑比克"
+      ],
+      "detection": null,
+      "fork_type": "orthographic",
+      "source_file": "莫三鼻克.yaml",
+      "taiwan": [
+        "莫三比克"
       ]
     },
     {
@@ -21496,6 +21599,17 @@
     },
     {
       "china": [
+        "貢獻"
+      ],
+      "detection": null,
+      "fork_type": "F",
+      "source_file": "貢獻.yaml",
+      "taiwan": [
+        "貢獻"
+      ]
+    },
+    {
+      "china": [
         "貪心法"
       ],
       "detection": null,
@@ -21654,6 +21768,17 @@
       "source_file": "讚.yaml",
       "taiwan": [
         "讚"
+      ]
+    },
+    {
+      "china": [
+        "贊比亞"
+      ],
+      "detection": null,
+      "fork_type": "orthographic",
+      "source_file": "尚比亞.yaml",
+      "taiwan": [
+        "尚比亞"
       ]
     },
     {
@@ -21947,6 +22072,22 @@
       "source_file": "踩一捧一.yaml",
       "taiwan": [
         "自抬身價"
+      ]
+    },
+    {
+      "china": [
+        "踩坑"
+      ],
+      "detection": {
+        "false_positives": [],
+        "severity": "B"
+      },
+      "fork_type": "C",
+      "source_file": "踩坑.yaml",
+      "taiwan": [
+        "踩雷",
+        "中招",
+        "走冤枉路"
       ]
     },
     {
@@ -22842,6 +22983,21 @@
       "source_file": "索引標籤.yaml",
       "taiwan": [
         "索引標籤"
+      ]
+    },
+    {
+      "china": [
+        "避坑"
+      ],
+      "detection": {
+        "false_positives": [],
+        "severity": "A"
+      },
+      "fork_type": "C",
+      "source_file": "避雷.yaml",
+      "taiwan": [
+        "避雷",
+        "避地雷"
       ]
     },
     {
@@ -23945,11 +24101,16 @@
       "china": [
         "難繃"
       ],
-      "detection": null,
+      "detection": {
+        "false_positives": [],
+        "severity": "A"
+      },
       "fork_type": "E",
       "source_file": "難繃.yaml",
       "taiwan": [
-        "難受"
+        "忍不住",
+        "笑",
+        "笑到不行"
       ]
     },
     {
@@ -25713,6 +25874,18 @@
       "source_file": "陣頭.yaml",
       "taiwan": [
         "陣頭"
+      ]
+    },
+    {
+      "china": [
+        "（無：「假貨」是台灣本有的詞，兩岸通用，不構成用語對照）"
+      ],
+      "detection": null,
+      "fork_type": "B",
+      "source_file": "仿冒品.yaml",
+      "taiwan": [
+        "仿冒品",
+        "假貨"
       ]
     }
   ]
