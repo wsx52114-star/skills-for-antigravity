@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "disabled": true,
   "description": "Web frontend UI engineering, animations, gestures, mobile-web polish, Apple design principles, Swift, and Expo motion workflows.",
+  "logo": "assets/logo.svg",
   "suggestedPrompts": [
     "Use ui-prototype to explore three isolated layout variants",
     "Audit existing animations for performance and frame-budget issues",

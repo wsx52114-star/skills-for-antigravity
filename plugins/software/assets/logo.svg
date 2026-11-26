@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>Software</title>
+  <defs>
+    <linearGradient id="bg-software" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#529BFF"/>
+      <stop offset="52%" stop-color="#266DF4"/>
+      <stop offset="100%" stop-color="#1B45C8"/>
+    </linearGradient>
+    <radialGradient id="gl-software" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#99C9FF" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#529BFF" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#266DF4" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-software" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <g fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 20 L11.2 32 L21 44"/>
+        <path d="M34.5 14.5 L29.5 49.5" stroke-opacity="0.65"/>
+        <path d="M43 20 L52.8 32 L43 44"/>
+      </g>
+    </mask>
+  </defs>
+  <g mask="url(#m-software)">
+    <rect width="64" height="64" fill="url(#bg-software)"/>
+    <rect width="64" height="64" fill="url(#gl-software)"/>
+  </g>
+</svg>

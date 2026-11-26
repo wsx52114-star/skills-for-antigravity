@@ -42,7 +42,7 @@
 - **Cloudflare `security-audit`**：將 `LICENSE` 與 `skills/security-audit/**` 同步至 `skills/security/security-audit/`；`skills/security/README.md` 與 `docs/security/**` 由本專案維護。
 - **`i-have-adhd`**：同步至 `skills/productivity/i-have-adhd/`，adapter 強制注入 `disable-model-invocation: true` 並排除 `agents/` 設定檔。
 - **Taiwan.md 詞庫**：`taiwan-term` 流程與掃描器由本專案維護；adapter 僅讀取 `README.md` 與 `data/terminology/*.yaml` 產生離線 JSON 快照，保留 CC BY-SA 4.0 授權資訊，執行時不連線。
-- **Emil UI 設計 skills**：`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/ui-design/*/**`，每支技能保留獨立 `LICENSE` 與參考文件；來源 `prototype` 為避開 `skills/software/prototype` 衝突而更名為 `ui-prototype`（`rules/skills.md` 負責解析別名）。更新時共用索引工具維護 `README.md` 的 UI Design 表格與 `skills/ui-design/README.md`。
+- **Emil UI 設計 skills**：`emilkowalski/skills` 的 `skills/*/**` 匯入 `skills/ui-design/*/**`，每支技能保留獨立 `LICENSE` 與參考文件；來源 `prototype` 為避開 `skills/software/prototype` 衝突而更名為 `ui-prototype`（由 `rules/skills.md` 與套件規則 `plugins/ui-design/rules/AGENTS.md` 負責解析別名）。更新時共用索引工具維護 `README.md` 的 UI Design 表格與 `skills/ui-design/README.md`。
 
 ### 所有權邊界與架構約束
 
@@ -54,11 +54,12 @@
 
 核心架構約束：
 
-- Repository 根目錄不得包含 nested `.agents/`。
+- Repository 根目錄不得包含非空的 nested `.agents/` 或 `.antigravity/`（空目錄除外）。
 - 上游更新只能寫入 allowlist，且 Claude-only／deprecated skills 不得進入 runtime。
-- 開發專案各自的 `CONTEXT.md` 與 `docs/adr/` 必須留在各專案內。
+- 開發專案各自的 `CONTEXT.md`、`GLOSSARY.md`／`GLOSSARY-MAP.md` 與 `docs/adr/` 必須留在各專案內。
 - 所有 upstream 同步 PR（含新增、刪除、改名或移動）一律須人工審查，不得 auto-merge。
 - `rules/skills.md` 須保持在 12,000 字元內，並由 rules contract test 檢查無舊路徑或名稱。
+- CI 執行的 `validate.mjs` 會檢查 `plugins/**` 契約：`plugin.json` 欄位白名單與必填欄位（`name`、`version`、`description`）、`plugins/*/rules/AGENTS.md`（一般檔案、`<= 24,000` bytes 且禁止 YAML frontmatter），以及各 `skills.json` 合計必須 100% 互斥覆蓋所有 runtime skills。
 
 ### 自動更新與檔案契約說明
 

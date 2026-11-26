@@ -23,11 +23,11 @@ For significant features or architecture changes, recommend this chain while wai
 
 `grill-with-docs -> to-spec -> to-tickets -> implement / tdd -> code-review`
 
-- Keep planning (`grill-with-docs -> to-spec -> to-tickets`) in one unbroken window within the smart zone; run each implementation ticket in a fresh context window or isolated worktree via sparse context pointers rather than copied prose.
+- Keep planning (`grill-with-docs -> to-spec -> to-tickets`) in one unbroken window within the smart zone; run each implementation issue in a fresh context window or isolated worktree via sparse context pointers rather than copied prose.
 - For complex, cross-module, or high-risk specs, recommend explicit `design-review` between `to-spec` and `to-tickets`, and `doc-drift` periodically to check long-lived `CONTEXT.md`, ADRs, and specs against current code.
 - Do not force the full chain onto small fixes, routine maintenance, or narrowly scoped refactors.
 - When implementation exposes an unexpected failure or regression, use `diagnosing-bugs` to build a tight reproduction loop before guessing a fix. Stop after three consecutive failed fix attempts and re-evaluate assumptions.
-- Before completing a ticket or version, verify you can state what changed, why this approach was chosen, and which alternative was rejected without contradicting the spec or ADRs.
+- Before completing an issue or version, verify you can state what changed, why this approach was chosen, and which alternative was rejected without contradicting the spec or ADRs.
 
 ## Antigravity Translation and Safety Guardrails
 

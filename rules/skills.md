@@ -18,13 +18,14 @@ Use the installed skills as behavioral workflows. Skill frontmatter is the live 
 - User instructions override a skill when they conflict, within system and safety constraints. Do not broaden the user's authorization merely because a skill describes a larger workflow.
 - If an explicitly named skill is unavailable or unreadable, say so briefly and continue with the best safe fallback; never invent its instructions.
 - If no skill clearly fits, continue normally or tell the user which explicitly named router can help; never guess a skill's instructions.
+- In Antigravity 2.0, domain-scoped plugin rules live in `plugins/*/rules/AGENTS.md` (plain Markdown without YAML frontmatter) and apply only while their plugin is enabled; disabled-by-default plugins (`ui-design`, `security`, `in-progress`) are inactive until enabled.
 
 ## Project Knowledge
 
-- Read the current project's `.agents/CONTEXT.md` when domain vocabulary matters; fall back to the root `CONTEXT.md` when the `.agents` file does not exist. It is a glossary, not a specification or implementation log.
+- Read the current project's domain glossary when vocabulary matters: check `.agents/CONTEXT.md`, root `CONTEXT.md`, or upstream-style `GLOSSARY.md` (following whichever convention the project uses). It is a glossary, not a specification or implementation log.
 - Read relevant decisions under the current project's `.agents/docs/adr/` before changing an affected area; fall back to `docs/adr/` when the `.agents` directory does not exist.
-- If `.agents/CONTEXT-MAP.md` exists, use it to find context-specific `CONTEXT.md` and `docs/adr/` locations; otherwise fall back to a root `CONTEXT-MAP.md`.
-- Create project knowledge lazily. Add `.agents/CONTEXT.md` when the first domain term is resolved and `.agents/docs/adr/` when the first qualifying decision is accepted.
+- If `.agents/CONTEXT-MAP.md`, root `CONTEXT-MAP.md`, or `GLOSSARY-MAP.md` exists, use it to locate context-specific glossaries and `docs/adr/` directories.
+- Create project knowledge lazily. Add `.agents/CONTEXT.md` (or `GLOSSARY.md` when following upstream `domain-modeling` / `setup-matt-pocock-skills` conventions) when the first domain term is resolved and `.agents/docs/adr/` when the first qualifying decision is accepted.
 - Write an ADR only when a decision is hard to reverse, surprising without context, and the result of a real trade-off. Never use ADRs as per-version changelogs; record single-feature decisions in the spec, commit, or PR summary, and turn recurring mechanical mistakes into automated checks via `retro`.
 - Respect domain-specific project sources of truth when present: root `AGENTS.md` for operational rules, `CODING_STANDARDS.md` for review judgement calls, `DESIGN.md` for UI and motion taste rules captured by `learn-taste`, and `.kicad_pro`, `.kicad_dru`, and hardware design notes (e.g., `DESIGN_NOTES.md`) for KiCad constraints.
 - Keep project knowledge inside the current project. Never write it into the shared Agent home.
@@ -53,15 +54,15 @@ When the human explicitly chooses the full chain:
 
 Match other domains to their native loops rather than forcing the software chain everywhere:
 
-- **Frontend UI and motion** (`ask-emil`): `ui-prototype` (isolated variants before production code) → `pick-ui-library` / `animate` / `choreograph` / `gestures` → `break-ui` / `review-animations` / `mobile-native` / `animation-performance` → `learn-taste` (record rules and their why in `DESIGN.md` or lint checks).
-- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → optional `design-review` after locking parameters and `DESIGN_NOTES.md` (before layout or fabrication) → `kicad-pcb` (new-board planning with stage/drill-span approvals, root-level working copies for layer reduction or dangling-item edits, and `0 Ω` jumper back-annotation) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors).
-- **Security, drift, and terminology audits**: `security-audit` (coverage-ledger and PoC-validated findings), `doc-drift` (cold drift audit of `CONTEXT.md`, ADRs, specs, and hardware-software interface docs against current implementation), and `taiwan-term` (offline Taiwan.md snapshot scan enforcing `.agents/CONTEXT.md`).
+- **Frontend UI and motion** (`ask-emil`): `ui-prototype` (isolated variants before production code) → `pick-ui-library` / `animate` / `choreograph` / `gestures` / `animate-expo` → `break-ui` / `review-animations` / `mobile-native` / `animation-performance` → `learn-taste` (record rules and their why in `DESIGN.md` or lint checks).
+- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → optional `design-review` after locking parameters and hardware design notes (`DESIGN_NOTES.md` or `.agents/docs/hardware-design-notes.md`, before layout or fabrication) → `kicad-pcb` (new-board planning with stage/drill-span approvals, root-level working copies for layer reduction or dangling-item edits, and `0 Ω` jumper back-annotation) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors; use `doc-drift` for hardware-software interface docs rather than KiCad-internal parity).
+- **Security, drift, and terminology audits**: `security-audit` (coverage-ledger and PoC-validated findings checked with `validate-coverage-ledger.cjs` and `validate-findings.cjs`), `doc-drift` (cold drift audit of `CONTEXT.md` / `GLOSSARY.md`, ADRs, specs, and hardware-software interface docs against current implementation), and `taiwan-term` (offline Taiwan.md snapshot scan enforcing `.agents/CONTEXT.md`).
 
 Preserve context hygiene and circuit breakers across sessions:
 
-- Keep planning (`grill-with-docs → to-spec → to-tickets`) in one unbroken window within the smart zone; run each implementation ticket in a fresh context window (or isolated sub-agent worktree) via sparse context pointers rather than copied prose.
+- Keep planning (`grill-with-docs → to-spec → to-tickets`) in one unbroken window within the smart zone; run each implementation issue in a fresh context window (or isolated sub-agent worktree) via sparse context pointers rather than copied prose.
 - If implementation exposes an unexpected bug, failure, or regression, use `diagnosing-bugs` to establish a tight reproduction loop before guessing at a fix. Stop iterating after three consecutive failed fix attempts and re-evaluate assumptions.
-- Before completing a ticket or version, verify you can state what changed, why this approach was chosen, and which alternative was rejected without contradicting the spec or ADRs.
+- Before completing an issue or version, verify you can state what changed, why this approach was chosen, and which alternative was rejected without contradicting the spec or ADRs.
 
 Do not force the full chain onto small fixes, routine maintenance, documentation edits, or narrowly scoped refactors. Use only the workflow the task earns.
 
@@ -72,7 +73,7 @@ Do not force the full chain onto small fixes, routine maintenance, documentation
 - Translate Claude-specific tool names into available Antigravity tools while preserving inputs, approvals, stop conditions, and observable outcomes.
 - Translate slash-command prose into explicit skill invocation by name; do not treat every slash mention as permission to run a user-only skill.
 - When a skill refers to `CLAUDE.md` or `AGENTS.md`, preserve the intent in the current project's supported instruction or rule mechanism. Do not create harness-specific configuration solely to satisfy a filename reference.
-- If no supported project instruction mechanism exists, do not put operational rules into the glossary-only `CONTEXT.md`; report the limitation and obtain direction before creating a new mechanism.
+- If no supported project instruction mechanism exists, do not put operational rules into the glossary-only `CONTEXT.md` (or `GLOSSARY.md`); report the limitation and obtain direction before creating a new mechanism.
 - When a skill refers to Claude hooks, implement the closest Antigravity rule or approval control. State clearly when no equivalent enforcement exists.
 - Use available sub-agents only when the skill requires independent work or parallel review. Preserve the required separation between reviewers.
 - Keep platform translation outside upstream `SKILL.md` files so future snapshots remain directly comparable with upstream.

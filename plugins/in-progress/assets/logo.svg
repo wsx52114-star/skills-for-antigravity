@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>In Progress</title>
+  <defs>
+    <linearGradient id="bg-in-progress" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#B088FF"/>
+      <stop offset="52%" stop-color="#7E47F5"/>
+      <stop offset="100%" stop-color="#522BC7"/>
+    </linearGradient>
+    <radialGradient id="gl-in-progress" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D9C2FF" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#B088FF" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#7E47F5" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-in-progress" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <path d="M25 12 H39 V23.5 L51 44.5 C53.8 49.4 50.3 55 44.6 55 H19.4 C13.7 55 10.2 49.4 13 44.5 L25 23.5 Z" fill="#fff" fill-opacity="0.38"/>
+      <path d="M17.86 36 Q25 32.5 32 36 T46.14 36 L51 44.5 C53.8 49.4 50.3 55 44.6 55 H19.4 C13.7 55 10.2 49.4 13 44.5 Z" fill="#fff"/>
+      <rect x="21" y="9" width="22" height="5.5" rx="2.75" fill="#fff"/>
+      <circle cx="33" cy="27" r="2.6" fill="#fff"/>
+      <circle cx="26" cy="46.5" r="3" fill="#000"/>
+      <circle cx="37.5" cy="43.5" r="2.2" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#m-in-progress)">
+    <rect width="64" height="64" fill="url(#bg-in-progress)"/>
+    <rect width="64" height="64" fill="url(#gl-in-progress)"/>
+  </g>
+</svg>

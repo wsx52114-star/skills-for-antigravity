@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>Security</title>
+  <defs>
+    <linearGradient id="bg-security" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B57"/>
+      <stop offset="52%" stop-color="#EA4335"/>
+      <stop offset="100%" stop-color="#C5221F"/>
+    </linearGradient>
+    <radialGradient id="gl-security" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFA89B" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#FF6B57" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#EA4335" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-security" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <path d="M32 8 C33.2 8 34.4 8.3 35.5 8.8 L48.5 14.3 C50.6 15.2 52 17.3 52 19.6 V31 C52 43.2 43.4 51.6 33.4 55.4 C32.5 55.7 31.5 55.7 30.6 55.4 C20.6 51.6 12 43.2 12 31 V19.6 C12 17.3 13.4 15.2 15.5 14.3 L28.5 8.8 C29.6 8.3 30.8 8 32 8 Z" fill="#fff" fill-opacity="0.72"/>
+      <path d="M32 8 C30.8 8 29.6 8.3 28.5 8.8 L15.5 14.3 C13.4 15.2 12 17.3 12 19.6 V31 C12 43.2 20.6 51.6 30.6 55.4 C31.1 55.6 31.5 55.7 32 55.7 Z" fill="#fff"/>
+      <circle cx="32" cy="27.5" r="5" fill="#000"/>
+      <rect x="29.5" y="29" width="5" height="12.5" rx="2.5" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#m-security)">
+    <rect width="64" height="64" fill="url(#bg-security)"/>
+    <rect width="64" height="64" fill="url(#gl-security)"/>
+  </g>
+</svg>

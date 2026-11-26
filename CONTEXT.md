@@ -15,7 +15,7 @@ A single tracked unit of work inside an **Issue tracker**, such as a bug, task, 
 _Avoid_: ticket, except when quoting an external system
 
 **Triage role**:
-A canonical state-machine label applied to an **Issue** during triage, such as `needs-triage` or `ready-for-afk`.
+A canonical state-machine label applied to an **Issue** during triage, such as `needs-triage` or `ready-for-agent`.
 _Avoid_: status, stage
 
 ### Skill distribution
@@ -24,8 +24,12 @@ _Avoid_: status, stage
 The centrally managed global plugin and skill distribution stored at `~/.agents` and registered in Antigravity via `~/.gemini/config/plugins.json`.
 _Avoid_: workspace-local copies, global project context, runtime repo
 
+**Plugin**:
+A domain-scoped Antigravity 2.0 bundle under `plugins/<name>/` (`plugin.json`, `skills.json`, `assets/logo.svg`, and optional `rules/AGENTS.md`) that maps a disjoint subset of **Runtime skills** and can be enabled or disabled as a unit.
+_Avoid_: skill pack, extension copy, nested agent home
+
 **Runtime skill**:
-A skill included in this distribution and available for Antigravity to invoke.
+A skill included in this distribution and mapped by a **Plugin** so Antigravity can invoke it when that plugin is enabled.
 _Avoid_: active skill, installed command
 
 **Upstream snapshot**:
@@ -56,11 +60,11 @@ _Avoid_: skill documentation, global documentation
 
 ## Relationships
 
-- An **Agent home** contains many **Runtime skills** and **Compatibility rules**.
+- An **Agent home** contains **Plugins**, **Runtime skills**, and **Compatibility rules**; each **Plugin** maps a disjoint subset of **Runtime skills** and ships enabled or disabled by default.
 - An **Upstream snapshot** supplies eligible skills and **Skill documentation**, but never replaces a **Project-owned path**.
 - A **Runtime skill** may read or create **Project documentation** using the current **Project context**.
 - An **Issue tracker** holds many **Issues**.
-- An **Issue** carries one **Triage role** at a time.
+- A triaged **Issue** carries one category **Triage role** and one state **Triage role** at a time.
 
 ## Flagged ambiguities
 

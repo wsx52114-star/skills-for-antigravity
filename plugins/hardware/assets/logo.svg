@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>Hardware</title>
+  <defs>
+    <linearGradient id="bg-hardware" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#46DA7E"/>
+      <stop offset="52%" stop-color="#22B055"/>
+      <stop offset="100%" stop-color="#0E8547"/>
+    </linearGradient>
+    <radialGradient id="gl-hardware" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9CF7BC" stop-opacity="0.52"/>
+      <stop offset="55%" stop-color="#46DA7E" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#22B055" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-hardware" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <g fill="#fff" fill-opacity="0.52">
+        <rect x="23.5" y="9" width="4.5" height="9" rx="2.25"/>
+        <rect x="36" y="9" width="4.5" height="9" rx="2.25"/>
+        <rect x="23.5" y="46" width="4.5" height="9" rx="2.25"/>
+        <rect x="36" y="46" width="4.5" height="9" rx="2.25"/>
+        <rect x="9" y="23.5" width="9" height="4.5" rx="2.25"/>
+        <rect x="9" y="36" width="9" height="4.5" rx="2.25"/>
+        <rect x="46" y="23.5" width="9" height="4.5" rx="2.25"/>
+        <rect x="46" y="36" width="9" height="4.5" rx="2.25"/>
+      </g>
+      <rect x="17" y="17" width="30" height="30" rx="7" fill="#fff"/>
+      <rect x="24.5" y="24.5" width="15" height="15" rx="3.5" fill="#000"/>
+      <rect x="28" y="28" width="8" height="8" rx="2" fill="#fff"/>
+    </mask>
+  </defs>
+  <g mask="url(#m-hardware)">
+    <rect width="64" height="64" fill="url(#bg-hardware)"/>
+    <rect width="64" height="64" fill="url(#gl-hardware)"/>
+  </g>
+</svg>

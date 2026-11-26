@@ -6,23 +6,34 @@
 
 ## 快速開始
 
-### 1. 下載到 `~/.agents`
+### 方式一：請 Antigravity 直接安裝（推薦，免手動改設定檔）
+
+在 Antigravity App 或 Antigravity for IDEs 對話框貼上以下指令，由 Agent 自動下載並安全合併掛載設定：
+
+```text
+請幫我安裝 https://github.com/wsx52114-star/antigravity-skill-stack：先確認 ~/.agents 是否已存在（若資料夾非空，先停下來向我確認，不要覆蓋），否則 git clone 到 ~/.agents；接著將 ~/.agents/plugins 的完整絕對路徑（不可寫成 ~/）安全合併寫入 ~/.gemini/config/plugins.json（保留既有設定，不要重複加入）。
+```
+
+### 方式二：透過終端機安裝
 
 Windows（PowerShell）：
 
 ```powershell
 git clone https://github.com/wsx52114-star/antigravity-skill-stack.git "$HOME\.agents"
+powershell -ExecutionPolicy Bypass -File "$HOME\.agents\plugins\mount.ps1"
 ```
 
-WSL／Linux／Raspberry Pi：
+WSL／Linux／macOS／Raspberry Pi：
 
 ```bash
 git clone https://github.com/wsx52114-star/antigravity-skill-stack.git ~/.agents
+bash ~/.agents/plugins/mount.sh
 ```
 
-> 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。
+> 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。掛載腳本會自動偵測自身路徑並安全合併 `~/.gemini/config/plugins.json`（保留既有設定、重複執行不重複加入）。
 
-### 2. 掛載到 Antigravity
+<details>
+<summary>手動編輯 <code>plugins.json</code> 格式（進階／備用）</summary>
 
 編輯 `~/.gemini/config/plugins.json`（Windows 為 `%USERPROFILE%\.gemini\config\plugins.json`），填入 `plugins` 資料夾的**完整絕對路徑**（不可寫成 `~/`）：
 
@@ -36,23 +47,25 @@ git clone https://github.com/wsx52114-star/antigravity-skill-stack.git ~/.agents
 }
 ```
 
-（Linux／WSL／Raspberry Pi 請改填 `/home/<your-user>/.agents/plugins`。）
+（WSL／Linux／Raspberry Pi 請改填 `/home/<your-user>/.agents/plugins`；macOS 請改填 `/Users/<your-user>/.agents/plugins`。）
 
-### 3. 依專案需求開關功能套件
+</details>
+
+### 依專案需求開關功能套件
 
 掛載後，打開 Antigravity 左側邊欄 **Customizations > Installed**（或使用 `agy plugin list` / `agy plugin enable <名稱>` / `agy plugin disable <名稱>`）即可隨時開關以下 7 個套件。關閉的套件不會載入，也不會浪費額外容量：
 
-| 套件名稱 | 在 App 顯示的名稱 | 預設狀態 | 包含什麼功能 |
-| --- | --- | --- | --- |
-| [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 開啟 | 規格討論、TDD 開發、除錯與程式碼審查（19） |
-| [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 原理圖、PCB 佈線與製造檔檢查（3） |
-| [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、設計冷讀、文件漂移稽核、對話交接、教學與提問輔助（10） |
-| [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 開啟 | 繁體中文與台灣技術用語離線檢查（1） |
-| [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 關閉 | 網頁動態、手勢、Apple 介面規範與 Swift（20） |
-| [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 關閉 | 程式碼與 API 漏洞檢查流程（1） |
-| [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中與雜項（In Progress & Misc） | 關閉 | 上游測試中工具、寫作流程與 TypeScript 輔助（10） |
+| 圖示 | 套件名稱 | 在 App 顯示的名稱 | 預設狀態 | 包含什麼功能 |
+| :---: | --- | --- | --- | --- |
+| <img src="plugins/software/assets/logo.svg" width="20" height="20" alt="Software"> | [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 開啟 | 規格討論、TDD 開發、除錯與程式碼審查（19） |
+| <img src="plugins/hardware/assets/logo.svg" width="20" height="20" alt="Hardware"> | [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 原理圖、PCB 佈線與製造檔檢查（3） |
+| <img src="plugins/productivity/assets/logo.svg" width="20" height="20" alt="Productivity"> | [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、設計冷讀、文件漂移稽核、對話交接、教學與提問輔助（10） |
+| <img src="plugins/language/assets/logo.svg" width="20" height="20" alt="Language"> | [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 開啟 | 繁體中文與台灣技術用語離線檢查（1） |
+| <img src="plugins/ui-design/assets/logo.svg" width="20" height="20" alt="UI Design"> | [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 關閉 | 網頁動態、手勢、Apple 介面規範與 Swift（20） |
+| <img src="plugins/security/assets/logo.svg" width="20" height="20" alt="Security"> | [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 關閉 | 程式碼與 API 漏洞檢查流程（1） |
+| <img src="plugins/in-progress/assets/logo.svg" width="20" height="20" alt="In Progress"> | [`in-progress`](plugins/in-progress/plugin.json) | 上游開發中與雜項（In Progress & Misc） | 關閉 | 上游測試中工具、寫作流程與 TypeScript 輔助（10） |
 
-### 4. 日常使用與更新
+### 日常使用與更新
 
 - **使用方式**：直接用自然語言告訴 Antigravity 你想做的事（例如「幫我用 TDD 寫登入功能」、「對這個專案做資安檢查」），或輸入 `/技能名稱` 直接呼叫。
 - **保持更新**：先確認 `~/.agents` 沒有未儲存的修改，再執行 `git pull --ff-only` 即可取得最新技能。
@@ -61,7 +74,7 @@ git clone https://github.com/wsx52114-star/antigravity-skill-stack.git ~/.agents
 
 | 資料夾 | 說明 |
 | --- | --- |
-| [`plugins/`](plugins/README.md) | 7 個可直接開關的領域套件設定（各自引用下方的 `skills/` 與專用規則）。 |
+| [`plugins/`](plugins/README.md) | 7 個可直接開關的領域套件設定（含 `plugin.json`、`assets/logo.svg` 圖示、選用專用規則，並以 `skills.json` 引用下方 `skills/`）。 |
 | [`skills/`](skills/) | 64 個技能的實際定義檔，依領域分類存放。 |
 | [`rules/`](rules/) | 跨套件共用的基礎行為規範。 |
 | [`docs/`](docs/) | 各技能的補充參考文件。 |

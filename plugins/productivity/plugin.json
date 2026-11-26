@@ -3,6 +3,7 @@
   "displayName": "通用協作與生產力（Productivity）",
   "version": "1.0.0",
   "description": "Cross-domain collaboration, plan grilling, cold design review, doc drift audit, agent handoffs, teaching, questionnaires, and explicit-only ADHD formatting workflows.",
+  "logo": "assets/logo.svg",
   "suggestedPrompts": [
     "Stress-test my current architecture plan with grill-me",
     "Run design-review on this spec or hardware design note with fresh subagents",

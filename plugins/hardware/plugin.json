@@ -3,6 +3,7 @@
   "displayName": "硬體開發（Hardware）",
   "version": "1.0.0",
   "description": "KiCad schematic review, PCB planning and routing, layer reduction, CLI ERC/DRC/parity verification, and manufacturing release workflows.",
+  "logo": "assets/logo.svg",
   "suggestedPrompts": [
     "Review KiCad schematics and define upfront electrical parameters",
     "Plan PCB layer stackup, power loops, and routing rules in KiCad",

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>UI Design</title>
+  <defs>
+    <linearGradient id="bg-ui-design" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF78C2"/>
+      <stop offset="52%" stop-color="#E53888"/>
+      <stop offset="100%" stop-color="#B51B75"/>
+    </linearGradient>
+    <radialGradient id="gl-ui-design" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFB8E0" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#FF78C2" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#E53888" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-ui-design" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect x="9" y="9" width="20" height="26" rx="6" fill="#fff"/>
+      <rect x="35" y="9" width="20" height="14" rx="6" fill="#fff" fill-opacity="0.52"/>
+      <rect x="9" y="41" width="20" height="14" rx="6" fill="#fff" fill-opacity="0.52"/>
+      <rect x="35" y="29" width="20" height="26" rx="6" fill="#fff"/>
+    </mask>
+  </defs>
+  <g mask="url(#m-ui-design)">
+    <rect width="64" height="64" fill="url(#bg-ui-design)"/>
+    <rect width="64" height="64" fill="url(#gl-ui-design)"/>
+  </g>
+</svg>

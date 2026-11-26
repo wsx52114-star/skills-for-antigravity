@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">
+  <title>Language</title>
+  <defs>
+    <linearGradient id="bg-language" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#36E3C6"/>
+      <stop offset="52%" stop-color="#00B4A6"/>
+      <stop offset="100%" stop-color="#00838F"/>
+    </linearGradient>
+    <radialGradient id="gl-language" cx="18" cy="14" r="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#99F6E4" stop-opacity="0.52"/>
+      <stop offset="55%" stop-color="#36E3C6" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#00B4A6" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="m-language" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect x="22" y="8" width="34" height="34" rx="9" fill="#fff" fill-opacity="0.38"/>
+      <rect x="8" y="14" width="42" height="42" rx="11" fill="#fff"/>
+      <g fill="none" stroke="#000" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M29 21 L18.5 32.5 H38.5"/>
+        <path d="M35.5 27.5 L40.5 34"/>
+        <rect x="20" y="39.5" width="18" height="10" rx="2.2"/>
+      </g>
+    </mask>
+  </defs>
+  <g mask="url(#m-language)">
+    <rect width="64" height="64" fill="url(#bg-language)"/>
+    <rect width="64" height="64" fill="url(#gl-language)"/>
+  </g>
+</svg>
