@@ -21,17 +21,17 @@
 
 五份 lock 記錄各來源目前採用的 commit SHA 與檔案清單（本文件不另存固定 baseline SHA）。
 
-### 各來源採用與映射政策
+### 各來源採用與對應政策
 
 #### 1. `mattpocock/skills`（主上游）
 
-僅從主上游接收 `skills/**`、`docs/**` 與上游授權檔（`LICENSES/mattpocock-skills.LICENSE`），並排除非 Antigravity 專用的 `agents/` 設定、Claude-only skills、deprecated skills 與上游倉庫腳本：
+僅從主上游接收 `skills/**`、`docs/**` 與上游授權檔（`LICENSES/mattpocock-skills.LICENSE`），並排除非 Antigravity 專用的 `agents/` 設定、Claude-only skills、deprecated skills 與上游儲存庫指令碼：
 
 | 上游路徑／類型 | 處理方式 | 說明 |
 | --- | --- | --- |
-| `skills/` | 選擇性同步＋映射 | 排除 Claude-only 與 deprecated；依 `categoryMap` 將 `skills/engineering/` 映射為 `skills/software/`，並避開獨立來源與專案自有路徑（含 `skills/productivity/README.md` 與 `skills/software/README.md`）。 |
+| `skills/` | 選擇性同步＋對應 | 排除 Claude-only 與 deprecated；依 `categoryMap` 將 `skills/engineering/` 對應為 `skills/software/`，並避開獨立來源與專案自有路徑（含 `skills/productivity/README.md` 與 `skills/software/README.md`）。 |
 | `docs/` | 選擇性同步 | 保留 `docs/`；排除 `excludedSkillNames`／`deprecated` 對應文件，並保護 `docs/security/` 不被覆寫。 |
-| `LICENSE` | 映射保留 | 同步至 [`LICENSES/mattpocock-skills.LICENSE`](LICENSES/mattpocock-skills.LICENSE)，根目錄 [`LICENSE`](LICENSE) 由本專案維護。 |
+| `LICENSE` | 對應保留 | 同步至 [`LICENSES/mattpocock-skills.LICENSE`](LICENSES/mattpocock-skills.LICENSE)，根目錄 [`LICENSE`](LICENSE) 由本專案維護。 |
 | `.agents/`、`.changeset/`、`.claude-plugin/`、`.out-of-scope/`、`scripts/`、`package*.json`、`CLAUDE.md`、`CHANGELOG.md` | 排除 | 避免 nested `.agents`、其他工具封裝檔或上游維護工具混入。 |
 | `.github/workflows/`、`.gitignore`、`CONTEXT.md`、`README.md` | 自行維護 | 必須符合本儲存庫架構與索引格式。 |
 
@@ -130,4 +130,4 @@ python skills/language/taiwan-term/scripts/audit_terms.py --mode detection
 
 ### 4. 換行政策注意事項
 
-`.gitattributes` 固定 `.sh` 與 `terminology.snapshot.json` 使用 LF。若舊 checkout 尚未套用換行設定，先確認沒有未提交修改，再重新整理這類檔案的換行；切勿為了通過檢查而手動改寫 lock 檔案內的 hash。
+`.gitattributes` 固定 `.sh` 與 `terminology.snapshot.json` 使用 LF。若舊 checkout 尚未套用換行設定，先確認沒有尚未 commit 的修改，再重新整理這類檔案的換行；切勿為了通過檢查而手動改寫 lock 檔案內的 hash。

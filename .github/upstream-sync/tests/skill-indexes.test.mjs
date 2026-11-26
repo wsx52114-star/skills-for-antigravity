@@ -9,7 +9,7 @@ function definition(category, name, explicit = false, description = "First sente
 }
 
 function table(category, name) {
-  return `### ${category}\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n${name ? `| [\`${name}\`](skills/${category.toLowerCase().replaceAll(" ", "-")}/${name}/SKILL.md) | 可自動選用 | 本地用途。 |\n` : ""}`;
+  return `### ${category}\n\n| 關鍵字 | 觸發方式 | 用途 |\n| --- | --- | --- |\n${name ? `| [\`${name}\`](skills/${category.toLowerCase().replaceAll(" ", "-")}/${name}/SKILL.md) | 可自動選用 | 自訂用途。 |\n` : ""}`;
 }
 
 test("shared root index handles all runtime categories, removal, moves, and invocation", () => {
@@ -19,8 +19,8 @@ test("shared root index handles all runtime categories, removal, moves, and invo
   definitions.push(definition("productivity", "skill-0"));
   const rendered = renderRootIndex(original, definitions);
   assert.doesNotMatch(rendered, /skills\/engineering\/skill-0\//);
-  assert.match(rendered, /skills\/productivity\/skill-0\/SKILL\.md\) \| 可自動選用 \| 本地用途。/);
-  assert.equal((rendered.match(/本地用途。/g) ?? []).length, 7);
+  assert.match(rendered, /skills\/productivity\/skill-0\/SKILL\.md\) \| 可自動選用 \| 自訂用途。/);
+  assert.equal((rendered.match(/自訂用途。/g) ?? []).length, 7);
   assert.equal((rendered.match(/需明確指定/g) ?? []).length, 6);
   assert.match(rendered, /Keep local notes\.\n\n## Maintenance\n\nKeep maintenance\./);
   assert.equal(renderRootIndex(rendered, definitions), rendered);

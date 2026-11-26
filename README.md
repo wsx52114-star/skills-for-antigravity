@@ -8,7 +8,7 @@
 
 ### 方式一：請 Antigravity 直接安裝（推薦，免手動改設定檔）
 
-在 Antigravity App 或 Antigravity for IDEs 對話框貼上以下指令，由 Agent 自動下載並安全合併掛載設定：
+在 Antigravity App 或 Antigravity for IDEs 對話輸入框貼上以下指令，由 Agent 自動下載並安全合併掛載設定：
 
 ```text
 請幫我安裝 https://github.com/wsx52114-star/antigravity-skill-stack：先確認 ~/.agents 是否已存在（若資料夾非空，先停下來向我確認，不要覆蓋），否則 git clone 到 ~/.agents；接著將 ~/.agents/plugins 的完整絕對路徑（不可寫成 ~/）安全合併寫入 ~/.gemini/config/plugins.json（保留既有設定，不要重複加入）。
@@ -30,7 +30,7 @@ git clone https://github.com/wsx52114-star/antigravity-skill-stack.git ~/.agents
 bash ~/.agents/plugins/mount.sh
 ```
 
-> 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。掛載腳本會自動偵測自身路徑並安全合併 `~/.gemini/config/plugins.json`（保留既有設定、重複執行不重複加入）。
+> 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。掛載指令碼會自動偵測自身路徑並安全合併 `~/.gemini/config/plugins.json`（保留既有設定、重複執行不重複加入）。
 
 <details>
 <summary>手動編輯 <code>plugins.json</code> 格式（進階／備用）</summary>
@@ -58,7 +58,7 @@ bash ~/.agents/plugins/mount.sh
 | 圖示 | 套件名稱 | 在 App 顯示的名稱 | 預設狀態 | 包含什麼功能 |
 | :---: | --- | --- | --- | --- |
 | <img src="plugins/software/assets/logo.svg" width="20" height="20" alt="Software"> | [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 開啟 | 規格討論、TDD 開發、除錯與程式碼審查（19） |
-| <img src="plugins/hardware/assets/logo.svg" width="20" height="20" alt="Hardware"> | [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 原理圖、PCB 佈線與製造檔檢查（3） |
+| <img src="plugins/hardware/assets/logo.svg" width="20" height="20" alt="Hardware"> | [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 電路圖、PCB 佈線與製造檔檢查（3） |
 | <img src="plugins/productivity/assets/logo.svg" width="20" height="20" alt="Productivity"> | [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、設計冷讀、文件漂移稽核、對話交接、教學與提問輔助（10） |
 | <img src="plugins/language/assets/logo.svg" width="20" height="20" alt="Language"> | [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 開啟 | 繁體中文與台灣技術用語離線檢查（1） |
 | <img src="plugins/ui-design/assets/logo.svg" width="20" height="20" alt="UI Design"> | [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 關閉 | 網頁動態、手勢、Apple 介面規範與 Swift（20） |
@@ -115,16 +115,16 @@ bash ~/.agents/plugins/mount.sh
 | --- | --- | --- |
 | [`animate`](skills/ui-design/animate/SKILL.md) | 可自動選用 | 建立網頁動畫，選擇動態目的、工具、屬性、曲線與時間。 |
 | [`animate-expo`](skills/ui-design/animate-expo/SKILL.md) | 可自動選用 | 建立 React Native／Expo 動畫、手勢、轉場與觸覺回饋。 |
-| [`animation-performance`](skills/ui-design/animation-performance/SKILL.md) | 可自動選用 | 控制網頁動畫效能預算，僅動畫化合成層屬性並找出掉幀原因。 |
+| [`animation-performance`](skills/ui-design/animation-performance/SKILL.md) | 可自動選用 | 控制網頁動畫效能預算，僅動畫化合成層屬性並找出掉格原因。 |
 | [`animation-vocabulary`](skills/ui-design/animation-vocabulary/SKILL.md) | 可自動選用 | 將動畫效果描述轉成精確名稱，方便溝通設計需求。 |
 | [`apple-design`](skills/ui-design/apple-design/SKILL.md) | 可自動選用 | 將 Apple 的介面與動態設計原則應用到網頁。 |
 | [`ask-emil`](skills/ui-design/ask-emil/SKILL.md) | 需明確指定 | 詢問目前介面或動畫情境適合使用哪個 UI Design 技能。 |
-| [`ask-sonner`](skills/ui-design/ask-sonner/SKILL.md) | 可自動選用 | 設定、客製化與排查 Sonner toast 通知。 |
+| [`ask-sonner`](skills/ui-design/ask-sonner/SKILL.md) | 可自動選用 | 設定、客製化與除錯 Sonner toast 通知。 |
 | [`break-ui`](skills/ui-design/break-ui/SKILL.md) | 可自動選用 | 以極端資料檢查介面，提供一般與極端資料切換及修正建議。 |
 | [`choreograph`](skills/ui-design/choreograph/SKILL.md) | 可自動選用 | 協調多個元件的連動進場順序與節奏，讓畫面動態更有整體感。 |
 | [`emil-design-eng`](skills/ui-design/emil-design-eng/SKILL.md) | 可自動選用 | 改善 UI 細節、元件設計、動畫決策與使用質感。 |
 | [`find-animation-opportunities`](skills/ui-design/find-animation-opportunities/SKILL.md) | 可自動選用 | 找出值得加入動畫的介面位置，提出具體建議。 |
-| [`gestures`](skills/ui-design/gestures/SKILL.md) | 可自動選用 | 實作跟手且可隨時中斷的拖曳、滑動與抽屜手勢互動。 |
+| [`gestures`](skills/ui-design/gestures/SKILL.md) | 可自動選用 | 實作貼合手指操作且可隨時中斷的拖曳、滑動與抽屜手勢互動。 |
 | [`improve-animations`](skills/ui-design/improve-animations/SKILL.md) | 可自動選用 | 稽核整體動態設計，產生依優先順序排列的實作計畫。 |
 | [`learn-taste`](skills/ui-design/learn-taste/SKILL.md) | 需明確指定 | 將對話中的介面設計修正整理成 DESIGN.md 或 lint 規則與原因。 |
 | [`mobile-native`](skills/ui-design/mobile-native/SKILL.md) | 可自動選用 | 改善手機網頁的觸控、視窗高度、安全區域與互動體驗。 |
@@ -138,9 +138,9 @@ bash ~/.agents/plugins/mount.sh
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
-| [`kicad-pcb`](skills/hardware/kicad-pcb/SKILL.md) | 可自動選用 | 設定 KiCad `.kicad_pro`／`.kicad_dru` 規則、元件佈局、90°／45° 走線、焊盤／過孔中心對齊、鋪銅回流、絲印擺放與四層／減層規則。 |
+| [`kicad-pcb`](skills/hardware/kicad-pcb/SKILL.md) | 可自動選用 | 設定 KiCad `.kicad_pro`／`.kicad_dru` 規則、元件擺放、90°／45° 走線、焊墊／貫孔中心對齊、鋪銅回流、文字層擺放與四層／減層規則。 |
 | [`kicad-release`](skills/hardware/kicad-release/SKILL.md) | 可自動選用 | 執行 KiCad 10 CLI ERC／DRC 與一致性檢查，於工作副本清理懸空物件，把關零錯誤與製造檔匯出。 |
-| [`kicad-schematic`](skills/hardware/kicad-schematic/SKILL.md) | 可自動選用 | 定義開案電氣參數、核對 KiCad 原理圖電源與封裝、建立跨板排線與共用腳位表並完成 ERC 驗收。 |
+| [`kicad-schematic`](skills/hardware/kicad-schematic/SKILL.md) | 可自動選用 | 定義開案電氣參數、核對 KiCad 電路圖電源與封裝、建立跨板排線與共用腳位表並完成 ERC 驗收。 |
 
 ### 資安稽核（Security）
 
@@ -166,7 +166,7 @@ bash ~/.agents/plugins/mount.sh
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
-| [`design-review`](skills/productivity/design-review/SKILL.md) | 需明確指定 | 以零脈絡雙軸子代理冷讀審查規格或設計文件，於拆票或實作前把關。 |
+| [`design-review`](skills/productivity/design-review/SKILL.md) | 需明確指定 | 以零脈絡雙軸子代理冷讀審查規格或設計文件，於拆分為 issue 或實作前把關。 |
 | [`doc-drift`](skills/productivity/doc-drift/SKILL.md) | 需明確指定 | 稽核長期專案文件（CONTEXT、ADR、規格、硬體設計筆記）與現行實作的漂移。 |
 | [`grill-me`](skills/productivity/grill-me/SKILL.md) | 需明確指定 | 以持續追問方式釐清並強化 plan 或 design。 |
 | [`grilling`](skills/productivity/grilling/SKILL.md) | 可自動選用 | 壓力測試使用者的計畫、決策或想法。 |
