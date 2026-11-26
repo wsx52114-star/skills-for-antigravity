@@ -32,7 +32,7 @@ _Avoid_: active skill, installed command
 The selected state of one upstream commit imported without its Git history.
 _Avoid_: upstream merge, vendored repository
 
-**Fork-owned path**:
+**Project-owned path**:
 Content maintained only by this project and never replaced by an **Upstream snapshot**.
 _Avoid_: local override, patched upstream file
 
@@ -57,7 +57,7 @@ _Avoid_: skill documentation, global documentation
 ## Relationships
 
 - An **Agent home** contains many **Runtime skills** and **Compatibility rules**.
-- An **Upstream snapshot** supplies eligible skills and **Skill documentation**, but never replaces a **Fork-owned path**.
+- An **Upstream snapshot** supplies eligible skills and **Skill documentation**, but never replaces a **Project-owned path**.
 - A **Runtime skill** may read or create **Project documentation** using the current **Project context**.
 - An **Issue tracker** holds many **Issues**.
 - An **Issue** carries one **Triage role** at a time.

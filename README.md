@@ -180,4 +180,4 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 ## 維護與授權
 
-上游同步策略、GitHub Actions 設定與驗證指令見 [MAINTENANCE.md](MAINTENANCE.md)；各套件開發細節見 [plugins/README.md](plugins/README.md)，授權條款保留於 [LICENSE](LICENSE)。
+上游同步策略、GitHub Actions 設定與驗證指令見 [MAINTENANCE.md](MAINTENANCE.md)；各套件開發細節見 [plugins/README.md](plugins/README.md)。本專案授權見根目錄 [LICENSE](LICENSE)，各上游來源授權保留於 [LICENSES/mattpocock-skills.LICENSE](LICENSES/mattpocock-skills.LICENSE) 及個別技能目錄內的 `LICENSE`／`NOTICE.md`。

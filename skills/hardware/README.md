@@ -1,6 +1,6 @@
 # Hardware
 
-Fork-owned hardware, schematic, and PCB engineering skills kept outside the
+Project-owned hardware, schematic, and PCB engineering skills kept outside the
 `mattpocock/skills` synchronization boundary.
 
 - [`kicad-schematic`](kicad-schematic/SKILL.md) — Define opening electrical parameters, design and review KiCad schematics (`.kicad_sch`), verify footprints, BOM/DNP fields, and cross-board pin mappings, and prepare for ERC.

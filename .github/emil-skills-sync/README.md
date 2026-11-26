@@ -1,6 +1,6 @@
 # Emil skills synchronization
 
-This fork-owned control plane imports `emilkowalski/skills/skills/*/` into
+This project-owned control plane imports `emilkowalski/skills/skills/*/` into
 `skills/ui-design/*/`. Each skill retains all its reference files and receives a
 copy of the upstream MIT license so project-local copies preserve attribution.
 

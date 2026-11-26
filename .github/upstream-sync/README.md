@@ -1,6 +1,6 @@
 # Upstream synchronization control plane
 
-This directory is owned by the Antigravity fork and is not part of the Agent
+This directory is owned by this project and is not part of the Agent
 runtime interface. It keeps the repository synchronized with the selected
 parts of `mattpocock/skills`.
 
@@ -22,11 +22,15 @@ node .github/upstream-sync/validate.mjs
 ```
 
 `ownership.json` defines the upstream allowlist, `categoryMap` (which maps
-upstream `skills/engineering/*` to local `skills/software/*`), fork-owned paths,
-and skills that must not enter the direct runtime checkout. During composition,
-index lines for excluded skills are removed from imported category READMEs.
+upstream `skills/engineering/*` to local `skills/software/*`),
+`upstreamLicensePath` (which imports `mattpocock/skills` `LICENSE` to
+`LICENSES/mattpocock-skills.LICENSE` while keeping root `LICENSE` project-owned),
+`projectOwned` paths (including `skills/productivity/README.md` and
+`skills/software/README.md`), and excluded skills/docs that must not enter the
+direct runtime checkout. During composition, index lines for excluded skills
+are removed from imported category READMEs (`in-progress` and `misc`).
 `upstream-lock.json` records the source commit and composed local file inventory.
 
-The fork-owned `skills/security/security-audit/` subtree is managed separately
+The project-owned `skills/security/security-audit/` subtree is managed separately
 by [`.github/security-audit-sync/`](../security-audit-sync/) and is never
 imported from `mattpocock/skills`.

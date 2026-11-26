@@ -1,6 +1,6 @@
 # Security
 
-Fork-owned security engineering bucket. It is intentionally outside the
+Project-owned security engineering bucket. It is intentionally outside the
 `mattpocock/skills` synchronization boundary, keeping the two upstreams
 conflict-free.
 

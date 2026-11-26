@@ -23,16 +23,16 @@ between source content and generated index/lock changes.
 
 Before invoking an adapter, the shared flow checks the existing root index
 structure. After every adapter (including the Python terminology adapter),
-[`indexes.mjs`](indexes.mjs) rebuilds the root README skill tables from the
+[`indexes.mjs`](indexes.mjs) rebuilds the root README skill tables and project-owned category indexes (`skills/productivity/README.md`, `skills/software/README.md`) from the
 installed `SKILL.md` paths and frontmatter. Additions, removals, renames,
 category moves, and invocation changes travel in the same snapshot PR. New
 categories receive a table. Existing summaries, local prose, and newline
 style are preserved; new summaries use the first description sentence.
 
-The primary commit step checks that README changes exactly match this
-generated result and retain the original file mode before classifying source
-content. Unrelated README edits fail rather than being exempted. Both the
-index and lock are then included in the single snapshot commit. Existing
+The primary commit step checks that changes to `README.md` and managed category
+indexes exactly match this generated result and retain original file modes before
+classifying source content. Unrelated index edits fail rather than being exempted.
+Both the indexes and lock are then included in the single snapshot commit. Existing
 blocked-path classification remains in place.
 
 Emil uses the same helper to plan its UI Design table and project-owned category

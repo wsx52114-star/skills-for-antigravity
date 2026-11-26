@@ -1,6 +1,6 @@
 # Cloudflare security-audit synchronization
 
-This fork-owned control plane synchronizes
+This project-owned control plane synchronizes
 `cloudflare/security-audit-skill/skills/security-audit/` into
 `skills/security/security-audit/`.
 

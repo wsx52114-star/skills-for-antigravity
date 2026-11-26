@@ -25,16 +25,17 @@
 
 #### 1. `mattpocock/skills`（主上游）
 
-僅從主上游接收 `skills/**`、`docs/**` 與 `LICENSE`，並排除非 Antigravity 專用的 `agents/` 設定、Claude-only skills、deprecated skills 與上游倉庫腳本：
+僅從主上游接收 `skills/**`、`docs/**` 與上游授權檔（`LICENSES/mattpocock-skills.LICENSE`），並排除非 Antigravity 專用的 `agents/` 設定、Claude-only skills、deprecated skills 與上游倉庫腳本：
 
 | 上游路徑／類型 | 處理方式 | 說明 |
 | --- | --- | --- |
-| `skills/` | 選擇性同步＋映射 | 排除 Claude-only 與 deprecated；依 `categoryMap` 將 `skills/engineering/` 映射為 `skills/software/`，並避開獨立來源保護路徑。 |
-| `docs/`、`LICENSE` | 同步 | 保留 `docs/` 與根目錄授權；保護 `docs/security/` 不被覆寫。 |
+| `skills/` | 選擇性同步＋映射 | 排除 Claude-only 與 deprecated；依 `categoryMap` 將 `skills/engineering/` 映射為 `skills/software/`，並避開獨立來源與專案自有路徑（含 `skills/productivity/README.md` 與 `skills/software/README.md`）。 |
+| `docs/` | 選擇性同步 | 保留 `docs/`；排除 `excludedSkillNames`／`deprecated` 對應文件，並保護 `docs/security/` 不被覆寫。 |
+| `LICENSE` | 映射保留 | 同步至 [`LICENSES/mattpocock-skills.LICENSE`](LICENSES/mattpocock-skills.LICENSE)，根目錄 [`LICENSE`](LICENSE) 由本專案維護。 |
 | `.agents/`、`.changeset/`、`.claude-plugin/`、`.out-of-scope/`、`scripts/`、`package*.json`、`CLAUDE.md`、`CHANGELOG.md` | 排除 | 避免 nested `.agents`、其他工具封裝檔或上游維護工具混入。 |
 | `.github/workflows/`、`.gitignore`、`CONTEXT.md`、`README.md` | 自行維護 | 必須符合本儲存庫架構與索引格式。 |
 
-分類 `README.md` 會移除被排除項目的索引列與其他工具的呼叫說明；`docs/**` 除 `docs/security/**` 外維持上游原文。
+`in-progress` 與 `misc` 的分類 `README.md` 會移除被排除項目的索引列與其他工具的呼叫說明；`skills/productivity/README.md` 與 `skills/software/README.md` 由共用索引工具維護；`docs/**` 除排除清單與 `docs/security/**` 外維持上游原文。
 
 #### 2. 獨立上游來源
 
@@ -45,10 +46,10 @@
 
 ### 所有權邊界與架構約束
 
-[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、排除規則與受保護的 fork-owned paths（不接受主上游寫入）：
+[`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、`upstreamLicensePath`、排除規則與受保護的專案自有路徑（`projectOwned`，不接受主上游寫入）：
 
-- `rules/**`、`plugins/**`、`docs/security/**`、`MAINTENANCE.md`、`README.md`、`CONTEXT.md`、`.gitignore`
-- `skills/hardware/**`、`skills/language/**`、`skills/ui-design/**`、`skills/security/**`、`skills/productivity/design-review/**`、`skills/productivity/doc-drift/**`、`skills/productivity/i-have-adhd/**`
+- `rules/**`、`plugins/**`、`docs/security/**`、`LICENSE`、`MAINTENANCE.md`、`README.md`、`CONTEXT.md`、`.gitignore`
+- `skills/hardware/**`、`skills/language/**`、`skills/ui-design/**`、`skills/security/**`、`skills/software/README.md`、`skills/productivity/README.md`、`skills/productivity/design-review/**`、`skills/productivity/doc-drift/**`、`skills/productivity/i-have-adhd/**`
 - `.github/upstream-sync/**`、`.github/skill-sync/**`、`.github/security-audit-sync/**`、`.github/i-have-adhd-sync/**`、`.github/emil-skills-sync/**`、`.github/taiwan-terminology-sync/**`、`.github/workflows/**`
 
 核心架構約束：
@@ -65,7 +66,7 @@
 
 1. 以 matrix 呼叫共用的 [`sync-source.yml`](.github/workflows/sync-source.yml)，來源間互不影響（`fail-fast: false`），同一來源設有 concurrency 排隊。
 2. 比對來源最新 commit 與該來源 lock；無更新時直接跳過後續步驟（也不會取用 `SYNC_PR_TOKEN`）。
-3. 有更新時檢查快照、執行 adapter、透過 [索引工具](.github/skill-sync/indexes.mjs) 同步 `README.md`（主上游另外比對確保未夾帶其他修改）並通過全部測試，最後建立或沿用 review-only PR。
+3. 有更新時檢查快照、執行 adapter、透過 [索引工具](.github/skill-sync/indexes.mjs) 同步 `README.md`、`skills/productivity/README.md` 與 `skills/software/README.md`（主上游另外比對確保未夾帶其他修改）並通過全部測試，最後建立或沿用 review-only PR。
 4. 四個 JavaScript snapshot adapters 在寫入前會驗證完整 commit SHA 並拒絕 symlink 與不支援的檔案型別；`.gitattributes` 與快照產生器固定 Bash scripts 及詞庫快照使用 LF。
 
 ---

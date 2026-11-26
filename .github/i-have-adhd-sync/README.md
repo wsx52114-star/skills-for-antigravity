@@ -1,6 +1,6 @@
 # i-have-adhd synchronization
 
-This fork-owned control plane synchronizes
+This project-owned control plane synchronizes
 `ayghri/i-have-adhd/skills/i-have-adhd/` into
 `skills/productivity/i-have-adhd/`.
 
