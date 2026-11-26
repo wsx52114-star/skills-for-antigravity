@@ -46,7 +46,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 | --- | --- | --- | --- |
 | [`software`](plugins/software/plugin.json) | 軟體開發（Software） | 開啟 | 規格討論、TDD 開發、除錯與程式碼審查（19） |
 | [`hardware`](plugins/hardware/plugin.json) | 硬體開發（Hardware） | 開啟 | KiCad 原理圖、PCB 佈線與製造檔檢查（3） |
-| [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、對話交接、教學與提問輔助（8） |
+| [`productivity`](plugins/productivity/plugin.json) | 通用協作與生產力（Productivity） | 開啟 | 計畫壓力測試、設計冷讀、文件漂移稽核、對話交接、教學與提問輔助（10） |
 | [`language`](plugins/language/plugin.json) | 台灣用語規範（Language） | 開啟 | 繁體中文與台灣技術用語離線檢查（1） |
 | [`ui-design`](plugins/ui-design/plugin.json) | Web 與介面設計（UI Design） | 關閉 | 網頁動態、手勢、Apple 介面規範與 Swift（20） |
 | [`security`](plugins/security/plugin.json) | 資安稽核（Security） | 關閉 | 程式碼與 API 漏洞檢查流程（1） |
@@ -62,7 +62,7 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 | 資料夾 | 說明 |
 | --- | --- |
 | [`plugins/`](plugins/README.md) | 7 個可直接開關的領域套件設定（各自引用下方的 `skills/` 與專用規則）。 |
-| [`skills/`](skills/) | 62 個技能的實際定義檔，依領域分類存放。 |
+| [`skills/`](skills/) | 64 個技能的實際定義檔，依領域分類存放。 |
 | [`rules/`](rules/) | 跨套件共用的基礎行為規範。 |
 | [`docs/`](docs/) | 各技能的補充參考文件。 |
 
@@ -153,6 +153,8 @@ git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
 
 | 關鍵字 | 觸發方式 | 用途 |
 | --- | --- | --- |
+| [`design-review`](skills/productivity/design-review/SKILL.md) | 需明確指定 | 以零脈絡雙軸子代理冷讀審查規格或設計文件，於拆票或實作前把關。 |
+| [`doc-drift`](skills/productivity/doc-drift/SKILL.md) | 需明確指定 | 稽核長期專案文件（CONTEXT、ADR、規格、硬體設計筆記）與現行實作的漂移。 |
 | [`grill-me`](skills/productivity/grill-me/SKILL.md) | 需明確指定 | 以持續追問方式釐清並強化 plan 或 design。 |
 | [`grilling`](skills/productivity/grilling/SKILL.md) | 可自動選用 | 壓力測試使用者的計畫、決策或想法。 |
 | [`handoff`](skills/productivity/handoff/SKILL.md) | 需明確指定 | 將目前對話壓縮成可交給另一個 agent 接手的文件。 |

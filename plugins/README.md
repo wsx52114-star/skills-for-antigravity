@@ -8,7 +8,7 @@ Domain-scoped Antigravity 2.0 plugins layered over `../skills/` via each plugin'
 | --- | --- | --- | --- | --- |
 | [`software`](./software/plugin.json) | 軟體開發（Software） | Enabled | `skills/software/*` (19) | [`rules/AGENTS.md`](./software/rules/AGENTS.md) |
 | [`hardware`](./hardware/plugin.json) | 硬體開發（Hardware） | Enabled | `skills/hardware/*` (3) | [`rules/AGENTS.md`](./hardware/rules/AGENTS.md) |
-| [`productivity`](./productivity/plugin.json) | 通用協作與生產力（Productivity） | Enabled | `skills/productivity/*` (8) | — |
+| [`productivity`](./productivity/plugin.json) | 通用協作與生產力（Productivity） | Enabled | `skills/productivity/*` (10) | — |
 | [`language`](./language/plugin.json) | 台灣用語規範（Language） | Enabled | `skills/language/*` (1) | — |
 | [`ui-design`](./ui-design/plugin.json) | Web 與介面設計（UI Design） | Disabled | `skills/ui-design/*` (20) | [`rules/AGENTS.md`](./ui-design/rules/AGENTS.md) |
 | [`security`](./security/plugin.json) | 資安稽核（Security） | Disabled | `skills/security/*` (1) | [`rules/AGENTS.md`](./security/rules/AGENTS.md) |

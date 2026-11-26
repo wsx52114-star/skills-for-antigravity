@@ -46,6 +46,7 @@ When the human explicitly chooses the full chain:
 1. Run `grill-with-docs` to challenge the design and sharpen project language.
 2. Stop after grilling and request explicit approval before publishing a spec or creating work items.
 3. Run `to-spec` to synthesize the settled conversation without interviewing again.
+   - For complex, cross-module, or high-risk specs, invoke `design-review` (cold fresh-context review) before `to-tickets`.
 4. Run `to-tickets` to create tracer-bullet work items and blocking relationships.
 5. Run `implement`; use `tdd` at agreed public seams where practical.
 6. Run `code-review` against a fixed point along Standards and Spec axes.
@@ -53,8 +54,8 @@ When the human explicitly chooses the full chain:
 Match other domains to their native loops rather than forcing the software chain everywhere:
 
 - **Frontend UI and motion** (`ask-emil`): `ui-prototype` (isolated variants before production code) → `pick-ui-library` / `animate` / `choreograph` / `gestures` → `break-ui` / `review-animations` / `mobile-native` / `animation-performance` → `learn-taste` (record rules and their why in `DESIGN.md` or lint checks).
-- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → `kicad-pcb` (new-board planning with stage/drill-span approvals, root-level working copies for layer reduction or dangling-item edits, and `0 Ω` jumper back-annotation) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors).
-- **Security and terminology audits**: `security-audit` (coverage-ledger and PoC-validated findings) and `taiwan-term` (offline Taiwan.md snapshot scan enforcing `.agents/CONTEXT.md`).
+- **Hardware and KiCad**: `kicad-schematic` (five upfront parameters and interconnect tables) → optional `design-review` after locking parameters and `DESIGN_NOTES.md` (before layout or fabrication) → `kicad-pcb` (new-board planning with stage/drill-span approvals, root-level working copies for layer reduction or dangling-item edits, and `0 Ω` jumper back-annotation) → `kicad-release` (require zero CLI ERC, DRC, unconnected, and schematic-parity errors).
+- **Security, drift, and terminology audits**: `security-audit` (coverage-ledger and PoC-validated findings), `doc-drift` (cold drift audit of `CONTEXT.md`, ADRs, specs, and hardware-software interface docs against current implementation), and `taiwan-term` (offline Taiwan.md snapshot scan enforcing `.agents/CONTEXT.md`).
 
 Preserve context hygiene and circuit breakers across sessions:
 

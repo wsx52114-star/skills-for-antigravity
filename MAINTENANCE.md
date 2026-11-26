@@ -48,7 +48,7 @@
 [`.github/upstream-sync/ownership.json`](.github/upstream-sync/ownership.json) 定義 allowlist、`categoryMap`（`engineering -> software`）、排除規則與受保護的 fork-owned paths（不接受主上游寫入）：
 
 - `rules/**`、`plugins/**`、`docs/security/**`、`MAINTENANCE.md`、`README.md`、`CONTEXT.md`、`.gitignore`
-- `skills/hardware/**`、`skills/language/**`、`skills/ui-design/**`、`skills/security/**`、`skills/productivity/i-have-adhd/**`
+- `skills/hardware/**`、`skills/language/**`、`skills/ui-design/**`、`skills/security/**`、`skills/productivity/design-review/**`、`skills/productivity/doc-drift/**`、`skills/productivity/i-have-adhd/**`
 - `.github/upstream-sync/**`、`.github/skill-sync/**`、`.github/security-audit-sync/**`、`.github/i-have-adhd-sync/**`、`.github/emil-skills-sync/**`、`.github/taiwan-terminology-sync/**`、`.github/workflows/**`
 
 核心架構約束：

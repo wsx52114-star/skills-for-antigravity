@@ -19,6 +19,8 @@
     "skills/language/",
     "skills/ui-design/",
     "skills/security/",
+    "skills/productivity/design-review/",
+    "skills/productivity/doc-drift/",
     "skills/productivity/i-have-adhd/",
     "docs/security/"
   ],
@@ -41,6 +43,8 @@
     "skills/language/",
     "skills/ui-design/",
     "skills/security/",
+    "skills/productivity/design-review/",
+    "skills/productivity/doc-drift/",
     "skills/productivity/i-have-adhd/",
     "docs/security/",
     ".github/workflows/",

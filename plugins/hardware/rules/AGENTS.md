@@ -6,3 +6,4 @@
 - Work in root-level working copies with distinct basenames (or an isolated Git worktree) so `${KIPRJMOD}` local symbol and footprint tables stay valid; keep matching `.kicad_sch`, `.kicad_pro`, and `.kicad_dru` alongside the working `.kicad_pcb`.
 - Permit `0 Ω` jumper resistors only on low-voltage nets after explicit user approval, and synchronize schematic, PCB, and BOM together.
 - Enforce zero CLI ERC errors, zero DRC errors, zero unconnected items, and zero schematic-parity mismatches alongside pad/via center termination and silkscreen audits before generating manufacturing deliverables.
+- For new boards, major revisions, or hardware-software boundary changes, recommend explicit `design-review` after locking opening parameters, interconnect tables, and `DESIGN_NOTES.md` (before layout or fabrication), and `doc-drift` to check `DESIGN_NOTES.md` and pin-map tables against firmware/control code (keeping KiCad-internal parity on `kicad-release` CLI checks).
