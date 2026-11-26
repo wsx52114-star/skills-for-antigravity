@@ -1,4 +1,4 @@
-# Skills for Antigravity
+# Antigravity Skill Stack
 
 這是一套給 Antigravity 使用的共用技能（Skills）與規則集，整合了軟體開發、硬體 KiCad 電路設計、介面動畫、資安檢查、台灣用語校對與團隊協作工具。
 
@@ -11,13 +11,13 @@
 Windows（PowerShell）：
 
 ```powershell
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git "$HOME\.agents"
+git clone https://github.com/wsx52114-star/antigravity-skill-stack.git "$HOME\.agents"
 ```
 
 WSL／Linux／Raspberry Pi：
 
 ```bash
-git clone https://github.com/wsx52114-star/skills-for-antigravity.git ~/.agents
+git clone https://github.com/wsx52114-star/antigravity-skill-stack.git ~/.agents
 ```
 
 > 若 `~/.agents` 資料夾已存在，請先確認內容或備份，勿直接覆蓋。

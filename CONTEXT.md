@@ -1,6 +1,6 @@
-# Skills for Antigravity
+# Antigravity Skill Stack
 
-An Antigravity distribution of agent skills adapted from `mattpocock/skills`. It provides shared engineering workflows while keeping each project's language and decisions local to that project.
+A curated multi-source Antigravity distribution of agent skills, plugins, and compatibility rules. It provides shared engineering workflows while keeping each project's language and decisions local to that project.
 
 ## Language
 
