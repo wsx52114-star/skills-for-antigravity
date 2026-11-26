@@ -193,4 +193,17 @@ bash ~/.agents/plugins/mount.sh
 
 ## 維護與授權
 
-上游同步策略、GitHub Actions 設定與驗證指令見 [MAINTENANCE.md](MAINTENANCE.md)；各套件開發細節見 [plugins/README.md](plugins/README.md)。本專案授權見根目錄 [LICENSE](LICENSE)，各上游來源授權保留於 [LICENSES/mattpocock-skills.LICENSE](LICENSES/mattpocock-skills.LICENSE) 及個別技能目錄內的 `LICENSE`／`NOTICE.md`。
+上游同步策略、GitHub Actions 設定與驗證指令見 [MAINTENANCE.md](MAINTENANCE.md)；各套件開發細節見 [plugins/README.md](plugins/README.md)。本專案自有程式碼、規則、套件設定與原創技能採 MIT 授權（見 [LICENSE](LICENSE)）；整合自外部開源專案的技能與衍生詞庫皆保留原授權條款，來源歸屬如下：
+
+| 關係 | 來源專案 | 涵蓋範圍 | 授權與聲明檔 |
+| --- | --- | --- | --- |
+| 源自於 | [`mattpocock/skills`](https://github.com/mattpocock/skills)（Matt Pocock） | 軟體開發、雜項工具、上游開發中、多數通用協作與生產力技能，以及對應 `docs/` 參考文件 | MIT（[mattpocock-skills.LICENSE](LICENSES/mattpocock-skills.LICENSE)） |
+| 源自於 | [`emilkowalski/skills`](https://github.com/emilkowalski/skills)（Emil Kowalski） | Web 與介面設計全部技能 | MIT（各技能目錄內 `LICENSE`，如 [animate/LICENSE](skills/ui-design/animate/LICENSE)） |
+| 源自於 | [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill)（Cloudflare, Inc.） | 資安稽核技能 | MIT（[security-audit/LICENSE](skills/security/security-audit/LICENSE)） |
+| 源自於 | [`ayghri/i-have-adhd`](https://github.com/ayghri/i-have-adhd)（Ayoub Ghriss） | ADHD 行動優先回覆技能（通用協作與生產力） | MIT（[i-have-adhd/LICENSE](skills/productivity/i-have-adhd/LICENSE)） |
+| 發展於 | [`frank890417/taiwan-md`](https://github.com/frank890417/taiwan-md)（Taiwan.md contributors） | 台灣用語規範的離線詞庫快照（衍生自 `data/terminology/*.yaml`） | 詞庫 CC BY-SA 4.0／程式 MIT（[NOTICE.md](skills/language/taiwan-term/references/taiwan-md/NOTICE.md)） |
+| 專案自有 | 本專案（`antigravity-skill-stack`） | 硬體開發、設計冷讀審查與文件漂移稽核、台灣用語掃描程式，以及套件、規則與同步機制 | MIT（[LICENSE](LICENSE)） |
+
+### 致謝
+
+誠摯感謝 Matt Pocock、Emil Kowalski、Cloudflare、Ayoub Ghriss，以及 Taiwan.md 社群與所有開源貢獻者大方分享高品質的技能定義、工程實務與台灣用語詞庫，讓本專案得以在尊重原授權的前提下，整合成一套便於 Antigravity 使用的技能組合。
