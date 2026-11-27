@@ -12,7 +12,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-REPOSITORY = "https://github.com/frank890417/taiwan-md"
+def _load_repository() -> str:
+    sources_path = Path(__file__).resolve().parent.parent / "skill-sync" / "sources.json"
+    sources = json.loads(sources_path.read_text(encoding="utf-8"))
+    return sources["taiwan-terminology"]["repository"]
+
+
+REPOSITORY = _load_repository()
 
 
 def arguments() -> argparse.Namespace:
@@ -24,7 +30,7 @@ def arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def regular_source_files(root: Path) -> list[Path]:
+def validate_source_files(root: Path) -> None:
     terminology = root / "data" / "terminology"
     readme = root / "README.md"
     if not readme.is_file() or readme.is_symlink():
@@ -36,7 +42,6 @@ def regular_source_files(root: Path) -> list[Path]:
         raise ValueError("Taiwan.md terminology snapshot contains no YAML terms")
     if any(path.is_symlink() or not path.is_file() for path in yaml_files):
         raise ValueError("Taiwan.md terminology source must contain regular YAML files only")
-    return [readme, *yaml_files]
 
 
 def main() -> int:
@@ -45,7 +50,7 @@ def main() -> int:
     snapshot_root = args.snapshot_root.resolve()
     if len(args.sha) != 40 or any(character not in "0123456789abcdef" for character in args.sha):
         raise ValueError("--sha must be a full lowercase commit SHA")
-    regular_source_files(snapshot_root)
+    validate_source_files(snapshot_root)
 
     skill_root = repo_root / "skills" / "language" / "taiwan-term"
     output = skill_root / "references" / "taiwan-md" / "terminology.snapshot.json"

@@ -12,9 +12,9 @@ Use the installed skills as behavioral workflows. Skill frontmatter is the live 
 
 ## Project Knowledge
 
-- Read the current project's `.agents/CONTEXT.md` (or root `CONTEXT.md`) when domain vocabulary matters; keep it strictly as a glossary, never a spec or changelog.
+- Read the current project's `.agents/CONTEXT.md` (or root `CONTEXT.md` / `GLOSSARY.md`, plus `.agents/CONTEXT-MAP.md` / root `CONTEXT-MAP.md` / `GLOSSARY-MAP.md` when present) when domain vocabulary matters; keep it strictly as a glossary, never a spec or changelog.
 - Read relevant ADRs under `.agents/docs/adr/` (or `docs/adr/`) before changing an affected area. Write an ADR only when a decision is hard to reverse, surprising without context, and the result of a real trade-off; never use ADRs as per-version changelogs.
-- Create `.agents/CONTEXT.md` and `.agents/docs/adr/` lazily inside the target project only, never in `~/.agents/`.
+- Create `.agents/CONTEXT.md` (or `GLOSSARY.md` when following upstream conventions) and `.agents/docs/adr/` lazily inside the target project only, never in `~/.agents/`.
 - Respect project root `AGENTS.md` for operational constraints and `CODING_STANDARDS.md` for review judgement calls. Turn recurring mechanical mistakes into automated checks via `retro`.
 
 ## Golden Workflow and Context Hygiene
@@ -24,7 +24,7 @@ For significant features or architecture changes, recommend this chain while wai
 `grill-with-docs -> to-spec -> to-tickets -> implement / tdd -> code-review`
 
 - Keep planning (`grill-with-docs -> to-spec -> to-tickets`) in one unbroken window within the smart zone; run each implementation issue in a fresh context window or isolated worktree via sparse context pointers rather than copied prose.
-- For complex, cross-module, or high-risk specs, recommend explicit `design-review` between `to-spec` and `to-tickets`, and `doc-drift` periodically to check long-lived `CONTEXT.md`, ADRs, and specs against current code.
+- For complex, cross-module, or high-risk specs, recommend explicit `design-review` between `to-spec` and `to-tickets`, and `doc-drift` periodically to check long-lived `CONTEXT.md` / `GLOSSARY.md`, ADRs, and specs against current code.
 - Do not force the full chain onto small fixes, routine maintenance, or narrowly scoped refactors.
 - When implementation exposes an unexpected failure or regression, use `diagnosing-bugs` to build a tight reproduction loop before guessing a fix. Stop after three consecutive failed fix attempts and re-evaluate assumptions.
 - Before completing an issue or version, verify you can state what changed, why this approach was chosen, and which alternative was rejected without contradicting the spec or ADRs.

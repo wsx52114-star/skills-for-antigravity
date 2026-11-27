@@ -19,7 +19,7 @@ Audit accumulated drift between long-lived project documentation and the current
 
 Use user-specified paths or subsystems when supplied. Otherwise, discover long-lived docs in the **current project** (never the Agent home `~/.agents/`):
 
-- `.agents/CONTEXT.md` (or root `CONTEXT.md`) and `.agents/CONTEXT-MAP.md`
+- `.agents/CONTEXT.md` (or root `CONTEXT.md` / `GLOSSARY.md`) and `.agents/CONTEXT-MAP.md` (or root `CONTEXT-MAP.md` / `GLOSSARY-MAP.md`)
 - `.agents/docs/adr/*.md` (or `docs/adr/*.md`)
 - Checked-in specs (`docs/`, `specs/`), `CODING_STANDARDS.md`, root `AGENTS.md`
 - `DESIGN_NOTES.md` (or `.agents/docs/hardware-design-notes.md`), interconnect/pin-map tables, and referenced firmware/control modules (GPIO, I2C, SPI, Serial, MQTT topic/payload definitions)
@@ -51,4 +51,4 @@ Suggest a likely resolution (`Update doc`, `Fix implementation`, or `Supersede A
 
 Present findings grouped by document (or per parallel axis when split), ending with a one-line summary of `Contradicted / Missing / Stale` counts.
 
-**Stop gate**: Leave both documentation and code untouched until the user chooses which items to update or fix (keeping `CONTEXT.md` glossary-only and avoiding changelog-style ADRs).
+**Stop gate**: Leave both documentation and code untouched until the user chooses which items to update or fix (keeping `CONTEXT.md` / `GLOSSARY.md` glossary-only and avoiding changelog-style ADRs).

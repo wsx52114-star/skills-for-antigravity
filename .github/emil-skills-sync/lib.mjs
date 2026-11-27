@@ -1,4 +1,6 @@
-export const upstreamRepository = "https://github.com/emilkowalski/skills";
+import { loadSources, matchFrontmatter } from "../upstream-sync/lib/snapshot.mjs";
+
+export const upstreamRepository = loadSources()["emil-skills"].repository;
 export const destinationCategory = "ui-design";
 export const destinationPrefix = `skills/${destinationCategory}/`;
 
@@ -11,9 +13,9 @@ export function upstreamSkillName(runtimeName) {
 }
 
 export function adaptSkill(content, sourceName) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!match || !new RegExp(`^name: ${sourceName}\\s*$`, "m").test(match[1]) ||
-      !/^description:\s*\S/m.test(match[1])) {
+  const matched = matchFrontmatter(content);
+  if (!matched || !new RegExp(`^name: ${sourceName}\\s*$`, "m").test(matched.body) ||
+      !/^description:\s*\S/m.test(matched.body)) {
     throw new Error(`Invalid Emil skill frontmatter: ${sourceName}/SKILL.md`);
   }
   if (sourceName !== "prototype") return content;

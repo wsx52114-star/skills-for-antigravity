@@ -4,30 +4,12 @@ import { execFileSync } from "node:child_process";
 import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
+import { isAntigravitySkillFile, listRegularFiles, parseSnapshotArgs } from "../upstream-sync/lib/snapshot.mjs";
 import { adaptSkill, destinationCategory, destinationPrefix, runtimeSkillName, upstreamRepository } from "./lib.mjs";
 import { planSkillIndexes } from "../skill-sync/indexes.mjs";
 
-function parseArgs(argv) {
-  const options = {};
-  const keys = new Map([["--repo-root", "repoRoot"], ["--snapshot-root", "snapshotRoot"], ["--sha", "sha"]]);
-  for (let index = 0; index < argv.length; index += 2) {
-    const key = keys.get(argv[index]);
-    const value = argv[index + 1];
-    if (!key || !value) throw new Error(`Invalid arguments near ${argv[index] ?? "end"}`);
-    options[key] = value;
-  }
-  if (!options.repoRoot || !options.snapshotRoot || !options.sha) {
-    throw new Error("--repo-root, --snapshot-root, and --sha are required");
-  }
-  requireCommitSha(options.sha);
-  options.repoRoot = path.resolve(options.repoRoot);
-  options.snapshotRoot = path.resolve(options.snapshotRoot);
-  return options;
-}
-
 function main() {
-  const options = parseArgs(process.argv.slice(2));
+  const options = parseSnapshotArgs(process.argv.slice(2));
   const licensePath = path.join(options.snapshotRoot, "LICENSE");
   if (!existsSync(licensePath) || !lstatSync(licensePath).isFile()) {
     throw new Error("Invalid Emil snapshot: root LICENSE is required");

@@ -14,29 +14,7 @@ import process from "node:process";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { isExcludedUpstreamPath, loadPolicy, mapUpstreamPath, matchesAny } from "./lib/policy.mjs";
-import { isAntigravitySkillFile, listRegularFiles, requireCommitSha } from "./lib/snapshot.mjs";
-
-function parseArgs(argv) {
-  const options = { repoRoot: null, snapshotRoot: null, sha: null };
-  const keys = new Map([
-    ["--repo-root", "repoRoot"],
-    ["--snapshot-root", "snapshotRoot"],
-    ["--sha", "sha"],
-  ]);
-  for (let index = 0; index < argv.length; index += 2) {
-    const key = keys.get(argv[index]);
-    const value = argv[index + 1];
-    if (!key || !value) throw new Error(`Invalid arguments near ${argv[index] ?? "end"}`);
-    options[key] = value;
-  }
-  if (!options.repoRoot || !options.snapshotRoot || !options.sha) {
-    throw new Error("--repo-root, --snapshot-root, and --sha are required");
-  }
-  requireCommitSha(options.sha);
-  options.repoRoot = path.resolve(options.repoRoot);
-  options.snapshotRoot = path.resolve(options.snapshotRoot);
-  return options;
-}
+import { isAntigravitySkillFile, listRegularFiles, parseSnapshotArgs } from "./lib/snapshot.mjs";
 
 function withoutExcludedSkillReferences(content, excludedSegments) {
   const newline = content.includes("\r\n") ? "\r\n" : "\n";
@@ -48,7 +26,7 @@ function withoutExcludedSkillReferences(content, excludedSegments) {
 }
 
 function main() {
-  const options = parseArgs(process.argv.slice(2));
+  const options = parseSnapshotArgs(process.argv.slice(2));
   const controlPlaneRoot = path.dirname(fileURLToPath(import.meta.url));
   const ownership = loadPolicy(controlPlaneRoot);
   const upstreamLicensePath = ownership.upstreamLicensePath;

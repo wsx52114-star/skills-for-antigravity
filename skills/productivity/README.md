@@ -9,7 +9,7 @@ General workflow tools, combining skills synchronized from `mattpocock/skills`, 
 
 ## User-invoked
 
-- [design-review](./design-review/SKILL.md): Cold-review a spec or design document using parallel fresh-context subagents before slicing tickets, routing, or implementation.
+- [design-review](./design-review/SKILL.md): Cold-review a spec or design document using parallel fresh-context subagents before slicing issues, routing, or implementation.
 - [doc-drift](./doc-drift/SKILL.md): Audit long-lived project documentation (CONTEXT.md, ADRs, specs, DESIGN_NOTES.md, pin maps) against current code and hardware interfaces for drift.
 - [grill-me](./grill-me/SKILL.md): A relentless interview to sharpen a plan or design.
 - [handoff](./handoff/SKILL.md): Compact the current conversation into a handoff document for another agent to pick up.

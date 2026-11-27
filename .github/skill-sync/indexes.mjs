@@ -1,6 +1,6 @@
 import { existsSync, lstatSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { listRegularFiles } from "../upstream-sync/lib/snapshot.mjs";
+import { listRegularFiles, matchFrontmatter } from "../upstream-sync/lib/snapshot.mjs";
 
 const tableHeader = "| 關鍵字 | 觸發方式 | 用途 |";
 const tableDivider = /^\|(?:\s*:?-+:?\s*\|){3}$/;
@@ -20,7 +20,7 @@ function section(content, heading, update) {
 }
 
 function metadata({ relative, content }) {
-  const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+  const frontmatter = matchFrontmatter(content)?.body;
   const name = frontmatter?.match(/^name:[ \t]*["']?([a-z0-9]+(?:-[a-z0-9]+)*)["']?[ \t]*\r?$/m)?.[1];
   const description = frontmatter?.match(/^description:[ \t]*(.*)$/m);
   if (!name || !description || name !== path.posix.basename(path.posix.dirname(relative))) {

@@ -5,10 +5,10 @@ import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, readdir
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
+import { loadSources, requireCommitSha } from "../upstream-sync/lib/snapshot.mjs";
 import { managedCategoryIndexes, planSkillIndexes, readRuntimeSkills, renderCategoryIndex, renderRootIndex } from "./indexes.mjs";
 
-const sources = JSON.parse(readFileSync(new URL("./sources.json", import.meta.url), "utf8"));
+const sources = loadSources();
 
 export function sourceById(id) {
   if (!Object.hasOwn(sources, id)) throw new Error(`Unknown synchronization source: ${id}`);
