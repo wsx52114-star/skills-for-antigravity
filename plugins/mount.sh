@@ -8,13 +8,13 @@ mkdir -p "$(dirname "$config")"
 if command -v python3 >/dev/null 2>&1; then
   python3 - "$config" "$target" <<'PY'
 import json, pathlib, sys
-f, t = pathlib.Path(sys.argv[1]), sys.argv[2].rstrip("/")
-raw = f.read_text("utf-8").strip() if f.exists() else ""
-d = json.loads(raw) if raw else {}
-e = d["entries"] = d.get("entries") or []
-if not any(isinstance(x, dict) and str(x.get("path", "")).replace("\\", "/").rstrip("/") == t for x in e):
-    e.append({"path": t})
-f.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+config_path, target_path = pathlib.Path(sys.argv[1]), sys.argv[2].rstrip("/")
+raw = config_path.read_text("utf-8").strip() if config_path.exists() else ""
+doc = json.loads(raw) if raw else {}
+entries = doc["entries"] = doc.get("entries") or []
+if not any(isinstance(entry, dict) and str(entry.get("path", "")).replace("\\", "/").rstrip("/") == target_path for entry in entries):
+    entries.append({"path": target_path})
+config_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 PY
 elif command -v node >/dev/null 2>&1; then
   node - "$config" "$target" <<'JS'
@@ -24,7 +24,7 @@ const norm = (p) => String(p ?? "").replace(/\\/g, "/").replace(/\/+$/, "");
 const raw = fs.existsSync(config) ? fs.readFileSync(config, "utf8").trim() : "";
 const doc = raw ? JSON.parse(raw) : {};
 const entries = Array.isArray(doc.entries) ? doc.entries : [];
-if (!entries.some((x) => x && typeof x === "object" && norm(x.path) === norm(target))) {
+if (!entries.some((entry) => entry && typeof entry === "object" && norm(entry.path) === norm(target))) {
   entries.push({ path: norm(target) });
 }
 doc.entries = entries;

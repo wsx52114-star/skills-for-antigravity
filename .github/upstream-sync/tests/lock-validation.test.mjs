@@ -297,6 +297,38 @@ test("validator rejects implicit invocation for i-have-adhd", () => {
   }
 });
 
+test("validator rejects non-string and out-of-scope entries in i-have-adhd lock", () => {
+  const baseLock = {
+    repository: "https://github.com/mattpocock/skills",
+    commit: "a".repeat(40),
+    files: ["LICENSES/mattpocock-skills.LICENSE", "skills/software/tdd/SKILL.md"],
+  };
+  const nonStringRoot = fixture(baseLock);
+  const outOfScopeRoot = fixture(baseLock);
+  try {
+    write(nonStringRoot, ".github/i-have-adhd-sync/upstream-lock.json", `${JSON.stringify({
+      repository: "https://github.com/ayghri/i-have-adhd",
+      commit: "c".repeat(40),
+      files: ["LICENSE", 123],
+    })}\n`);
+    const nonStringResult = spawnSync(process.execPath, [validator, nonStringRoot], { encoding: "utf8" });
+    assert.equal(nonStringResult.status, 1);
+    assert.match(nonStringResult.stderr, /i-have-adhd lock files must be an array of paths/);
+
+    write(outOfScopeRoot, ".github/i-have-adhd-sync/upstream-lock.json", `${JSON.stringify({
+      repository: "https://github.com/ayghri/i-have-adhd",
+      commit: "c".repeat(40),
+      files: ["LICENSE", "skills/i-have-adhd/SKILL.md", "skills/other/evil.md"],
+    })}\n`);
+    const outOfScopeResult = spawnSync(process.execPath, [validator, outOfScopeRoot], { encoding: "utf8" });
+    assert.equal(outOfScopeResult.status, 1);
+    assert.match(outOfScopeResult.stderr, /i-have-adhd lock contains an out-of-scope file: skills\/other\/evil\.md/);
+  } finally {
+    rmSync(nonStringRoot, { recursive: true, force: true });
+    rmSync(outOfScopeRoot, { recursive: true, force: true });
+  }
+});
+
 test("validator rejects category indexes that reference excluded skills", () => {
   const root = fixture({
     repository: "https://github.com/mattpocock/skills",

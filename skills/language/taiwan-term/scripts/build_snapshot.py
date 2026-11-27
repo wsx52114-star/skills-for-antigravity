@@ -10,6 +10,8 @@ from pathlib import Path
 
 
 REPOSITORY = "https://github.com/frank890417/taiwan-md"
+KEY_VALUE_RE = re.compile(r"^([A-Za-z_][\w-]*):\s*(.*)$")
+INLINE_COMMENT_RE = re.compile(r"\s+#.*$")
 
 
 def _strip_quotes(value: str) -> str:
@@ -19,16 +21,21 @@ def _strip_quotes(value: str) -> str:
     return value
 
 
+def _parse_key_value(text: str) -> tuple[str, str] | None:
+    match = KEY_VALUE_RE.match(text)
+    if not match:
+        return None
+    return match.group(1), INLINE_COMMENT_RE.sub("", match.group(2)).strip()
+
+
 def _parse_nested(lines: list[str], start: int, parent_indent: int) -> tuple[object, int]:
     result: dict[str, object] | list[object] = {}
     index = start
-    consumed = 0
     while index < len(lines):
         line = lines[index]
         stripped = line.rstrip()
         if not stripped or stripped.lstrip().startswith("#"):
             index += 1
-            consumed += 1
             continue
         indent = len(line) - len(line.lstrip())
         if indent <= parent_indent:
@@ -38,52 +45,42 @@ def _parse_nested(lines: list[str], start: int, parent_indent: int) -> tuple[obj
             if not isinstance(result, list):
                 result = []
             item = content[2:].strip()
-            match = re.match(r"^([A-Za-z_][\w-]*):\s*(.*)$", item)
-            if not match:
+            item_kv = _parse_key_value(item)
+            if not item_kv:
                 result.append(_strip_quotes(item))
                 index += 1
-                consumed += 1
                 continue
-            key, value = match.group(1), re.sub(r"\s+#.*$", "", match.group(2)).strip()
+            key, value = item_kv
             item_dict = {key: _strip_quotes(value) if value else ""}
             index += 1
-            consumed += 1
             while index < len(lines):
                 child = lines[index]
                 child_stripped = child.rstrip()
                 if not child_stripped or child_stripped.lstrip().startswith("#"):
                     index += 1
-                    consumed += 1
                     continue
                 child_indent = len(child) - len(child.lstrip())
                 if child_indent <= indent:
                     break
-                child_match = re.match(
-                    r"^([A-Za-z_][\w-]*):\s*(.*)$", child_stripped.lstrip()
-                )
-                if child_match:
-                    child_value = re.sub(r"\s+#.*$", "", child_match.group(2)).strip()
-                    item_dict[child_match.group(1)] = _strip_quotes(child_value) if child_value else ""
+                child_kv = _parse_key_value(child_stripped.lstrip())
+                if child_kv:
+                    child_key, child_value = child_kv
+                    item_dict[child_key] = _strip_quotes(child_value) if child_value else ""
                 index += 1
-                consumed += 1
             result.append(item_dict)
             continue
-        match = re.match(r"^([A-Za-z_][\w-]*):\s*(.*)$", content)
-        if not match or isinstance(result, list):
+        kv = _parse_key_value(content)
+        if not kv or isinstance(result, list):
             index += 1
-            consumed += 1
             continue
-        key, value = match.group(1), re.sub(r"\s+#.*$", "", match.group(2)).strip()
+        key, value = kv
         if value:
             result[key] = _strip_quotes(value)
             index += 1
-            consumed += 1
         else:
-            nested, child_count = _parse_nested(lines, index + 1, indent)
+            nested, index = _parse_nested(lines, index + 1, indent)
             result[key] = nested
-            index += 1 + child_count
-            consumed += 1 + child_count
-    return result, consumed
+    return result, index
 
 
 def parse_yaml_minimal(content: str) -> dict[str, object]:
@@ -97,18 +94,17 @@ def parse_yaml_minimal(content: str) -> dict[str, object]:
         if not stripped or stripped.lstrip().startswith("#") or line.startswith((" ", "\t")):
             index += 1
             continue
-        match = re.match(r"^([A-Za-z_][\w-]*):\s*(.*)$", stripped)
-        if not match:
+        kv = _parse_key_value(stripped)
+        if not kv:
             index += 1
             continue
-        key, value = match.group(1), re.sub(r"\s+#.*$", "", match.group(2)).strip()
+        key, value = kv
         if value:
             result[key] = _strip_quotes(value)
             index += 1
         else:
-            nested, consumed = _parse_nested(lines, index + 1, 0)
+            nested, index = _parse_nested(lines, index + 1, 0)
             result[key] = nested
-            index += 1 + consumed
     return result
 
 

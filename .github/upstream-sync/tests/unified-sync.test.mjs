@@ -48,6 +48,7 @@ function fixture(id = "emil-skills") {
     source.adapter,
     ".github/emil-skills-sync/lib.mjs",
     ".github/skill-sync/indexes.mjs",
+    ".github/skill-sync/sources.json",
     ".github/upstream-sync/lib/snapshot.mjs",
     ".github/upstream-sync/lib/policy.mjs",
     ".github/upstream-sync/ownership.json",
