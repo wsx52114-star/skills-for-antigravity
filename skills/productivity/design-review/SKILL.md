@@ -1,6 +1,6 @@
 ---
 name: design-review
-description: Cold-review a spec or design document using parallel fresh-context subagents before slicing tickets, routing, or implementation.
+description: Cold-review a spec or design document using parallel fresh-context subagents before slicing issues, routing, or implementation.
 disable-model-invocation: true
 ---
 
@@ -20,7 +20,7 @@ Confirm the target exists and is non-empty before spawning subagents.
 
 Scan the current project for authoritative references to pass as pointers:
 
-- **Shared**: `.agents/CONTEXT.md` (or root `CONTEXT.md`), `.agents/docs/adr/` (or `docs/adr/`), `.agents/CONTEXT-MAP.md` (or `CONTEXT-MAP.md`).
+- **Shared**: `.agents/CONTEXT.md` (or root `CONTEXT.md` / `GLOSSARY.md`), `.agents/docs/adr/` (or `docs/adr/`), `.agents/CONTEXT-MAP.md` (or root `CONTEXT-MAP.md` / `GLOSSARY-MAP.md`).
 - **Software** (when present): referenced modules or test seams, `CODING_STANDARDS.md`, root `AGENTS.md`.
 - **Hardware / embedded** (when present): `DESIGN_NOTES.md` (or `.agents/docs/hardware-design-notes.md`), `.kicad_pro`, `.kicad_dru`, cross-board interconnect or pin-map tables, and firmware/control pin or protocol definitions across the hardware-software boundary.
 
@@ -34,9 +34,9 @@ If the host environment cannot spawn genuinely isolated fresh-context subagents,
 
 ### 4. Run both axes in parallel
 
-**Cold Comprehension & Assumptions subagent** (pass *target artifact + `CONTEXT.md` glossary ONLY*; keep it intentionally codebase-blind):
+**Cold Comprehension & Assumptions subagent** (pass *target artifact + `CONTEXT.md` / `GLOSSARY.md` glossary ONLY*; keep it intentionally codebase-blind):
 
-> "Cold-read this spec/design document with no codebase access. Report, quoting exact target lines: (a) unstated assumptions or logical leaps a cold reader must guess; (b) undefined terms or terms conflicting with the glossary; (c) missing edge cases, failure modes, or ambiguous acceptance/scope boundaries; (d) whether the document is clear enough to slice into tickets or execute directly. Respect thin-spec omissions if noted. Under 400 words."
+> "Cold-read this spec/design document with no codebase access. Report, quoting exact target lines: (a) unstated assumptions or logical leaps a cold reader must guess; (b) undefined terms or terms conflicting with the glossary; (c) missing edge cases, failure modes, or ambiguous acceptance/scope boundaries; (d) whether the document is clear enough to slice into issues or execute directly. Respect thin-spec omissions if noted. Under 400 words."
 
 **Ground-Truth & Risk Alignment subagent** (pass *target artifact + ADRs + codebase / hardware & interface pointers from Step 2*):
 
